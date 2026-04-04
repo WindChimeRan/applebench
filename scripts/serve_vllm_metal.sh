@@ -20,6 +20,7 @@ VLLM_METAL_MEMORY_FRACTION=0.3 \
 vllm serve "$HF_REPO" \
     --port "$VLLM_METAL_PORT" \
     --host 0.0.0.0 \
+    --max-model-len 8192 \
     &> "$PROJECT_DIR/.frameworks/vllm_metal_server.log" &
 
 echo $! > "$PROJECT_DIR/.frameworks/vllm_metal_server.pid"
