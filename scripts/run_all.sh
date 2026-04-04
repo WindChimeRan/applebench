@@ -24,13 +24,13 @@ cleanup() {
     sleep 5  # let processes die and release memory
 }
 
-# Frameworks to benchmark: name, port, serve_script, stop_script
-# Order: low-to-high concurrency to capture clean results before potential crashes
+# Frameworks to benchmark: name, port, serve_script, stop_script, model_override
+# model_override is optional — used when auto-detection picks the wrong model
 FRAMEWORKS=(
-    "llamacpp:$LLAMACPP_PORT:serve_llamacpp.sh:stop_llamacpp.sh"
-    "mlx_lm:$MLX_LM_PORT:serve_mlx_lm.sh:stop_mlx_lm.sh"
-    "mistralrs:$MISTRALRS_PORT:serve_mistralrs.sh:stop_mistralrs.sh"
-    "vllm_metal:$VLLM_METAL_PORT:serve_vllm_metal.sh:stop_vllm_metal.sh"
+    "llamacpp:$LLAMACPP_PORT:serve_llamacpp.sh:stop_llamacpp.sh:"
+    "mlx_lm:$MLX_LM_PORT:serve_mlx_lm.sh:stop_mlx_lm.sh:$MLX_MODEL"
+    "mistralrs:$MISTRALRS_PORT:serve_mistralrs.sh:stop_mistralrs.sh:"
+    "vllm_metal:$VLLM_METAL_PORT:serve_vllm_metal.sh:stop_vllm_metal.sh:"
 )
 
 CONCURRENCY_ARG=$(echo $CONCURRENCY_LEVELS | tr ' ' ',')
@@ -45,7 +45,7 @@ echo ""
 cleanup
 
 for entry in "${FRAMEWORKS[@]}"; do
-    IFS=':' read -r name port serve stop <<< "$entry"
+    IFS=':' read -r name port serve stop model_override <<< "$entry"
 
     echo "==========================================="
     echo " Benchmarking: $name (port $port)"
@@ -57,12 +57,17 @@ for entry in "${FRAMEWORKS[@]}"; do
     echo ""
 
     # Run benchmark
+    MODEL_FLAG=""
+    if [ -n "$model_override" ]; then
+        MODEL_FLAG="--model $model_override"
+    fi
     python "$SCRIPT_DIR/benchmark.py" \
         --framework "$name" \
         --port "$port" \
         --concurrency "$CONCURRENCY_ARG" \
         --requests "$BENCHMARK_REQUESTS" \
-        --warmup "$WARMUP_REQUESTS" || true
+        --warmup "$WARMUP_REQUESTS" \
+        $MODEL_FLAG || true
     echo ""
 
     # Stop server gracefully
