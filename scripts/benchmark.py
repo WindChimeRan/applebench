@@ -131,6 +131,7 @@ async def run_concurrent(
 
         # Benchmark
         print(f"  Running {num_requests} requests at concurrency {concurrency}...")
+        t_wall_start = time.perf_counter()
         sem = asyncio.Semaphore(concurrency)
         results = []
 
@@ -144,6 +145,7 @@ async def run_concurrent(
             tasks.append(bounded_request(prompt))
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
+        wall_time = time.perf_counter() - t_wall_start
 
         # Separate successes and failures — both are reported
         good = []
@@ -161,14 +163,15 @@ async def run_concurrent(
             for e in unique[:3]:
                 print(f"    > {e[:200]}")
 
-        return good, errors
+        return good, errors, wall_time
 
 
-def summarize(results: list[RequestResult], errors: list[str], concurrency: int, num_requests: int) -> dict:
+def summarize(results: list[RequestResult], errors: list[str], concurrency: int, num_requests: int, wall_time: float) -> dict:
     """Compute summary statistics."""
     if not results:
         return {"concurrency": concurrency, "num_requests": num_requests,
-                "successful": 0, "failed": len(errors), "error": "no successful requests"}
+                "successful": 0, "failed": len(errors), "wall_time_s": wall_time,
+                "error": "no successful requests"}
 
     ttfts = [r.ttft for r in results]
     throughputs = [r.throughput for r in results]
@@ -204,6 +207,7 @@ def summarize(results: list[RequestResult], errors: list[str], concurrency: int,
         "latency_p50_s": percentile(total_times, 50),
         "latency_p99_s": percentile(total_times, 99),
         "aggregate_throughput_tps": total_tokens / total_wall if total_wall > 0 else 0.0,
+        "wall_time_s": wall_time,
     }
 
 
@@ -261,10 +265,12 @@ def main():
         "concurrency_results": [],
     }
 
+    t_total_start = time.perf_counter()
+
     for conc in concurrency_levels:
         print(f"--- Concurrency: {conc} ---")
         try:
-            good, errors = asyncio.run(run_concurrent(
+            good, errors, wall_time = asyncio.run(run_concurrent(
                 base_url, model, prompts, conc, args.requests, args.warmup
             ))
         except Exception as e:
@@ -272,11 +278,11 @@ def main():
             all_results["concurrency_results"].append(
                 {"concurrency": conc, "num_requests": args.requests,
                  "successful": 0, "failed": args.requests,
-                 "error": f"server crashed: {e}"}
+                 "wall_time_s": 0, "error": f"server crashed: {e}"}
             )
             print()
             continue
-        summary = summarize(good, errors, conc, args.requests)
+        summary = summarize(good, errors, conc, args.requests, wall_time)
         all_results["concurrency_results"].append(summary)
 
         # Print summary
@@ -285,8 +291,13 @@ def main():
         print(f"  TTFT avg: {summary.get('ttft_avg_ms', 0):.1f}ms | "
               f"Throughput avg: {summary.get('throughput_avg_tps', 0):.1f} tok/s | "
               f"Aggregate: {summary.get('aggregate_throughput_tps', 0):.1f} tok/s | "
-              f"ITL avg: {summary.get('itl_avg_ms', 0):.1f}ms{fail_str}")
+              f"ITL avg: {summary.get('itl_avg_ms', 0):.1f}ms | "
+              f"Wall: {wall_time:.1f}s{fail_str}")
         print()
+
+    total_duration = time.perf_counter() - t_total_start
+    all_results["total_duration_s"] = total_duration
+    print(f"Total benchmark duration: {total_duration:.1f}s")
 
     # Save results
     if args.output:

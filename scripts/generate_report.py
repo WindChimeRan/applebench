@@ -65,6 +65,7 @@ def main():
             ("ITL p50 (ms)", "itl_p50_ms", ".1f"),
             ("Latency avg (s)", "latency_avg_s", ".2f"),
             ("Latency p99 (s)", "latency_p99_s", ".2f"),
+            ("Wall time (s)", "wall_time_s", ".1f"),
         ]
 
         for label, key, fmt in metrics:
@@ -87,6 +88,27 @@ def main():
             lines.append(row)
 
         lines.append("")
+
+    # Total duration per framework
+    lines.append("## Total Benchmark Duration")
+    lines.append("")
+    header = "| Framework |"
+    sep = "|-----------|"
+    for fw in frameworks:
+        dur = results[fw].get("total_duration_s", 0)
+        header += f" {fw} |"
+        sep += "--------|"
+    lines.append(header)
+    lines.append(sep)
+    row = "| Duration |"
+    for fw in frameworks:
+        dur = results[fw].get("total_duration_s", 0)
+        if dur >= 60:
+            row += f" {dur/60:.1f}m |"
+        else:
+            row += f" {dur:.1f}s |"
+    lines.append(row)
+    lines.append("")
 
     # Write report
     report_path = results_dir / "REPORT.md"
