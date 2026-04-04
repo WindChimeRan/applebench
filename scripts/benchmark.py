@@ -169,9 +169,10 @@ async def run_concurrent(
 def summarize(results: list[RequestResult], errors: list[str], concurrency: int, num_requests: int, wall_time: float) -> dict:
     """Compute summary statistics."""
     if not results:
+        unique_errors = list(dict.fromkeys(errors))[:5]
         return {"concurrency": concurrency, "num_requests": num_requests,
                 "successful": 0, "failed": len(errors), "wall_time_s": wall_time,
-                "error": "no successful requests"}
+                "error": "no successful requests", "error_samples": unique_errors}
 
     ttfts = [r.ttft for r in results]
     throughputs = [r.throughput for r in results]
@@ -208,6 +209,7 @@ def summarize(results: list[RequestResult], errors: list[str], concurrency: int,
         "latency_p99_s": percentile(total_times, 99),
         "aggregate_throughput_tps": total_tokens / total_wall if total_wall > 0 else 0.0,
         "wall_time_s": wall_time,
+        "error_samples": list(dict.fromkeys(errors))[:5] if errors else [],
     }
 
 

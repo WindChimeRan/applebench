@@ -13,6 +13,7 @@ if [ ! -d "$BENCH_VENV" ]; then
 fi
 
 source "$BENCH_VENV/bin/activate"
+export PYTHONUNBUFFERED=1
 
 # Hard cleanup: kill any leftover inference processes
 cleanup() {
