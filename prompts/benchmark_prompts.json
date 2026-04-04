@@ -1,0 +1,26 @@
+[
+  {
+    "name": "short_qa",
+    "description": "Short prompt, short output",
+    "messages": [
+      {"role": "user", "content": "What is the capital of France? Answer in one sentence."}
+    ],
+    "max_tokens": 32
+  },
+  {
+    "name": "summarize",
+    "description": "Long prompt, short output (tests prefill speed)",
+    "messages": [
+      {"role": "user", "content": "Summarize the following in one sentence: The transformer architecture was introduced in the paper 'Attention Is All You Need' by Vaswani et al. in 2017. It replaced recurrent neural networks with a self-attention mechanism that processes all positions in the input sequence simultaneously. This parallel processing made transformers significantly faster to train than previous sequence-to-sequence models. The architecture consists of an encoder and decoder, each made up of layers containing multi-head self-attention and feed-forward neural networks. Transformers have since become the foundation of most modern natural language processing systems, including BERT, GPT, and their successors. The key innovation was showing that attention mechanisms alone, without recurrence or convolution, could achieve state-of-the-art results on machine translation tasks. This breakthrough led to a paradigm shift in how language models are designed and trained, enabling the development of increasingly large and capable models."}
+    ],
+    "max_tokens": 64
+  },
+  {
+    "name": "generate",
+    "description": "Short prompt, long output (tests decode speed)",
+    "messages": [
+      {"role": "user", "content": "Write a short tutorial on how to make scrambled eggs, step by step."}
+    ],
+    "max_tokens": 256
+  }
+]

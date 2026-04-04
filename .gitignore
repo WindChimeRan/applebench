@@ -1,0 +1,18 @@
+# Framework source code
+.frameworks/
+
+# Python virtual environments
+.venvs/
+
+# Model files
+.models/
+
+# OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+
+# vllm-metal installer temp files
+vllm-*/
