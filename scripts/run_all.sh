@@ -14,7 +14,18 @@ fi
 
 source "$BENCH_VENV/bin/activate"
 
+# Hard cleanup: kill any leftover inference processes
+cleanup() {
+    echo "  Cleaning up all inference processes..."
+    pkill -f llama-server 2>/dev/null || true
+    pkill -f mlx_lm 2>/dev/null || true
+    pkill -f mistralrs 2>/dev/null || true
+    pkill -f "vllm serve" 2>/dev/null || true
+    sleep 5  # let processes die and release memory
+}
+
 # Frameworks to benchmark: name, port, serve_script, stop_script
+# Order: low-to-high concurrency to capture clean results before potential crashes
 FRAMEWORKS=(
     "llamacpp:$LLAMACPP_PORT:serve_llamacpp.sh:stop_llamacpp.sh"
     "mlx_lm:$MLX_LM_PORT:serve_mlx_lm.sh:stop_mlx_lm.sh"
@@ -29,6 +40,9 @@ echo " AppleBench — Full Benchmark Run"
 echo " $(date)"
 echo "========================================="
 echo ""
+
+# Initial cleanup
+cleanup
 
 for entry in "${FRAMEWORKS[@]}"; do
     IFS=':' read -r name port serve stop <<< "$entry"
@@ -48,15 +62,17 @@ for entry in "${FRAMEWORKS[@]}"; do
         --port "$port" \
         --concurrency "$CONCURRENCY_ARG" \
         --requests "$BENCHMARK_REQUESTS" \
-        --warmup "$WARMUP_REQUESTS"
+        --warmup "$WARMUP_REQUESTS" || true
     echo ""
 
-    # Stop server
+    # Stop server gracefully
     echo "Stopping $name server..."
     bash "$SCRIPT_DIR/$stop"
-    echo ""
 
-    # Cooldown
+    # Hard cleanup — kill orphans, release GPU memory
+    cleanup
+
+    # Cooldown — let GPU thermals and memory settle
     echo "Cooling down for ${COOLDOWN_SECONDS}s..."
     sleep "$COOLDOWN_SECONDS"
     echo ""
