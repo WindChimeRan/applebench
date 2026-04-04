@@ -23,7 +23,7 @@ echo "=== Starting llama.cpp server on port $LLAMACPP_PORT ==="
     --port "$LLAMACPP_PORT" \
     --host 0.0.0.0 \
     -ngl 99 \
-    --parallel 16 \
+    --parallel 4 \
     &> "$PROJECT_DIR/.frameworks/llamacpp_server.log" &
 
 echo $! > "$PROJECT_DIR/.frameworks/llamacpp_server.pid"

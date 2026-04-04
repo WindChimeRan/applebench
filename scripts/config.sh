@@ -16,11 +16,12 @@ VLLM_METAL_PORT=8004
 
 # Model
 MODEL_NAME="Qwen3-0.6B"
+# All frameworks use BF16 (no quantization) for fair comparison
 GGUF_REPO="unsloth/Qwen3-0.6B-GGUF"
-GGUF_FILE="Qwen3-0.6B-Q4_K_M.gguf"
+GGUF_FILE="Qwen3-0.6B-BF16.gguf"
 GGUF_MODEL="$MODELS_DIR/$GGUF_FILE"
-MLX_REPO="mlx-community/Qwen3-0.6B-4bit"
-MLX_MODEL="$MODELS_DIR/Qwen3-0.6B-4bit-mlx"
+MLX_REPO="mlx-community/Qwen3-0.6B-bf16"
+MLX_MODEL="$MODELS_DIR/Qwen3-0.6B-bf16-mlx"
 HF_REPO="Qwen/Qwen3-0.6B"
 HF_MODEL="$MODELS_DIR/Qwen3-0.6B"
 

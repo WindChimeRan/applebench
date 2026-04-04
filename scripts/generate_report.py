@@ -55,6 +55,7 @@ def main():
                     break
 
         metrics = [
+            ("Successful / Failed", None, None),  # special row
             ("TTFT avg (ms)", "ttft_avg_ms", ".1f"),
             ("TTFT p50 (ms)", "ttft_p50_ms", ".1f"),
             ("TTFT p99 (ms)", "ttft_p99_ms", ".1f"),
@@ -68,11 +69,21 @@ def main():
 
         for label, key, fmt in metrics:
             row = f"| {label} |"
-            values = []
             for fw in frameworks:
-                val = fw_results.get(fw, {}).get(key, 0)
-                values.append(val)
-                row += f" {val:{fmt}} |"
+                cr = fw_results.get(fw, {})
+                if key is None:  # special success/fail row
+                    s = cr.get("successful", 0)
+                    f_ = cr.get("failed", 0)
+                    err = cr.get("error", "")
+                    if err and s == 0:
+                        row += f" CRASHED |"
+                    elif f_ > 0:
+                        row += f" {s} / {f_} |"
+                    else:
+                        row += f" {s} / 0 |"
+                else:
+                    val = cr.get(key, 0)
+                    row += f" {val:{fmt}} |"
             lines.append(row)
 
         lines.append("")

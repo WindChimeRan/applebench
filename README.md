@@ -66,15 +66,27 @@ Run `scripts/prepare_dataset.py` to regenerate. Cached data is stored in `.model
 
 Tested at concurrency levels: 16, 8, 1. Each level runs 100 requests with 3 warmup requests. A 30-second cooldown between frameworks prevents thermal throttling from skewing results.
 
+Failures (400 errors, server crashes, connection resets) are reported as-is in the results — they're part of the benchmark. A framework that crashes under load gets that recorded.
+
+## Server-side settings
+
+Each framework runs with minimal tuning. Notable settings:
+
+- **llama.cpp**: `--parallel 4 -ngl 99` (4 concurrent slots, all layers on GPU)
+- **vllm-metal**: `VLLM_METAL_USE_PAGED_ATTENTION=1 VLLM_METAL_MEMORY_FRACTION=0.3`
+- **mlx_lm / mistral.rs**: defaults
+
 ## Model
 
 [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) — small enough for fast benchmark runs, available in all required formats:
 
+All frameworks run BF16 (no quantization) for a fair apple-to-apple comparison. At 0.6B parameters, the model is only ~1.2GB — no reason to quantize.
+
 | Format | Source | Used by |
 |--------|--------|---------|
-| GGUF Q4_K_M | [unsloth/Qwen3-0.6B-GGUF](https://huggingface.co/unsloth/Qwen3-0.6B-GGUF) | llama.cpp, mistral.rs |
-| MLX 4-bit | [mlx-community/Qwen3-0.6B-4bit](https://huggingface.co/mlx-community/Qwen3-0.6B-4bit) | mlx_lm |
-| Safetensors | [Qwen/Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) | vllm-metal |
+| GGUF BF16 | [unsloth/Qwen3-0.6B-GGUF](https://huggingface.co/unsloth/Qwen3-0.6B-GGUF) | llama.cpp, mistral.rs |
+| MLX BF16 | [mlx-community/Qwen3-0.6B-bf16](https://huggingface.co/mlx-community/Qwen3-0.6B-bf16) | mlx_lm |
+| Safetensors BF16 | [Qwen/Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) | vllm-metal |
 
 ## Ports
 

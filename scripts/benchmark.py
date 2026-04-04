@@ -124,7 +124,10 @@ async def run_concurrent(
             print(f"  Warming up ({warmup} requests)...")
             for i in range(warmup):
                 prompt = prompts[i % len(prompts)]
-                await benchmark_single(session, base_url, model, prompt, prompt["max_tokens"])
+                try:
+                    await benchmark_single(session, base_url, model, prompt, prompt["max_tokens"])
+                except Exception as e:
+                    print(f"  Warmup error: {e}")
 
         # Benchmark
         print(f"  Running {num_requests} requests at concurrency {concurrency}...")
@@ -142,26 +145,30 @@ async def run_concurrent(
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        # Filter out errors
+        # Separate successes and failures — both are reported
         good = []
-        errors = 0
+        errors = []
         for r in results:
             if isinstance(r, Exception):
-                errors += 1
-                print(f"  Error: {r}")
+                errors.append(str(r))
             else:
                 good.append(r)
 
         if errors:
-            print(f"  {errors} requests failed")
+            print(f"  {len(errors)}/{len(results)} requests FAILED")
+            # Print first unique error
+            unique = list(dict.fromkeys(errors))
+            for e in unique[:3]:
+                print(f"    > {e[:200]}")
 
-        return good
+        return good, errors
 
 
-def summarize(results: list[RequestResult], concurrency: int) -> dict:
+def summarize(results: list[RequestResult], errors: list[str], concurrency: int, num_requests: int) -> dict:
     """Compute summary statistics."""
     if not results:
-        return {"concurrency": concurrency, "error": "no successful requests"}
+        return {"concurrency": concurrency, "num_requests": num_requests,
+                "successful": 0, "failed": len(errors), "error": "no successful requests"}
 
     ttfts = [r.ttft for r in results]
     throughputs = [r.throughput for r in results]
@@ -182,7 +189,9 @@ def summarize(results: list[RequestResult], concurrency: int) -> dict:
 
     return {
         "concurrency": concurrency,
-        "num_requests": len(results),
+        "num_requests": num_requests,
+        "successful": len(results),
+        "failed": len(errors),
         "total_tokens_generated": total_tokens,
         "ttft_avg_ms": sum(ttfts) / len(ttfts) * 1000,
         "ttft_p50_ms": percentile(ttfts, 50) * 1000,
@@ -254,17 +263,29 @@ def main():
 
     for conc in concurrency_levels:
         print(f"--- Concurrency: {conc} ---")
-        results = asyncio.run(run_concurrent(
-            base_url, model, prompts, conc, args.requests, args.warmup
-        ))
-        summary = summarize(results, conc)
+        try:
+            good, errors = asyncio.run(run_concurrent(
+                base_url, model, prompts, conc, args.requests, args.warmup
+            ))
+        except Exception as e:
+            print(f"  SERVER CRASHED: {e}")
+            all_results["concurrency_results"].append(
+                {"concurrency": conc, "num_requests": args.requests,
+                 "successful": 0, "failed": args.requests,
+                 "error": f"server crashed: {e}"}
+            )
+            print()
+            continue
+        summary = summarize(good, errors, conc, args.requests)
         all_results["concurrency_results"].append(summary)
 
         # Print summary
+        failed = summary.get('failed', 0)
+        fail_str = f" | FAILED: {failed}" if failed else ""
         print(f"  TTFT avg: {summary.get('ttft_avg_ms', 0):.1f}ms | "
               f"Throughput avg: {summary.get('throughput_avg_tps', 0):.1f} tok/s | "
               f"Aggregate: {summary.get('aggregate_throughput_tps', 0):.1f} tok/s | "
-              f"ITL avg: {summary.get('itl_avg_ms', 0):.1f}ms")
+              f"ITL avg: {summary.get('itl_avg_ms', 0):.1f}ms{fail_str}")
         print()
 
     # Save results
