@@ -10,6 +10,12 @@ BENCH_VENV="$VENVS_DIR/bench"
 bash "$SCRIPT_DIR/env_check.sh"
 echo ""
 
+# Auto-create bench venv if missing
+if [ ! -d "$BENCH_VENV" ]; then
+    echo "Bench venv not found — installing..."
+    bash "$SCRIPT_DIR/install_bench.sh"
+fi
+
 source "$BENCH_VENV/bin/activate"
 export PYTHONUNBUFFERED=1
 

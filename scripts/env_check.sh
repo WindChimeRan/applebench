@@ -44,7 +44,7 @@ echo "Required tools:"
 check_cmd "uv"              "uv"              "curl -LsSf https://astral.sh/uv/install.sh | sh"
 check_cmd "cmake"           "cmake"           "brew install cmake"
 check_cmd "cargo"           "cargo"           "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
-check_cmd "huggingface-cli" "huggingface-cli" "uv tool install huggingface_hub[cli]"
+check_cmd "huggingface-cli (hf)" "hf" "uv tool install huggingface_hub"
 echo ""
 
 # --- Python 3.12 ---
