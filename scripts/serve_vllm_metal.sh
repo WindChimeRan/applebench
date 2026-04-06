@@ -17,7 +17,7 @@ echo "=== Starting vllm-metal server on port $VLLM_METAL_PORT ==="
 
 VLLM_METAL_USE_PAGED_ATTENTION=1 \
 VLLM_METAL_MEMORY_FRACTION=0.5 \
-vllm serve "$HF_REPO" \
+vllm serve "$HF_MODEL" \
     --port "$VLLM_METAL_PORT" \
     --host 0.0.0.0 \
     --max-model-len 4096 \

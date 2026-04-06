@@ -1,0 +1,42 @@
+{
+  "framework": "vllm_metal",
+  "model": "/Users/haorzhang/applebench/.models/Qwen3-0.6B",
+  "endpoint": "http://localhost:8004",
+  "timestamp": "2026-04-06T01:22:05",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.10880029200052377,
+      "error": "no successful requests",
+      "error_samples": [
+        "500, message='Internal Server Error', url='http://localhost:8004/v1/chat/completions'"
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.03950279200216755,
+      "error": "no successful requests",
+      "error_samples": [
+        "500, message='Internal Server Error', url='http://localhost:8004/v1/chat/completions'"
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.02982158299710136,
+      "error": "no successful requests",
+      "error_samples": [
+        "500, message='Internal Server Error', url='http://localhost:8004/v1/chat/completions'"
+      ]
+    }
+  ],
+  "total_duration_s": 0.21858116700605024
+}

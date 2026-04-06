@@ -42,8 +42,22 @@ echo ""
 # --- System tools ---
 echo "Required tools:"
 check_cmd "uv"              "uv"              "curl -LsSf https://astral.sh/uv/install.sh | sh"
-check_cmd "cmake"           "cmake"           "brew install cmake"
-check_cmd "cargo"           "cargo"           "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+# cmake/cargo are build-time only — warn instead of fail if frameworks already built
+if command -v cmake &>/dev/null; then
+    ok "cmake"
+elif [ -f "$FRAMEWORKS_DIR/llama.cpp/build/bin/llama-server" ]; then
+    warn "cmake not found (llama.cpp already built)" "brew install cmake"
+else
+    fail "cmake not found" "Install: brew install cmake"
+fi
+
+if command -v cargo &>/dev/null; then
+    ok "cargo"
+elif [ -f "$FRAMEWORKS_DIR/mistral.rs/target/release/mistralrs" ]; then
+    warn "cargo not found (mistral.rs already built)" "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+else
+    fail "cargo not found" "Install: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+fi
 check_cmd "huggingface-cli (hf)" "hf" "uv tool install huggingface_hub"
 echo ""
 

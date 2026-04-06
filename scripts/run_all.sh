@@ -1,8 +1,15 @@
 #!/bin/bash
-# AppleBench — Run full benchmark across all frameworks
+# AppleBench — Run full benchmark across all (or selected) frameworks
+# Usage: bash scripts/run_all.sh [framework ...]
+# Examples:
+#   bash scripts/run_all.sh                    # run all
+#   bash scripts/run_all.sh vllm_metal         # run only vllm_metal
+#   bash scripts/run_all.sh llamacpp mlx_lm    # run llamacpp and mlx_lm
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/config.sh"
+
+ONLY_FRAMEWORKS=("$@")
 
 BENCH_VENV="$VENVS_DIR/bench"
 
@@ -51,6 +58,15 @@ cleanup
 
 for entry in "${FRAMEWORKS[@]}"; do
     IFS=':' read -r name port serve stop model_override <<< "$entry"
+
+    # Skip if user specified frameworks and this isn't one of them
+    if [ ${#ONLY_FRAMEWORKS[@]} -gt 0 ]; then
+        match=false
+        for f in "${ONLY_FRAMEWORKS[@]}"; do
+            [ "$f" = "$name" ] && match=true
+        done
+        $match || continue
+    fi
 
     echo "==========================================="
     echo " Benchmarking: $name (port $port)"
