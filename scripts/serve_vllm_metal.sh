@@ -16,11 +16,11 @@ source "$VENV_DIR/bin/activate"
 echo "=== Starting vllm-metal server on port $VLLM_METAL_PORT ==="
 
 VLLM_METAL_USE_PAGED_ATTENTION=1 \
-VLLM_METAL_MEMORY_FRACTION=0.3 \
+VLLM_METAL_MEMORY_FRACTION=0.5 \
 vllm serve "$HF_REPO" \
     --port "$VLLM_METAL_PORT" \
     --host 0.0.0.0 \
-    --max-model-len 8192 \
+    --max-model-len 4096 \
     &> "$PROJECT_DIR/.frameworks/vllm_metal_server.log" &
 
 echo $! > "$PROJECT_DIR/.frameworks/vllm_metal_server.pid"
