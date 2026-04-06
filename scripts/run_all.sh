@@ -6,11 +6,9 @@ source "$SCRIPT_DIR/config.sh"
 
 BENCH_VENV="$VENVS_DIR/bench"
 
-# Ensure benchmark venv exists
-if [ ! -d "$BENCH_VENV" ]; then
-    echo "Error: Benchmark venv not found. Run: scripts/install_bench.sh"
-    exit 1
-fi
+# Pre-flight check
+bash "$SCRIPT_DIR/env_check.sh"
+echo ""
 
 source "$BENCH_VENV/bin/activate"
 export PYTHONUNBUFFERED=1
