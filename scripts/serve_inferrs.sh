@@ -16,6 +16,9 @@ inferrs serve "$HF_MODEL" \
     --host 0.0.0.0 \
     --device metal \
     --dtype bf16 \
+    --max-seq-len 4096 \
+    --initial-blocks 512 \
+    --paged-attention \
     &> "$PROJECT_DIR/.frameworks/inferrs_server.log" &
 
 echo $! > "$PROJECT_DIR/.frameworks/inferrs_server.pid"

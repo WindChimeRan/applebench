@@ -77,7 +77,8 @@ def main():
                     f_ = cr.get("failed", 0)
                     err = cr.get("error", "")
                     if err and s == 0:
-                        row += f" CRASHED |"
+                        label = err.upper() if "not run" in err else "CRASHED"
+                        row += f" {label} |"
                     elif f_ > 0:
                         row += f" {s} / {f_} |"
                     else:
