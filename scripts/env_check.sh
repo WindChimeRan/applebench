@@ -110,6 +110,12 @@ if command -v ollama &>/dev/null; then
 else
     warn "ollama not found" "Run: scripts/install_ollama.sh"
 fi
+
+if command -v inferrs &>/dev/null; then
+    ok "inferrs"
+else
+    warn "inferrs not found" "Run: scripts/install_inferrs.sh"
+fi
 echo ""
 
 # --- Models ---

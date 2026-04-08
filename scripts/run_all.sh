@@ -35,6 +35,7 @@ cleanup() {
     pkill -f "vllm serve" 2>/dev/null || true
     pkill -f "omlx serve" 2>/dev/null || true
     pkill -f "ollama serve" 2>/dev/null || true
+    pkill -f "inferrs serve" 2>/dev/null || true
     sleep 5  # let processes die and release memory
 }
 
@@ -47,6 +48,7 @@ FRAMEWORKS=(
     "vllm_metal:$VLLM_METAL_PORT:serve_vllm_metal.sh:stop_vllm_metal.sh:"
     "omlx:$OMLX_PORT:serve_omlx.sh:stop_omlx.sh:"
     "ollama:$OLLAMA_PORT:serve_ollama.sh:stop_ollama.sh:$OLLAMA_MODEL_NAME"
+    "inferrs:$INFERRS_PORT:serve_inferrs.sh:stop_inferrs.sh:"
 )
 
 CONCURRENCY_ARG=$(echo $CONCURRENCY_LEVELS | tr ' ' ',')
