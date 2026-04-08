@@ -104,6 +104,12 @@ if [ -d "$VENVS_DIR/omlx" ]; then
 else
     warn "omlx venv not found" "Run: scripts/install_omlx.sh"
 fi
+
+if command -v ollama &>/dev/null; then
+    ok "ollama"
+else
+    warn "ollama not found" "Run: scripts/install_ollama.sh"
+fi
 echo ""
 
 # --- Models ---
