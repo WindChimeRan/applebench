@@ -98,6 +98,12 @@ if [ -d "$HOME/.venv-vllm-metal" ]; then
 else
     warn "vllm-metal not installed" "Run: scripts/install_vllm_metal.sh"
 fi
+
+if [ -d "$VENVS_DIR/omlx" ]; then
+    ok "omlx"
+else
+    warn "omlx venv not found" "Run: scripts/install_omlx.sh"
+fi
 echo ""
 
 # --- Models ---

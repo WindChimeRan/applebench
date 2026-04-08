@@ -33,6 +33,7 @@ cleanup() {
     pkill -f mlx_lm 2>/dev/null || true
     pkill -f mistralrs 2>/dev/null || true
     pkill -f "vllm serve" 2>/dev/null || true
+    pkill -f "omlx serve" 2>/dev/null || true
     sleep 5  # let processes die and release memory
 }
 
@@ -43,6 +44,7 @@ FRAMEWORKS=(
     "mlx_lm:$MLX_LM_PORT:serve_mlx_lm.sh:stop_mlx_lm.sh:$MLX_MODEL"
     "mistralrs:$MISTRALRS_PORT:serve_mistralrs.sh:stop_mistralrs.sh:"
     "vllm_metal:$VLLM_METAL_PORT:serve_vllm_metal.sh:stop_vllm_metal.sh:"
+    "omlx:$OMLX_PORT:serve_omlx.sh:stop_omlx.sh:"
 )
 
 CONCURRENCY_ARG=$(echo $CONCURRENCY_LEVELS | tr ' ' ',')

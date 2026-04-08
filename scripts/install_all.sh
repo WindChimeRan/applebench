@@ -14,7 +14,8 @@ for script in \
     install_llamacpp.sh \
     install_mlx_lm.sh \
     install_mistralrs.sh \
-    install_vllm_metal.sh; do
+    install_vllm_metal.sh \
+    install_omlx.sh; do
     echo "==========================================="
     echo " Running $script"
     echo "==========================================="
