@@ -35,7 +35,7 @@ fi
 if xcode-select -p &>/dev/null; then
     ok "Xcode Command Line Tools"
 else
-    fail "Xcode Command Line Tools not found" "Run: xcode-select --install"
+    warn "Xcode Command Line Tools not found" "Run: xcode-select --install"
 fi
 echo ""
 
