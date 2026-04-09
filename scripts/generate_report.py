@@ -3,6 +3,7 @@
 Generate a markdown report from benchmark results.
 """
 
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -10,7 +11,14 @@ from datetime import datetime
 
 
 def main():
-    results_dir = Path(__file__).parent.parent / "results"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--results-dir", default=None, help="Results directory")
+    args = parser.parse_args()
+
+    if args.results_dir:
+        results_dir = Path(args.results_dir)
+    else:
+        results_dir = Path(__file__).parent.parent / "results"
     comparison_file = results_dir / "comparison.json"
 
     if not comparison_file.exists():
@@ -23,10 +31,13 @@ def main():
     frameworks = data["frameworks"]
     results = data["results"]
 
+    model_name = data.get("model_name", results_dir.name)
+
     lines = []
     lines.append("# AppleBench Results")
     lines.append("")
-    lines.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    lines.append(f"**Model:** {model_name}")
+    lines.append(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     lines.append("")
 
     # Get all concurrency levels from the first framework

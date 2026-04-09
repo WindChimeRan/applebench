@@ -290,6 +290,7 @@ def main():
     parser.add_argument("--framework", required=True, help="Framework name (for labeling results)")
     parser.add_argument("--model", default=None, help="Model name to use in API calls (auto-detected if not set)")
     parser.add_argument("--output", help="Output JSON file path")
+    parser.add_argument("--results-dir", default=None, help="Directory for result files (overrides default)")
     parser.add_argument("--prompts", default=None, help="Path to prompts JSON file")
     parser.add_argument("--max-wall-time", type=int, default=2400,
                         help="Max wall time (seconds) per concurrency level before skipping remaining levels (default: 2400 = 40 min)")
@@ -380,6 +381,8 @@ def main():
     # Save results
     if args.output:
         output_path = Path(args.output)
+    elif args.results_dir:
+        output_path = Path(args.results_dir) / f"{args.framework}_{time.strftime('%Y%m%d_%H%M%S')}.json"
     else:
         output_path = Path(__file__).parent.parent / "results" / f"{args.framework}_{time.strftime('%Y%m%d_%H%M%S')}.json"
 

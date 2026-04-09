@@ -29,9 +29,9 @@ uv pip install -e "$OMLX_REPO_DIR"
 
 # Create omlx model directory with symlink to shared MLX model
 mkdir -p "$OMLX_MODEL_DIR"
-if [ ! -L "$OMLX_MODEL_DIR/Qwen3-0.6B-bf16-mlx" ] && [ ! -d "$OMLX_MODEL_DIR/Qwen3-0.6B-bf16-mlx" ]; then
-    ln -sf "$MLX_MODEL" "$OMLX_MODEL_DIR/Qwen3-0.6B-bf16-mlx"
-    echo "Created symlink: $OMLX_MODEL_DIR/Qwen3-0.6B-bf16-mlx -> $MLX_MODEL"
-fi
+LINK_NAME="$(basename "$MLX_MODEL")"
+rm -f "$OMLX_MODEL_DIR/$LINK_NAME"
+ln -sf "$MLX_MODEL" "$OMLX_MODEL_DIR/$LINK_NAME"
+echo "Created symlink: $OMLX_MODEL_DIR/$LINK_NAME -> $MLX_MODEL"
 
 echo "=== omlx installed ==="

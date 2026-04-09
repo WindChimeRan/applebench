@@ -1,15 +1,29 @@
 #!/bin/bash
 # AppleBench — Run full benchmark across all (or selected) frameworks
-# Usage: bash scripts/run_all.sh [framework ...]
+# Usage: bash scripts/run_all.sh [--model MODEL] [framework ...]
 # Examples:
-#   bash scripts/run_all.sh                    # run all
-#   bash scripts/run_all.sh vllm_metal         # run only vllm_metal
-#   bash scripts/run_all.sh llamacpp mlx_lm    # run llamacpp and mlx_lm
+#   bash scripts/run_all.sh                          # run all, default model
+#   bash scripts/run_all.sh --model qwen3-30b-a3b    # run all, specific model
+#   bash scripts/run_all.sh --model qwen3-0.6b llamacpp mlx_lm
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "$SCRIPT_DIR/config.sh"
 
-ONLY_FRAMEWORKS=("$@")
+# Parse --model flag before sourcing config
+ONLY_FRAMEWORKS=()
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --model)
+            export APPLEBENCH_MODEL="$2"
+            shift 2
+            ;;
+        *)
+            ONLY_FRAMEWORKS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+source "$SCRIPT_DIR/config.sh"
 
 BENCH_VENV="$VENVS_DIR/bench"
 
@@ -55,6 +69,7 @@ CONCURRENCY_ARG=$(echo $CONCURRENCY_LEVELS | tr ' ' ',')
 
 echo "========================================="
 echo " AppleBench — Full Benchmark Run"
+echo " Model: $MODEL_NAME"
 echo " $(date)"
 echo "========================================="
 echo ""
@@ -98,6 +113,7 @@ for entry in "${FRAMEWORKS[@]}"; do
         --concurrency "$CONCURRENCY_ARG" \
         --requests "$BENCHMARK_REQUESTS" \
         --warmup "$WARMUP_REQUESTS" \
+        --results-dir "$RESULTS_DIR" \
         $MODEL_FLAG || true
     echo ""
 
@@ -117,8 +133,8 @@ done
 echo "==========================================="
 echo " Collecting results and generating report"
 echo "==========================================="
-python "$SCRIPT_DIR/collect_results.py"
-python "$SCRIPT_DIR/generate_report.py"
+python "$SCRIPT_DIR/collect_results.py" --results-dir "$RESULTS_DIR"
+python "$SCRIPT_DIR/generate_report.py" --results-dir "$RESULTS_DIR"
 
 echo ""
 echo "========================================="

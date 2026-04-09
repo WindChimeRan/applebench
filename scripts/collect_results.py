@@ -3,14 +3,21 @@
 Collect individual benchmark results into a single comparison JSON.
 """
 
+import argparse
 import json
-import glob
 import sys
 from pathlib import Path
 
 
 def main():
-    results_dir = Path(__file__).parent.parent / "results"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--results-dir", default=None, help="Results directory")
+    args = parser.parse_args()
+
+    if args.results_dir:
+        results_dir = Path(args.results_dir)
+    else:
+        results_dir = Path(__file__).parent.parent / "results"
 
     # Find the latest result for each framework (by file modification time)
     frameworks = {}
@@ -34,7 +41,11 @@ def main():
         print("No results found")
         sys.exit(1)
 
+    # Derive model name from results directory name
+    model_name = results_dir.name
+
     comparison = {
+        "model_name": model_name,
         "frameworks": list(frameworks.keys()),
         "results": frameworks,
     }

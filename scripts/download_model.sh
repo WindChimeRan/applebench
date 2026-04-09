@@ -1,10 +1,19 @@
 #!/bin/bash
-# Download Qwen3-0.6B in all required formats
+# Download model in all required formats
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Accept --model flag
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --model) export APPLEBENCH_MODEL="$2"; shift 2 ;;
+        *) shift ;;
+    esac
+done
+
 source "$SCRIPT_DIR/config.sh"
 
-echo "=== Downloading Qwen3-0.6B models ==="
+echo "=== Downloading $MODEL_NAME models ==="
 
 # GGUF for llama.cpp / mistral.rs
 if [ ! -f "$GGUF_MODEL" ]; then
