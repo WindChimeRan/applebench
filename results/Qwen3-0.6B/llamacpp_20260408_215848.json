@@ -1,0 +1,42 @@
+{
+  "framework": "llamacpp",
+  "model": "unknown",
+  "endpoint": "http://localhost:8001",
+  "timestamp": "2026-04-08T21:58:48",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.06295258397585712,
+      "error": "no successful requests",
+      "error_samples": [
+        "503, message='Service Unavailable', url='http://localhost:8001/v1/chat/completions'"
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.025079292012378573,
+      "error": "no successful requests",
+      "error_samples": [
+        "503, message='Service Unavailable', url='http://localhost:8001/v1/chat/completions'"
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.02434441598597914,
+      "error": "no successful requests",
+      "error_samples": [
+        "503, message='Service Unavailable', url='http://localhost:8001/v1/chat/completions'"
+      ]
+    }
+  ],
+  "total_duration_s": 0.12405958399176598
+}

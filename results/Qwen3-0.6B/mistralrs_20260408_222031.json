@@ -1,0 +1,63 @@
+{
+  "framework": "mistralrs",
+  "model": "default",
+  "endpoint": "http://localhost:8003",
+  "timestamp": "2026-04-08T22:06:25",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 15244,
+      "ttft_avg_ms": 372.62374629091937,
+      "ttft_p50_ms": 183.04174998775125,
+      "ttft_p99_ms": 1367.6633329887409,
+      "throughput_avg_tps": 48.33951799355469,
+      "throughput_p50_tps": 48.57452727564022,
+      "itl_avg_ms": 20.684870068377723,
+      "itl_p50_ms": 20.582864896895252,
+      "latency_avg_s": 3.5165419062410366,
+      "latency_p50_s": 3.3017379170050845,
+      "latency_p99_s": 6.86742162500741,
+      "aggregate_throughput_tps": 2219.7559480678533,
+      "wall_time_s": 351.66275420901366,
+      "error_samples": []
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 53,
+      "failed": 47,
+      "total_tokens_generated": 7458,
+      "ttft_avg_ms": 5224.370319228224,
+      "ttft_p50_ms": 3625.615207973169,
+      "ttft_p99_ms": 18404.523250006605,
+      "throughput_avg_tps": 2.514940896074928,
+      "throughput_p50_tps": 2.4286053001392265,
+      "itl_avg_ms": 482.7029256365239,
+      "itl_p50_ms": 411.75866129032653,
+      "latency_avg_s": 72.61190837654802,
+      "latency_p50_s": 62.37163770801271,
+      "latency_p99_s": 215.78561954098404,
+      "aggregate_throughput_tps": 34.562080716335714,
+      "wall_time_s": 482.15387837501476,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 0 token(s) for prompt 'p026_medium_out64' (requested max_tokens=64)",
+        "500, message='Internal Server Error', url='http://localhost:8003/v1/chat/completions'"
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.03992079198360443,
+      "error": "no successful requests",
+      "error_samples": [
+        "500, message='Internal Server Error', url='http://localhost:8003/v1/chat/completions'"
+      ]
+    }
+  ],
+  "total_duration_s": 845.3366682500055
+}

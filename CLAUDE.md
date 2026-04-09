@@ -1,0 +1,77 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What This Is
+
+AppleBench benchmarks 7 local LLM inference frameworks on Apple Silicon side-by-side: llama.cpp, mlx_lm, mistral.rs, vllm-metal, omlx, ollama, inferrs. All frameworks serve an OpenAI-compatible API; the benchmark hits `/v1/chat/completions` with streaming and measures TTFT, throughput, ITL, and latency at concurrency levels 1/8/16.
+
+## Key Commands
+
+```bash
+# Full benchmark (default model: Qwen3-0.6B)
+scripts/run_all.sh
+
+# Specific model
+scripts/run_all.sh --model qwen3-30b-a3b
+
+# Specific frameworks
+scripts/run_all.sh llamacpp omlx
+scripts/run_all.sh --model qwen3-30b-a3b llamacpp
+
+# Install / update everything
+scripts/install_all.sh
+scripts/update_all.sh
+
+# Download model files for a specific profile
+scripts/download_model.sh --model qwen3-30b-a3b
+
+# Manual single-framework test
+scripts/serve_llamacpp.sh
+scripts/stop_llamacpp.sh
+```
+
+## Architecture
+
+**Config chain:** `config.sh` sources a model profile from `models/<name>.sh`, which sets repo URLs and filenames. All other scripts source `config.sh` to get derived paths (`$GGUF_MODEL`, `$MLX_MODEL`, `$HF_MODEL`, `$RESULTS_DIR`). The active model is controlled by `APPLEBENCH_MODEL` env var or `--model` CLI flag (default: `qwen3-0.6b`).
+
+**Per-framework scripts** follow a strict pattern — each framework has exactly 4 scripts:
+- `install_<fw>.sh` — first-time setup (clone/brew/venv)
+- `serve_<fw>.sh` — start server in background, save PID, poll `/v1/models` for readiness
+- `stop_<fw>.sh` — kill by PID with SIGTERM→wait→SIGKILL fallback
+- `update_<fw>.sh` — pull latest + rebuild/reinstall
+
+**Benchmark pipeline** (`run_all.sh`): for each framework → serve → `benchmark.py` → stop → cleanup → cooldown. Results go to `results/<MODEL_NAME>/<framework>_<timestamp>.json`. Then `collect_results.py` picks the latest per framework (by mtime) into `comparison.json`, and `generate_report.py` renders `REPORT.md`.
+
+**Model formats:** Three formats are downloaded per model profile. GGUF (llama.cpp, mistral.rs, ollama), MLX (mlx_lm, omlx), Safetensors/HF (vllm-metal, inferrs). All use BF16 for fair comparison.
+
+**Ports:** 8001-8007 in framework order (llamacpp through inferrs). Defined in `config.sh`.
+
+## Adding a New Framework
+
+1. Create `scripts/install_<fw>.sh`, `serve_<fw>.sh`, `stop_<fw>.sh`, `update_<fw>.sh`
+2. Add port in `config.sh`
+3. Add entry to `FRAMEWORKS` array in `run_all.sh` and `cleanup()` function
+4. Add check in `env_check.sh`
+5. Add to `install_all.sh` and `update_all.sh` loops
+
+No changes needed to `benchmark.py`, `collect_results.py`, or `generate_report.py` — they are framework-agnostic.
+
+## Adding a New Model
+
+Create `models/<name>.sh` with: `MODEL_NAME`, `GGUF_REPO`, `GGUF_FILE`, `MLX_REPO`, `MLX_DIR_NAME`, `HF_REPO`, `HF_DIR_NAME`. Then `scripts/download_model.sh --model <name>`.
+
+## Benchmark Safeguards
+
+- **Silent failure detection:** requests returning 0-1 tokens raise `RuntimeError` (counted as failures)
+- **Sanity checks:** warns if avg tokens/request < 10% of max_tokens, or throughput/ITL are inconsistent
+- **Adaptive skip:** if a concurrency level exceeds `--max-wall-time` (default 2400s), remaining levels are auto-skipped
+- **Stale result cleanup:** `run_all.sh` deletes old result files in the model's results directory before starting
+
+## Known Framework Quirks
+
+- **inferrs:** Very slow (~4.5 tok/s). `--think-filter` strips Qwen3 thinking tokens by default; `--think-filter=false` is documented but broken. Needs `--paged-attention` and `--initial-blocks 512` for prompts >256 tokens.
+- **ollama:** Needs launchctl service stopped before custom-port serve. Model imported via Modelfile pointing to shared GGUF.
+- **mistral.rs:** Crashes at concurrency 16. Requires `cargo` for build.
+- **vllm-metal:** Uses global venv at `~/.venv-vllm-metal` (not in project `.venvs/`). Update script backs up before reinstalling.
+- **omlx:** Multi-model server; uses symlink in `.models/omlx/` pointing to the shared MLX model directory.

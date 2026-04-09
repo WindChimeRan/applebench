@@ -69,7 +69,7 @@ async def benchmark_single(
             if not choices:
                 continue
             delta = choices[0].get("delta", {})
-            content = delta.get("content", "") or delta.get("reasoning_content", "")
+            content = delta.get("content", "") or delta.get("reasoning_content", "") or delta.get("reasoning", "")
             if content:
                 now = time.perf_counter()
                 if t_first_token is None:
