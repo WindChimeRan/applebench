@@ -96,6 +96,14 @@ async def benchmark_single(
     else:
         itl = 0.0
 
+    # Detect silent failures: server returned 200 but generated 0-1 tokens
+    if tokens_generated <= 1 and max_tokens > 1:
+        raise RuntimeError(
+            f"silent failure: server returned OK but generated only "
+            f"{tokens_generated} token(s) for prompt '{prompt['name']}' "
+            f"(requested max_tokens={max_tokens})"
+        )
+
     return RequestResult(
         prompt_name=prompt["name"],
         ttft=ttft,
@@ -213,6 +221,51 @@ def summarize(results: list[RequestResult], errors: list[str], concurrency: int,
     }
 
 
+def validate_results(results: list[RequestResult], summary: dict, prompts_used: list[dict]):
+    """Warn about suspicious results that may indicate framework issues."""
+    warnings = []
+
+    successful = summary.get("successful", 0)
+    if successful == 0:
+        return warnings
+
+    # Check 1: average tokens per request vs expected
+    total_tokens = summary.get("total_tokens_generated", 0)
+    avg_tokens = total_tokens / successful
+    expected_max_tokens = sum(p["max_tokens"] for p in prompts_used[:successful]) / successful
+    if avg_tokens < expected_max_tokens * 0.1:
+        warnings.append(
+            f"avg tokens/request ({avg_tokens:.0f}) is far below expected "
+            f"(max_tokens avg={expected_max_tokens:.0f}). Possible silent failures."
+        )
+
+    # Check 2: throughput vs ITL consistency
+    throughput_avg = summary.get("throughput_avg_tps", 0)
+    itl_avg = summary.get("itl_avg_ms", 0)
+    if throughput_avg > 0 and itl_avg > 0:
+        implied_throughput = 1000.0 / itl_avg
+        ratio = throughput_avg / implied_throughput if implied_throughput > 0 else 0
+        if ratio < 0.25 or ratio > 4.0:
+            warnings.append(
+                f"throughput ({throughput_avg:.1f} tok/s) inconsistent with ITL "
+                f"({itl_avg:.1f}ms, implies ~{implied_throughput:.1f} tok/s). "
+                f"Ratio: {ratio:.2f}x."
+            )
+
+    # Check 3: many zero-throughput requests (p50 = 0 means >50% had 0 throughput)
+    if summary.get("throughput_p50_tps", -1) == 0 and throughput_avg > 0:
+        zero_count = sum(1 for r in results if r.throughput == 0)
+        warnings.append(
+            f"{zero_count}/{successful} requests had 0 throughput "
+            f"(generated <=1 token each)."
+        )
+
+    for w in warnings:
+        print(f"  \u26a0 WARNING: {w}")
+
+    return warnings
+
+
 def get_model_name(base_url: str) -> str:
     """Query the server for the model name."""
     import urllib.request
@@ -285,6 +338,13 @@ def main():
             print()
             continue
         summary = summarize(good, errors, conc, args.requests, wall_time)
+
+        # Sanity checks
+        prompts_used = [prompts[i % len(prompts)] for i in range(args.requests)]
+        sanity_warnings = validate_results(good, summary, prompts_used)
+        if sanity_warnings:
+            summary["sanity_warnings"] = sanity_warnings
+
         all_results["concurrency_results"].append(summary)
 
         # Print summary
