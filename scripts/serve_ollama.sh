@@ -12,7 +12,11 @@ fi
 # Stop any existing Ollama service to avoid port conflicts
 pkill -f "ollama serve" 2>/dev/null || true
 launchctl stop com.ollama 2>/dev/null || true
-sleep 2
+# Wait until no ollama process remains
+for i in $(seq 1 10); do
+    pgrep -f "ollama serve" > /dev/null 2>&1 || break
+    sleep 1
+done
 
 echo "=== Starting Ollama server on port $OLLAMA_PORT ==="
 

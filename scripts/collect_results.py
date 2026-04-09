@@ -12,15 +12,23 @@ from pathlib import Path
 def main():
     results_dir = Path(__file__).parent.parent / "results"
 
-    # Find the latest result for each framework
+    # Find the latest result for each framework (by file modification time)
     frameworks = {}
-    for f in sorted(results_dir.glob("*.json")):
+    latest_mtime = {}
+    for f in results_dir.glob("*.json"):
         if f.name == "comparison.json":
             continue
-        with open(f) as fh:
-            data = json.load(fh)
+        try:
+            with open(f) as fh:
+                data = json.load(fh)
+        except json.JSONDecodeError as e:
+            print(f"Warning: skipping corrupted file {f.name}: {e}")
+            continue
         fw = data.get("framework", "unknown")
-        frameworks[fw] = data
+        mtime = f.stat().st_mtime
+        if fw not in frameworks or mtime > latest_mtime[fw]:
+            frameworks[fw] = data
+            latest_mtime[fw] = mtime
 
     if not frameworks:
         print("No results found")

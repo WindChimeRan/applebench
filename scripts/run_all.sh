@@ -59,6 +59,10 @@ echo " $(date)"
 echo "========================================="
 echo ""
 
+# Clean old result files so comparison.json reflects this run only
+echo "Cleaning old result files..."
+rm -f "$RESULTS_DIR"/*_*.json "$RESULTS_DIR/comparison.json"
+
 # Initial cleanup
 cleanup
 
