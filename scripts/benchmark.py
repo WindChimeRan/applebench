@@ -291,6 +291,8 @@ def main():
     parser.add_argument("--model", default=None, help="Model name to use in API calls (auto-detected if not set)")
     parser.add_argument("--output", help="Output JSON file path")
     parser.add_argument("--prompts", default=None, help="Path to prompts JSON file")
+    parser.add_argument("--max-wall-time", type=int, default=2400,
+                        help="Max wall time (seconds) per concurrency level before skipping remaining levels (default: 2400 = 40 min)")
     args = parser.parse_args()
 
     base_url = f"http://{args.host}:{args.port}"
@@ -322,7 +324,18 @@ def main():
 
     t_total_start = time.perf_counter()
 
+    skip_remaining = False
     for conc in concurrency_levels:
+        if skip_remaining:
+            print(f"--- Concurrency: {conc} --- SKIPPED (previous level exceeded {args.max_wall_time}s)")
+            all_results["concurrency_results"].append(
+                {"concurrency": conc, "num_requests": args.requests,
+                 "successful": 0, "failed": args.requests,
+                 "wall_time_s": 0, "error": "skipped (previous level too slow)"}
+            )
+            print()
+            continue
+
         print(f"--- Concurrency: {conc} ---")
         try:
             good, errors, wall_time = asyncio.run(run_concurrent(
@@ -355,6 +368,9 @@ def main():
               f"Aggregate: {summary.get('aggregate_throughput_tps', 0):.1f} tok/s | "
               f"ITL avg: {summary.get('itl_avg_ms', 0):.1f}ms | "
               f"Wall: {wall_time:.1f}s{fail_str}")
+        if wall_time > args.max_wall_time:
+            print(f"  ⚠ Wall time ({wall_time:.0f}s) exceeded limit ({args.max_wall_time}s). Skipping remaining levels.")
+            skip_remaining = True
         print()
 
     total_duration = time.perf_counter() - t_total_start
