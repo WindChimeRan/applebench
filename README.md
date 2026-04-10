@@ -1,6 +1,8 @@
 # AppleBench
 
-Benchmark local LLM inference frameworks on Apple Silicon, side by side.
+Benchmarks 7 local LLM inference frameworks on Apple Silicon side-by-side, re-run weekly by a Claude Code agent so the numbers don't rot. Measures throughput, TTFT, ITL, and latency under concurrent load on both a classic chat workload and a multi-turn agentic workload composed from popular tool-calling benchmarks.
+
+Latest results: **[REPORT.md](results/qwen3-0.6b/REPORT.md)**
 
 ## Frameworks
 
@@ -14,37 +16,15 @@ Benchmark local LLM inference frameworks on Apple Silicon, side by side.
 | [ollama](https://github.com/ollama/ollama) | Go + Metal | GGUF |
 | [inferrs](https://github.com/ericcurtin/inferrs) | Rust + Candle / Metal | Safetensors |
 
-## Quick Start
+All frameworks serve an OpenAI-compatible API. The benchmark hits `/v1/chat/completions` with streaming enabled and measures from the client side — no special instrumentation per framework.
 
-```bash
-# 1. Install everything (all frameworks + models)
-scripts/install_all.sh
+## Workloads
 
-# 2. Run full benchmark (chat split, default)
-scripts/run_all.sh
+Two splits, 100 prompts each. Select with `--split chat|agent`.
 
-# 3. Run with agent split (multi-turn, tool-calling)
-scripts/run_all.sh --split agent
+### Chat split
 
-# 4. View results
-cat results/REPORT.md
-```
-
-## Run a single framework
-
-```bash
-scripts/run_all.sh llamacpp                    # just llama.cpp (chat split)
-scripts/run_all.sh --split agent llamacpp      # agent split
-scripts/run_all.sh omlx ollama                 # multiple specific frameworks
-```
-
-## Dataset
-
-Two splits are available, each with 100 prompts:
-
-### Chat split (default) — `prompts/chat_benchmark_prompts.json`
-
-Single-turn prompts sampled from [Open-Orca/OpenOrca](https://huggingface.co/datasets/Open-Orca/OpenOrca) and [CNN/DailyMail](https://huggingface.co/datasets/abisee/cnn_dailymail), distributed across input/output length buckets:
+Single-turn prompts sampled from [Open-Orca/OpenOrca](https://huggingface.co/datasets/Open-Orca/OpenOrca) and [CNN/DailyMail](https://huggingface.co/datasets/abisee/cnn_dailymail), distributed across four input-length buckets and two output-length targets:
 
 | Bucket | Input tokens | Output tokens | Count |
 |--------|-------------|--------------|-------|
@@ -53,11 +33,11 @@ Single-turn prompts sampled from [Open-Orca/OpenOrca](https://huggingface.co/dat
 | Long | 500–2,000 | 64 / 256 | 30 |
 | Very long | 2,000–4,000 | 64 / 256 | 30 |
 
-Covers realistic workloads from quick Q&A through long-document processing, with both short and long generation targets. All prompts are real natural language (not synthetic tokens), seeded for reproducibility.
+Covers realistic workloads from quick Q&A through long-document processing. All prompts are real natural language (not synthetic tokens), seeded for reproducibility.
 
-### Agent split — `prompts/agent_benchmark_prompts.json`
+### Agent split
 
-Multi-turn agentic prompts with tool calls and tool responses already baked into the conversation history. Tests how frameworks handle realistic agent workloads (long contexts, tool-calling payloads) without needing an actual agent runtime. Composed from three popular agentic benchmarks:
+Multi-turn agentic prompts with tool calls and tool responses already baked into the conversation history. Tests how frameworks handle realistic agent workloads — long contexts, tool-calling payloads, heterogeneous roles — without needing an actual agent runtime to drive the loop. Composed from three popular agentic benchmarks:
 
 | Source | Count | Content |
 |--------|-------|---------|
@@ -65,43 +45,11 @@ Multi-turn agentic prompts with tool calls and tool responses already baked into
 | [Hermes Agent Reasoning Traces](https://huggingface.co/datasets/lambda/hermes-agent-reasoning-traces) | 35 | Real multi-turn agent sessions with tool calls + results |
 | [ClawsBench](https://clawsbench.benchflow.ai) | 30 | Gmail, Slack, Calendar, Drive, Docs productivity tasks |
 
-Average ~4K input tokens, ~12 messages per prompt, 99/100 contain tool_calls and tool response messages. Regenerate with `scripts/compose_agent_prompts.py`.
-
-## Metrics
-
-- **TTFT** — Time to first token (ms)
-- **Throughput** — Tokens per second (per request, decode phase)
-- **Aggregate throughput** — Total tokens / wall time across concurrent requests
-- **ITL** — Inter-token latency (ms)
-- **Latency** — End-to-end request latency (s)
-
-Tested at concurrency levels: 1, 8, 16. Each level runs 100 requests with 3 warmup requests. A 60-second cooldown between frameworks prevents thermal throttling from skewing results.
-
-Sanity checks run after each concurrency level:
-- Silent failure detection (servers returning 200 OK with 0 tokens)
-- Token count validation (warns if output far below requested max_tokens)
-- Throughput/ITL consistency check
-
-If a concurrency level exceeds 40 minutes, remaining levels are auto-skipped (configurable via `--max-wall-time`).
-
-Failures (400 errors, server crashes, connection resets) are reported as-is in the results — they're part of the benchmark. A framework that crashes under load gets that recorded.
-
-## Server-side settings
-
-Each framework runs with minimal tuning. Notable settings:
-
-- **llama.cpp**: `--parallel 4 -ngl 99` (4 concurrent slots, all layers on GPU)
-- **vllm-metal**: `VLLM_METAL_USE_PAGED_ATTENTION=1 VLLM_METAL_MEMORY_FRACTION=0.5`
-- **omlx**: defaults (no SSD cache)
-- **ollama**: `OLLAMA_NUM_PARALLEL=16`
-- **inferrs**: `--paged-attention --max-seq-len 4096 --initial-blocks 512`
-- **mlx_lm / mistral.rs**: defaults
+Average ~4K input tokens, ~12 messages per prompt, 99/100 contain tool_calls and tool response messages in the conversation history. The model's job is to generate the next assistant turn.
 
 ## Model
 
-[Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) — small enough for fast benchmark runs, available in all required formats:
-
-All frameworks run BF16 (no quantization) for a fair apple-to-apple comparison. At 0.6B parameters, the model is only ~1.2GB — no reason to quantize.
+[Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) in BF16 across three formats. Small enough for fast weekly runs (~1.2 GB), available in every format we need, and runs without quantization for a fair apple-to-apple comparison.
 
 | Format | Source | Used by |
 |--------|--------|---------|
@@ -109,63 +57,34 @@ All frameworks run BF16 (no quantization) for a fair apple-to-apple comparison. 
 | MLX BF16 | [mlx-community/Qwen3-0.6B-bf16](https://huggingface.co/mlx-community/Qwen3-0.6B-bf16) | mlx_lm, omlx |
 | Safetensors BF16 | [Qwen/Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) | vllm-metal, inferrs |
 
-## Ports
+Other model profiles live in `models/` — notably a larger [Qwen3-30B-A3B](https://huggingface.co/Qwen/Qwen3-30B-A3B) MoE for when you want to measure how frameworks handle a heavier model.
 
-| Framework | Port |
-|-----------|------|
-| llama.cpp | 8001 |
-| mlx_lm | 8002 |
-| mistral.rs | 8003 |
-| vllm-metal | 8004 |
-| omlx | 8005 |
-| ollama | 8006 |
-| inferrs | 8007 |
+## Metrics
 
-## Scripts
+- **TTFT** — time to first token (ms)
+- **Throughput** — tokens per second per request, decode phase
+- **Aggregate throughput** — total tokens / wall time across concurrent requests
+- **ITL** — inter-token latency (ms)
+- **Latency** — end-to-end request latency (s)
 
-| Script | Purpose |
-|--------|---------|
-| `install_<fw>.sh` | First-time setup for each framework |
-| `update_<fw>.sh` | Pull latest version and rebuild |
-| `serve_<fw>.sh` / `stop_<fw>.sh` | Start/stop framework server |
-| `download_model.sh` | Download Qwen3-0.6B in all formats |
-| `prepare_dataset.py` | Sample chat-split prompts from OpenOrca + CNN/DailyMail |
-| `compose_agent_prompts.py` | Compose agent-split prompts from BFCL V3, Hermes, ClawsBench |
-| `benchmark.py` | Run benchmark against any OpenAI-compatible endpoint |
-| `collect_results.py` | Aggregate per-framework results into comparison JSON |
-| `generate_report.py` | Generate markdown report from comparison |
-| `install_all.sh` | Install all frameworks + download models |
-| `update_all.sh` | Update all frameworks to latest versions |
-| `sync_github.sh` | Commit and push results to GitHub |
-| `run_all.sh` | Full pipeline: serve → benchmark → stop → next framework |
-| `weekly_bench.sh` | Unattended wrapper: update → run → sync, under caffeinate + logging |
-| `env_check.sh` | Verify all prerequisites and framework installs |
+Tested at concurrency 1, 8, 16. Each level runs 100 requests with 3 warmup. A 60-second cooldown between frameworks keeps thermal throttling from skewing results.
 
-## Weekly updates
+## How it stays fresh
 
-Happy path (manual, foreground):
+AppleBench is re-run weekly by a Claude Code agent. The agent:
 
-```bash
-scripts/update_all.sh
-scripts/run_all.sh
-scripts/sync_github.sh
-```
+1. **Updates** each framework from upstream (`update_all.sh`)
+2. **Runs** the full benchmark across all 7 frameworks (`run_all.sh`, resumable via `--skip-existing`)
+3. **Diagnoses** per-framework failures by reading the error, the framework's upstream changelog, and prior journals
+4. **Fixes** adapter scripts when it can (a renamed CLI flag, a new required parameter) within a tightly scoped write allowlist — never touching `benchmark.py`, `config.sh`, or framework source
+5. **Verifies** each fix in isolation by starting the server and running a few requests before committing
+6. **Commits** auto-fixes to a dated `weekly/<date>` branch so the human reviews before anything lands on main
+7. **Publishes** a structured journal at `results/<MODEL>/weekly_<date>.journal.md` recording what succeeded, what was fixed, what was skipped, and why
 
-Unattended wrapper (runs under `caffeinate`, tees to `results/<MODEL>/weekly_<date>.log`):
+Skipping a framework is a valid outcome — if the agent can't confidently diagnose a failure, it logs the evidence and moves on, rather than over-fixing and masking a real regression. The full skill prompt lives at [`.claude/skills/weekly-bench/SKILL.md`](.claude/skills/weekly-bench/SKILL.md) if you're curious how it's instructed.
 
-```bash
-scripts/weekly_bench.sh                    # full run
-scripts/weekly_bench.sh --skip-update      # skip framework updates
-scripts/weekly_bench.sh --skip-existing    # resume today's run (skip frameworks already done)
-```
-
-Intelligent orchestration via the `/weekly-bench` skill (`.claude/skills/weekly-bench/`) — kicks off `weekly_bench.sh`, monitors progress, diagnoses per-framework failures, applies scoped auto-fixes (to adapter scripts only), verifies in isolation, and lands fixes on a `weekly/<date>` branch for review. Produces a structured journal at `results/<MODEL>/weekly_<date>.journal.md`.
-
-Resumable runs: `run_all.sh --skip-existing` skips any framework whose result file is less than 24h old, so interrupted runs can be continued without re-doing work.
+Invoke it with `/weekly-bench` from Claude Code in this repo. Or for the happy-path-only wrapper (no intelligence layer), just run `scripts/weekly_bench.sh`.
 
 ## Requirements
 
-- macOS 15.0+ on Apple Silicon (M1/M2/M3/M4)
-- [uv](https://docs.astral.sh/uv/) (Python env management)
-- [Rust toolchain](https://rustup.rs/) (for mistral.rs)
-- [Homebrew](https://brew.sh/) + cmake (for llama.cpp, ollama, inferrs)
+macOS 15+ on Apple Silicon. Developer setup, script layout, known framework quirks, and extension guides live in [CLAUDE.md](CLAUDE.md).
