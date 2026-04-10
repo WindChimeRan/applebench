@@ -138,15 +138,30 @@ All frameworks run BF16 (no quantization) for a fair apple-to-apple comparison. 
 | `update_all.sh` | Update all frameworks to latest versions |
 | `sync_github.sh` | Commit and push results to GitHub |
 | `run_all.sh` | Full pipeline: serve → benchmark → stop → next framework |
+| `weekly_bench.sh` | Unattended wrapper: update → run → sync, under caffeinate + logging |
 | `env_check.sh` | Verify all prerequisites and framework installs |
 
 ## Weekly updates
+
+Happy path (manual, foreground):
 
 ```bash
 scripts/update_all.sh
 scripts/run_all.sh
 scripts/sync_github.sh
 ```
+
+Unattended wrapper (runs under `caffeinate`, tees to `results/<MODEL>/weekly_<date>.log`):
+
+```bash
+scripts/weekly_bench.sh                    # full run
+scripts/weekly_bench.sh --skip-update      # skip framework updates
+scripts/weekly_bench.sh --skip-existing    # resume today's run (skip frameworks already done)
+```
+
+Intelligent orchestration via the `/weekly-bench` skill (`.claude/skills/weekly-bench/`) — kicks off `weekly_bench.sh`, monitors progress, diagnoses per-framework failures, applies scoped auto-fixes (to adapter scripts only), verifies in isolation, and lands fixes on a `weekly/<date>` branch for review. Produces a structured journal at `results/<MODEL>/weekly_<date>.journal.md`.
+
+Resumable runs: `run_all.sh --skip-existing` skips any framework whose result file is less than 24h old, so interrupted runs can be continued without re-doing work.
 
 ## Requirements
 

@@ -1,16 +1,18 @@
 #!/bin/bash
 # AppleBench — Run full benchmark across all (or selected) frameworks
-# Usage: bash scripts/run_all.sh [--model MODEL] [framework ...]
+# Usage: bash scripts/run_all.sh [--model MODEL] [--split SPLIT] [--skip-existing] [framework ...]
 # Examples:
 #   bash scripts/run_all.sh                          # run all, default model
 #   bash scripts/run_all.sh --model qwen3-30b-a3b    # run all, specific model
 #   bash scripts/run_all.sh --model qwen3-0.6b llamacpp mlx_lm
+#   bash scripts/run_all.sh --skip-existing          # resume — skip frameworks done today
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Parse --model and --split flags before sourcing config
+# Parse flags before sourcing config
 ONLY_FRAMEWORKS=()
 SPLIT="chat"
+SKIP_EXISTING=false
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --model)
@@ -20,6 +22,10 @@ while [[ $# -gt 0 ]]; do
         --split)
             SPLIT="$2"
             shift 2
+            ;;
+        --skip-existing)
+            SKIP_EXISTING=true
+            shift
             ;;
         *)
             ONLY_FRAMEWORKS+=("$1")
@@ -76,13 +82,19 @@ echo "========================================="
 echo " AppleBench — Full Benchmark Run"
 echo " Model: $MODEL_NAME"
 echo " Split: $SPLIT"
+echo " Skip-existing: $SKIP_EXISTING"
 echo " $(date)"
 echo "========================================="
 echo ""
 
 # Clean old result files so comparison.json reflects this run only
-echo "Cleaning old result files..."
-rm -f "$RESULTS_DIR"/*_*.json "$RESULTS_DIR/comparison.json"
+# (skipped in resume mode so prior successful frameworks stay intact)
+if [ "$SKIP_EXISTING" = "false" ]; then
+    echo "Cleaning old result files..."
+    rm -f "$RESULTS_DIR"/*_*.json "$RESULTS_DIR/comparison.json"
+else
+    echo "Resume mode — keeping existing results."
+fi
 
 # Initial cleanup
 cleanup
@@ -97,6 +109,15 @@ for entry in "${FRAMEWORKS[@]}"; do
             [ "$f" = "$name" ] && match=true
         done
         $match || continue
+    fi
+
+    # Skip if --skip-existing and a result file from the last 24h exists
+    if [ "$SKIP_EXISTING" = "true" ]; then
+        recent=$(find "$RESULTS_DIR" -maxdepth 1 -name "${name}_*.json" -mtime -1 2>/dev/null | head -1)
+        if [ -n "$recent" ]; then
+            echo "Skipping $name — recent result exists: $(basename "$recent")"
+            continue
+        fi
     fi
 
     echo "==========================================="
