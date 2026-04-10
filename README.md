@@ -20,11 +20,11 @@ Benchmark local LLM inference frameworks on Apple Silicon, side by side.
 # 1. Install everything (all frameworks + models)
 scripts/install_all.sh
 
-# 2. Prepare dataset (if not already generated)
-scripts/prepare_dataset.py      # 100 prompts from OpenOrca + CNN/DailyMail
-
-# 3. Run full benchmark
+# 2. Run full benchmark (chat split, default)
 scripts/run_all.sh
+
+# 3. Run with agent split (multi-turn, tool-calling)
+scripts/run_all.sh --split agent
 
 # 4. View results
 cat results/REPORT.md
@@ -33,13 +33,18 @@ cat results/REPORT.md
 ## Run a single framework
 
 ```bash
-scripts/run_all.sh llamacpp            # just llama.cpp
-scripts/run_all.sh omlx ollama         # multiple specific frameworks
+scripts/run_all.sh llamacpp                    # just llama.cpp (chat split)
+scripts/run_all.sh --split agent llamacpp      # agent split
+scripts/run_all.sh omlx ollama                 # multiple specific frameworks
 ```
 
 ## Dataset
 
-100 prompts sampled from [Open-Orca/OpenOrca](https://huggingface.co/datasets/Open-Orca/OpenOrca) and [CNN/DailyMail](https://huggingface.co/datasets/abisee/cnn_dailymail), distributed across input/output length buckets:
+Two splits are available, each with 100 prompts:
+
+### Chat split (default) — `prompts/chat_benchmark_prompts.json`
+
+Single-turn prompts sampled from [Open-Orca/OpenOrca](https://huggingface.co/datasets/Open-Orca/OpenOrca) and [CNN/DailyMail](https://huggingface.co/datasets/abisee/cnn_dailymail), distributed across input/output length buckets:
 
 | Bucket | Input tokens | Output tokens | Count |
 |--------|-------------|--------------|-------|
@@ -48,9 +53,19 @@ scripts/run_all.sh omlx ollama         # multiple specific frameworks
 | Long | 500–2,000 | 64 / 256 | 30 |
 | Very long | 2,000–4,000 | 64 / 256 | 30 |
 
-This covers realistic workloads from quick Q&A through long-document processing, with both short and long generation targets. All prompts are real natural language (not synthetic tokens), seeded for reproducibility.
+Covers realistic workloads from quick Q&A through long-document processing, with both short and long generation targets. All prompts are real natural language (not synthetic tokens), seeded for reproducibility.
 
-Run `scripts/prepare_dataset.py` to regenerate. Cached data is stored in `.models/` (gitignored).
+### Agent split — `prompts/agent_benchmark_prompts.json`
+
+Multi-turn agentic prompts with tool calls and tool responses already baked into the conversation history. Tests how frameworks handle realistic agent workloads (long contexts, tool-calling payloads) without needing an actual agent runtime. Composed from three popular agentic benchmarks:
+
+| Source | Count | Content |
+|--------|-------|---------|
+| [BFCL V3 multi-turn](https://gorilla.cs.berkeley.edu/blogs/13_bfcl_v3_multi_turn.html) | 35 | File system, trading, travel, vehicle control, messaging tools |
+| [Hermes Agent Reasoning Traces](https://huggingface.co/datasets/lambda/hermes-agent-reasoning-traces) | 35 | Real multi-turn agent sessions with tool calls + results |
+| [ClawsBench](https://clawsbench.benchflow.ai) | 30 | Gmail, Slack, Calendar, Drive, Docs productivity tasks |
+
+Average ~4K input tokens, ~12 messages per prompt, 99/100 contain tool_calls and tool response messages. Regenerate with `scripts/compose_agent_prompts.py`.
 
 ## Metrics
 
@@ -114,7 +129,8 @@ All frameworks run BF16 (no quantization) for a fair apple-to-apple comparison. 
 | `update_<fw>.sh` | Pull latest version and rebuild |
 | `serve_<fw>.sh` / `stop_<fw>.sh` | Start/stop framework server |
 | `download_model.sh` | Download Qwen3-0.6B in all formats |
-| `prepare_dataset.py` | Sample prompts from HuggingFace datasets |
+| `prepare_dataset.py` | Sample chat-split prompts from OpenOrca + CNN/DailyMail |
+| `compose_agent_prompts.py` | Compose agent-split prompts from BFCL V3, Hermes, ClawsBench |
 | `benchmark.py` | Run benchmark against any OpenAI-compatible endpoint |
 | `collect_results.py` | Aggregate per-framework results into comparison JSON |
 | `generate_report.py` | Generate markdown report from comparison |

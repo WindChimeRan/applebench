@@ -292,6 +292,8 @@ def main():
     parser.add_argument("--output", help="Output JSON file path")
     parser.add_argument("--results-dir", default=None, help="Directory for result files (overrides default)")
     parser.add_argument("--prompts", default=None, help="Path to prompts JSON file")
+    parser.add_argument("--split", default="chat", choices=["chat", "agent"],
+                        help="Prompt split to use: 'chat' or 'agent' (default: chat)")
     parser.add_argument("--max-wall-time", type=int, default=2400,
                         help="Max wall time (seconds) per concurrency level before skipping remaining levels (default: 2400 = 40 min)")
     args = parser.parse_args()
@@ -302,7 +304,8 @@ def main():
     if args.prompts:
         prompts_path = Path(args.prompts)
     else:
-        prompts_path = Path(__file__).parent.parent / "prompts" / "benchmark_prompts.json"
+        split_file = f"{args.split}_benchmark_prompts.json"
+        prompts_path = Path(__file__).parent.parent / "prompts" / split_file
     with open(prompts_path) as f:
         prompts = json.load(f)
 

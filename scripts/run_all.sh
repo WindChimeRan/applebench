@@ -8,12 +8,17 @@
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Parse --model flag before sourcing config
+# Parse --model and --split flags before sourcing config
 ONLY_FRAMEWORKS=()
+SPLIT="chat"
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --model)
             export APPLEBENCH_MODEL="$2"
+            shift 2
+            ;;
+        --split)
+            SPLIT="$2"
             shift 2
             ;;
         *)
@@ -70,6 +75,7 @@ CONCURRENCY_ARG=$(echo $CONCURRENCY_LEVELS | tr ' ' ',')
 echo "========================================="
 echo " AppleBench — Full Benchmark Run"
 echo " Model: $MODEL_NAME"
+echo " Split: $SPLIT"
 echo " $(date)"
 echo "========================================="
 echo ""
@@ -114,6 +120,7 @@ for entry in "${FRAMEWORKS[@]}"; do
         --requests "$BENCHMARK_REQUESTS" \
         --warmup "$WARMUP_REQUESTS" \
         --results-dir "$RESULTS_DIR" \
+        --split "$SPLIT" \
         $MODEL_FLAG || true
     echo ""
 
