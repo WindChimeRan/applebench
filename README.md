@@ -2,6 +2,8 @@
 
 Benchmarks 7 local LLM inference frameworks on Apple Silicon side-by-side, re-run weekly by a Claude Code agent so the numbers don't rot. Measures throughput, TTFT, ITL, and latency under concurrent load on both a classic chat workload and a multi-turn agentic workload composed from popular tool-calling benchmarks.
 
+Run the whole weekly pipeline — update, benchmark, diagnose failures, fix, publish — with one command: **`/weekly-bench`** in Claude Code.
+
 Latest results: **[REPORT.md](results/qwen3-0.6b/REPORT.md)**
 
 ## Frameworks
