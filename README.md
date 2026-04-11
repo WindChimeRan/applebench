@@ -1,6 +1,6 @@
 # AppleBench
 
-Benchmarks 7 local LLM inference frameworks on Apple Silicon side-by-side, re-run weekly by a Claude Code agent so the numbers don't rot. Measures throughput, TTFT, ITL, and latency under concurrent load on both a classic chat workload and a multi-turn agentic workload composed from popular tool-calling benchmarks.
+Benchmarks 8 local LLM inference frameworks on Apple Silicon side-by-side, re-run weekly by a Claude Code agent so the numbers don't rot. Measures throughput, TTFT, ITL, and latency under concurrent load on both a classic chat workload and a multi-turn agentic workload composed from popular tool-calling benchmarks.
 
 Run the whole weekly pipeline — update, benchmark, diagnose failures, fix, publish — with one command: **`/weekly-bench`** in Claude Code.
 
@@ -14,6 +14,7 @@ Latest results: **[REPORT.md](results/qwen3-0.6b/REPORT.md)**
 | [mlx_lm](https://github.com/ml-explore/mlx-examples) | MLX / Metal | MLX BF16 |
 | [mistral.rs](https://github.com/EricLBuehler/mistral.rs) | Rust / Metal | GGUF |
 | [vllm-metal](https://github.com/vllm-project/vllm-metal) | Python / MLX | Safetensors |
+| [vllm-mlx](https://github.com/waybarrios/vllm-mlx) | Python / MLX (vLLM plugin) | MLX BF16 |
 | [omlx](https://github.com/jundot/omlx) | MLX / Metal | MLX BF16 |
 | [ollama](https://github.com/ollama/ollama) | Go + Metal | GGUF |
 | [inferrs](https://github.com/ericcurtin/inferrs) | Rust + Candle / Metal | Safetensors |
@@ -56,7 +57,7 @@ Average ~4K input tokens, ~12 messages per prompt, 99/100 contain tool_calls and
 | Format | Source | Used by |
 |--------|--------|---------|
 | GGUF BF16 | [unsloth/Qwen3-0.6B-GGUF](https://huggingface.co/unsloth/Qwen3-0.6B-GGUF) | llama.cpp, mistral.rs, ollama |
-| MLX BF16 | [mlx-community/Qwen3-0.6B-bf16](https://huggingface.co/mlx-community/Qwen3-0.6B-bf16) | mlx_lm, omlx |
+| MLX BF16 | [mlx-community/Qwen3-0.6B-bf16](https://huggingface.co/mlx-community/Qwen3-0.6B-bf16) | mlx_lm, omlx, vllm-mlx |
 | Safetensors BF16 | [Qwen/Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) | vllm-metal, inferrs |
 
 Other model profiles live in `models/` — notably a larger [Qwen3-30B-A3B](https://huggingface.co/Qwen/Qwen3-30B-A3B) MoE for when you want to measure how frameworks handle a heavier model.
@@ -76,7 +77,7 @@ Tested at concurrency 1, 8, 16. Each level runs 100 requests with 3 warmup. A 60
 AppleBench is re-run weekly by a Claude Code agent. The agent:
 
 1. **Updates** each framework from upstream (`update_all.sh`)
-2. **Runs** the full benchmark across all 7 frameworks (`run_all.sh`, resumable via `--skip-existing`)
+2. **Runs** the full benchmark across all 8 frameworks (`run_all.sh`, resumable via `--skip-existing`)
 3. **Diagnoses** per-framework failures by reading the error, the framework's upstream changelog, and prior journals
 4. **Fixes** adapter scripts when it can (a renamed CLI flag, a new required parameter) within a tightly scoped write allowlist — never touching `benchmark.py`, `config.sh`, or framework source
 5. **Verifies** each fix in isolation by starting the server and running a few requests before committing

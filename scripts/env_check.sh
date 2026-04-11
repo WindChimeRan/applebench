@@ -116,6 +116,12 @@ if command -v inferrs &>/dev/null; then
 else
     warn "inferrs not found" "Run: scripts/install_inferrs.sh"
 fi
+
+if [ -d "$VENVS_DIR/vllm_mlx" ]; then
+    ok "vllm-mlx"
+else
+    warn "vllm-mlx venv not found" "Run: scripts/install_vllm_mlx.sh"
+fi
 echo ""
 
 # --- Models ---

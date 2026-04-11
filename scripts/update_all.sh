@@ -16,7 +16,8 @@ for script in \
     update_vllm_metal.sh \
     update_omlx.sh \
     update_ollama.sh \
-    update_inferrs.sh; do
+    update_inferrs.sh \
+    update_vllm_mlx.sh; do
     echo "==========================================="
     echo " Running $script"
     echo "==========================================="
