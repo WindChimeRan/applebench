@@ -22,9 +22,11 @@ class RequestResult:
     prompt_name: str
     ttft: float          # seconds
     total_time: float    # seconds
-    tokens_generated: int
+    tokens_generated: int  # SSE content chunks received (client-side count)
     throughput: float    # tokens/sec (decode only, excludes TTFT)
     inter_token_latency: float  # average ms between tokens
+    prompt_tokens: int | None = None      # server-reported, from usage chunk
+    completion_tokens: int | None = None  # server-reported, from usage chunk
 
 
 async def benchmark_single(
@@ -42,12 +44,15 @@ async def benchmark_single(
         "max_tokens": max_tokens,
         "temperature": 0.0,
         "stream": True,
+        "stream_options": {"include_usage": True},
     }
 
     t_start = time.perf_counter()
     t_first_token = None
     token_times = []
     tokens_generated = 0
+    prompt_tokens = None
+    completion_tokens = None
 
     async with session.post(
         f"{base_url}/v1/chat/completions",
@@ -65,6 +70,9 @@ async def benchmark_single(
                 data = json.loads(data_str)
             except json.JSONDecodeError:
                 continue
+            if usage := data.get("usage"):
+                prompt_tokens = usage.get("prompt_tokens", prompt_tokens)
+                completion_tokens = usage.get("completion_tokens", completion_tokens)
             choices = data.get("choices", [])
             if not choices:
                 continue
@@ -111,6 +119,8 @@ async def benchmark_single(
         tokens_generated=tokens_generated,
         throughput=throughput,
         inter_token_latency=itl,
+        prompt_tokens=prompt_tokens,
+        completion_tokens=completion_tokens,
     )
 
 
@@ -196,15 +206,31 @@ def summarize(results: list[RequestResult], errors: list[str], concurrency: int,
         idx = min(idx, len(sorted_data) - 1)
         return sorted_data[idx]
 
-    total_tokens = sum(tokens)
-    total_wall = max(r.total_time for r in results)  # wall clock for concurrent batch
+    total_chunks = sum(tokens)
+
+    # Server-reported token counts from the usage chunk (None if any request missing it)
+    completion_list = [r.completion_tokens for r in results]
+    prompt_list = [r.prompt_tokens for r in results]
+    has_usage = all(t is not None for t in completion_list)
+    has_input = all(t is not None for t in prompt_list)
+
+    # Prefer server counts; fall back to chunk count (validate_results raises a warning)
+    total_output_tokens = sum(completion_list) if has_usage else total_chunks
+    total_input_tokens = sum(prompt_list) if has_input else None
+
+    output_throughput = total_output_tokens / wall_time if wall_time > 0 else 0.0
+    input_throughput = (total_input_tokens / wall_time) if (has_input and wall_time > 0) else None
+    total_throughput = ((total_input_tokens + total_output_tokens) / wall_time) if (has_input and wall_time > 0) else None
 
     return {
         "concurrency": concurrency,
         "num_requests": num_requests,
         "successful": len(results),
         "failed": len(errors),
-        "total_tokens_generated": total_tokens,
+        "total_tokens_generated": total_chunks,
+        "total_output_tokens": total_output_tokens,
+        "total_input_tokens": total_input_tokens,
+        "server_usage_available": has_usage,
         "ttft_avg_ms": sum(ttfts) / len(ttfts) * 1000,
         "ttft_p50_ms": percentile(ttfts, 50) * 1000,
         "ttft_p99_ms": percentile(ttfts, 99) * 1000,
@@ -215,7 +241,9 @@ def summarize(results: list[RequestResult], errors: list[str], concurrency: int,
         "latency_avg_s": sum(total_times) / len(total_times),
         "latency_p50_s": percentile(total_times, 50),
         "latency_p99_s": percentile(total_times, 99),
-        "aggregate_throughput_tps": total_tokens / total_wall if total_wall > 0 else 0.0,
+        "output_throughput_tps": output_throughput,
+        "input_throughput_tps": input_throughput,
+        "total_token_throughput_tps": total_throughput,
         "wall_time_s": wall_time,
         "error_samples": list(dict.fromkeys(errors))[:5] if errors else [],
     }
@@ -229,9 +257,9 @@ def validate_results(results: list[RequestResult], summary: dict, prompts_used: 
     if successful == 0:
         return warnings
 
-    # Check 1: average tokens per request vs expected
-    total_tokens = summary.get("total_tokens_generated", 0)
-    avg_tokens = total_tokens / successful
+    # Check 1: average tokens per request vs expected (prefer server-reported count)
+    total_out = summary.get("total_output_tokens") or summary.get("total_tokens_generated", 0)
+    avg_tokens = total_out / successful
     expected_max_tokens = sum(p["max_tokens"] for p in prompts_used[:successful]) / successful
     if avg_tokens < expected_max_tokens * 0.1:
         warnings.append(
@@ -259,6 +287,34 @@ def validate_results(results: list[RequestResult], summary: dict, prompts_used: 
             f"{zero_count}/{successful} requests had 0 throughput "
             f"(generated <=1 token each)."
         )
+
+    # Check 4: server did not report token usage — fell back to SSE chunk count
+    if not summary.get("server_usage_available", False):
+        missing = sum(1 for r in results if r.completion_tokens is None)
+        warnings.append(
+            f"server did not report token usage for {missing}/{successful} requests "
+            f"(missing `usage.completion_tokens`). Output counts fell back to SSE chunk "
+            f"count, which may undercount if the framework bundles multiple tokens per "
+            f"chunk. Framework should honor `stream_options.include_usage=true`."
+        )
+
+    # Check 5: server completion_tokens diverges from client-side chunk count
+    if summary.get("server_usage_available", False):
+        divergent = []
+        for r in results:
+            if r.completion_tokens is None or r.tokens_generated == 0:
+                continue
+            ratio = r.completion_tokens / r.tokens_generated
+            if ratio < 0.95 or ratio > 1.05:
+                divergent.append(ratio)
+        if divergent:
+            avg_ratio = sum(divergent) / len(divergent)
+            warnings.append(
+                f"{len(divergent)}/{successful} requests had server completion_tokens "
+                f"diverging >5% from SSE chunk count (avg ratio {avg_ratio:.2f}x). "
+                f"Framework may be bundling multiple tokens per chunk — per-request "
+                f"throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect."
+            )
 
     for w in warnings:
         print(f"  \u26a0 WARNING: {w}")
@@ -369,7 +425,7 @@ def main():
         fail_str = f" | FAILED: {failed}" if failed else ""
         print(f"  TTFT avg: {summary.get('ttft_avg_ms', 0):.1f}ms | "
               f"Throughput avg: {summary.get('throughput_avg_tps', 0):.1f} tok/s | "
-              f"Aggregate: {summary.get('aggregate_throughput_tps', 0):.1f} tok/s | "
+              f"Output: {summary.get('output_throughput_tps', 0):.1f} tok/s | "
               f"ITL avg: {summary.get('itl_avg_ms', 0):.1f}ms | "
               f"Wall: {wall_time:.1f}s{fail_str}")
         if wall_time > args.max_wall_time:

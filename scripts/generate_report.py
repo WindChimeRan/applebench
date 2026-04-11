@@ -71,7 +71,9 @@ def main():
             ("TTFT p50 (ms)", "ttft_p50_ms", ".1f"),
             ("TTFT p99 (ms)", "ttft_p99_ms", ".1f"),
             ("Throughput avg (tok/s)", "throughput_avg_tps", ".1f"),
-            ("Aggregate throughput (tok/s)", "aggregate_throughput_tps", ".1f"),
+            ("Output throughput (tok/s)", "output_throughput_tps", ".1f"),
+            ("Input throughput (tok/s)", "input_throughput_tps", ".1f"),
+            ("Total token throughput (tok/s)", "total_token_throughput_tps", ".1f"),
             ("ITL avg (ms)", "itl_avg_ms", ".1f"),
             ("ITL p50 (ms)", "itl_p50_ms", ".1f"),
             ("Latency avg (s)", "latency_avg_s", ".2f"),
@@ -99,7 +101,10 @@ def main():
                         row += f" {s} / 0 |"
                 else:
                     val = cr.get(key, 0)
-                    row += f" {val:{fmt}} |"
+                    if val is None:
+                        row += " N/A |"
+                    else:
+                        row += f" {val:{fmt}} |"
             lines.append(row)
 
         lines.append("")
