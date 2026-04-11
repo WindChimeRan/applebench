@@ -31,15 +31,14 @@ echo "PID: $(cat "$PROJECT_DIR/.frameworks/llamacpp_server.pid")"
 
 # Wait for server to be ready
 echo "Waiting for server to be ready..."
-for i in $(seq 1 120); do
-    health=$(curl -s "http://localhost:$LLAMACPP_PORT/health" 2>/dev/null)
-    if echo "$health" | grep -q '"ok"'; then
+for i in $(seq 1 300); do
+    if curl -sf "http://localhost:$LLAMACPP_PORT/health" 2>/dev/null | grep -q '"ok"' 2>/dev/null; then
         echo "llama.cpp server is ready on port $LLAMACPP_PORT"
         exit 0
     fi
-    sleep 1
+    sleep 1 || true
 done
 
-echo "Error: Server failed to start within 120 seconds"
+echo "Error: Server failed to start within 300 seconds"
 cat "$PROJECT_DIR/.frameworks/llamacpp_server.log"
 exit 1

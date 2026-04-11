@@ -1,0 +1,45 @@
+{
+  "framework": "inferrs",
+  "model": "/Users/haorzhang/applebench/.models/Qwen3-8B",
+  "endpoint": "http://localhost:8007",
+  "timestamp": "2026-04-10T07:57:30",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 10644,
+      "ttft_avg_ms": 4096.682446682826,
+      "ttft_p50_ms": 1637.3547079856507,
+      "ttft_p99_ms": 16611.092540959362,
+      "throughput_avg_tps": 1.9923294333038615,
+      "throughput_p50_tps": 2.1804670765816656,
+      "itl_avg_ms": 552.1953883353935,
+      "itl_p50_ms": 441.26721163509444,
+      "latency_avg_s": 64.61937397418427,
+      "latency_p50_s": 32.05074824998155,
+      "latency_p99_s": 293.9008134159958,
+      "aggregate_throughput_tps": 36.21629990160719,
+      "wall_time_s": 6461.97624245804,
+      "error_samples": []
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0,
+      "error": "skipped (previous level too slow)"
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0,
+      "error": "skipped (previous level too slow)"
+    }
+  ],
+  "total_duration_s": 6702.811142666964
+}

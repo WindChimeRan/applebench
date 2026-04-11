@@ -1,0 +1,388 @@
+{
+  "model_name": "Qwen3-8B",
+  "frameworks": [
+    "vllm_metal",
+    "ollama",
+    "omlx",
+    "mistralrs",
+    "inferrs",
+    "mlx_lm"
+  ],
+  "results": {
+    "vllm_metal": {
+      "framework": "vllm_metal",
+      "model": "/Users/haorzhang/applebench/.models/Qwen3-8B",
+      "endpoint": "http://localhost:8004",
+      "timestamp": "2026-04-09T23:19:14",
+      "concurrency_results": [
+        {
+          "concurrency": 1,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 15917,
+          "ttft_avg_ms": 3683.6056354199536,
+          "ttft_p50_ms": 1324.046166962944,
+          "ttft_p99_ms": 15960.200666973833,
+          "throughput_avg_tps": 17.348225142657995,
+          "throughput_p50_tps": 18.17070155649927,
+          "itl_avg_ms": 58.46599668096209,
+          "itl_p50_ms": 55.09334619423108,
+          "latency_avg_s": 12.965251189171687,
+          "latency_p50_s": 13.615991458005738,
+          "latency_p99_s": 34.98222791601438,
+          "aggregate_throughput_tps": 455.00246691587694,
+          "wall_time_s": 1296.5334249580046,
+          "error_samples": []
+        },
+        {
+          "concurrency": 8,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 15917,
+          "ttft_avg_ms": 7293.1156525504775,
+          "ttft_p50_ms": 3290.8867500373162,
+          "ttft_p99_ms": 34660.489375004545,
+          "throughput_avg_tps": 3.7108719036667863,
+          "throughput_p50_tps": 3.308138097750861,
+          "itl_avg_ms": 308.9088868511191,
+          "itl_p50_ms": 302.3640714282732,
+          "latency_avg_s": 55.538473175868276,
+          "latency_p50_s": 45.97432854201179,
+          "latency_p99_s": 116.97152729099616,
+          "aggregate_throughput_tps": 136.07584998358146,
+          "wall_time_s": 708.3782068339642,
+          "error_samples": []
+        },
+        {
+          "concurrency": 16,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 15888,
+          "ttft_avg_ms": 12487.816847458598,
+          "ttft_p50_ms": 12004.852916987147,
+          "ttft_p99_ms": 48929.67983300332,
+          "throughput_avg_tps": 2.4868913046790895,
+          "throughput_p50_tps": 2.1761840787786997,
+          "itl_avg_ms": 476.54802535684314,
+          "itl_p50_ms": 465.0512883654012,
+          "latency_avg_s": 86.17940360288601,
+          "latency_p50_s": 72.25209895800799,
+          "latency_p99_s": 185.58475433301646,
+          "aggregate_throughput_tps": 85.61048054351653,
+          "wall_time_s": 564.3893496670062,
+          "error_samples": []
+        }
+      ],
+      "total_duration_s": 2657.3550164999906
+    },
+    "ollama": {
+      "framework": "ollama",
+      "model": "qwen3-8b-bf16",
+      "endpoint": "http://localhost:8006",
+      "timestamp": "2026-04-10T00:09:51",
+      "concurrency_results": [
+        {
+          "concurrency": 1,
+          "num_requests": 100,
+          "successful": 2,
+          "failed": 98,
+          "total_tokens_generated": 5,
+          "ttft_avg_ms": 76812.72818750585,
+          "ttft_p50_ms": 89454.77812498575,
+          "ttft_p99_ms": 89454.77812498575,
+          "throughput_avg_tps": 0.033034308403600006,
+          "throughput_p50_tps": 0.03710481628467328,
+          "itl_avg_ms": 19007.971270999406,
+          "itl_p50_ms": 23514.864541997667,
+          "latency_avg_s": 121.0263352705224,
+          "latency_p50_s": 143.3561365000205,
+          "latency_p99_s": 143.3561365000205,
+          "aggregate_throughput_tps": 0.03487817209693904,
+          "wall_time_s": 27865.912497208046,
+          "error_samples": [
+            "500, message='Internal Server Error', url='http://localhost:8006/v1/chat/completions'",
+            ""
+          ],
+          "sanity_warnings": [
+            "avg tokens/request (2) is far below expected (max_tokens avg=64). Possible silent failures."
+          ]
+        },
+        {
+          "concurrency": 8,
+          "num_requests": 100,
+          "successful": 0,
+          "failed": 100,
+          "wall_time_s": 0,
+          "error": "skipped (previous level too slow)"
+        },
+        {
+          "concurrency": 16,
+          "num_requests": 100,
+          "successful": 0,
+          "failed": 100,
+          "wall_time_s": 0,
+          "error": "skipped (previous level too slow)"
+        }
+      ],
+      "total_duration_s": 27967.399656625
+    },
+    "omlx": {
+      "framework": "omlx",
+      "model": "Qwen3-0.6B-bf16-mlx",
+      "endpoint": "http://localhost:8005",
+      "timestamp": "2026-04-10T00:04:40",
+      "concurrency_results": [
+        {
+          "concurrency": 1,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 15268,
+          "ttft_avg_ms": 191.5467370703118,
+          "ttft_p50_ms": 189.7184579866007,
+          "ttft_p99_ms": 288.1212080246769,
+          "throughput_avg_tps": 181.94837982601956,
+          "throughput_p50_tps": 185.82253621920856,
+          "itl_avg_ms": 5.5246219462316,
+          "itl_p50_ms": 5.3787143870947824,
+          "latency_avg_s": 1.0308931445685448,
+          "latency_p50_s": 0.9356546249473467,
+          "latency_p99_s": 1.9495380420121364,
+          "aggregate_throughput_tps": 7831.598907524653,
+          "wall_time_s": 103.10371474997373,
+          "error_samples": []
+        },
+        {
+          "concurrency": 8,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 15026,
+          "ttft_avg_ms": 518.3770779479528,
+          "ttft_p50_ms": 405.5093750357628,
+          "ttft_p99_ms": 1800.7255420088768,
+          "throughput_avg_tps": 32.29087076851426,
+          "throughput_p50_tps": 30.73364368072334,
+          "itl_avg_ms": 31.985163421963343,
+          "itl_p50_ms": 32.52743951687138,
+          "latency_avg_s": 5.25721719794441,
+          "latency_p50_s": 4.78022312495159,
+          "latency_p99_s": 10.057181250012945,
+          "aggregate_throughput_tps": 1494.056796478701,
+          "wall_time_s": 67.39435587497428,
+          "error_samples": []
+        },
+        {
+          "concurrency": 16,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 15266,
+          "ttft_avg_ms": 5220.4977066931315,
+          "ttft_p50_ms": 5584.71795899095,
+          "ttft_p99_ms": 7139.072375022806,
+          "throughput_avg_tps": 32.87324757313662,
+          "throughput_p50_tps": 31.304477865015805,
+          "itl_avg_ms": 31.273060821948576,
+          "itl_p50_ms": 31.94233500417397,
+          "latency_avg_s": 9.935953584143427,
+          "latency_p50_s": 9.062480250024237,
+          "latency_p99_s": 16.077410084020812,
+          "aggregate_throughput_tps": 949.5310451260266,
+          "wall_time_s": 66.59535666700685,
+          "error_samples": []
+        }
+      ],
+      "total_duration_s": 242.96398512495216
+    },
+    "mistralrs": {
+      "framework": "mistralrs",
+      "model": "default",
+      "endpoint": "http://localhost:8003",
+      "timestamp": "2026-04-09T22:22:45",
+      "concurrency_results": [
+        {
+          "concurrency": 1,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 15812,
+          "ttft_avg_ms": 2524.160127963987,
+          "ttft_p50_ms": 1303.8252079859376,
+          "ttft_p99_ms": 8766.116290993523,
+          "throughput_avg_tps": 7.7319904829833135,
+          "throughput_p50_tps": 7.731211192225161,
+          "itl_avg_ms": 129.33738216814984,
+          "itl_p50_ms": 129.36323326778611,
+          "latency_avg_s": 22.864834105860208,
+          "latency_p50_s": 24.27769337501377,
+          "latency_p99_s": 42.238790665986016,
+          "aggregate_throughput_tps": 374.3478388156852,
+          "wall_time_s": 2286.4913573749945,
+          "error_samples": []
+        },
+        {
+          "concurrency": 8,
+          "num_requests": 100,
+          "successful": 16,
+          "failed": 84,
+          "total_tokens_generated": 1006,
+          "ttft_avg_ms": 23787.64826299812,
+          "ttft_p50_ms": 23403.483041969594,
+          "ttft_p99_ms": 49752.04649998341,
+          "throughput_avg_tps": 0.6724560072571171,
+          "throughput_p50_tps": 0.723170302500876,
+          "itl_avg_ms": 1621.4420718527915,
+          "itl_p50_ms": 1491.7513306455446,
+          "latency_avg_s": 124.10560462225476,
+          "latency_p50_s": 112.42287537502125,
+          "latency_p99_s": 203.03185950004263,
+          "aggregate_throughput_tps": 4.954887388005176,
+          "wall_time_s": 944.5694665419869,
+          "error_samples": [
+            "",
+            "Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>",
+            "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8003, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8003)]",
+            "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8003), [Errno 61] Connect call failed ('::1', 8003, 0, 0)]"
+          ]
+        },
+        {
+          "concurrency": 16,
+          "num_requests": 100,
+          "successful": 0,
+          "failed": 100,
+          "wall_time_s": 0.023620042018592358,
+          "error": "no successful requests",
+          "error_samples": [
+            "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8003), [Errno 61] Connect call failed ('::1', 8003, 0, 0)]",
+            "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8003, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8003)]"
+          ]
+        }
+      ],
+      "total_duration_s": 3302.184683917032
+    },
+    "inferrs": {
+      "framework": "inferrs",
+      "model": "/Users/haorzhang/applebench/.models/Qwen3-8B",
+      "endpoint": "http://localhost:8007",
+      "timestamp": "2026-04-10T07:57:30",
+      "concurrency_results": [
+        {
+          "concurrency": 1,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 10644,
+          "ttft_avg_ms": 4096.682446682826,
+          "ttft_p50_ms": 1637.3547079856507,
+          "ttft_p99_ms": 16611.092540959362,
+          "throughput_avg_tps": 1.9923294333038615,
+          "throughput_p50_tps": 2.1804670765816656,
+          "itl_avg_ms": 552.1953883353935,
+          "itl_p50_ms": 441.26721163509444,
+          "latency_avg_s": 64.61937397418427,
+          "latency_p50_s": 32.05074824998155,
+          "latency_p99_s": 293.9008134159958,
+          "aggregate_throughput_tps": 36.21629990160719,
+          "wall_time_s": 6461.97624245804,
+          "error_samples": []
+        },
+        {
+          "concurrency": 8,
+          "num_requests": 100,
+          "successful": 0,
+          "failed": 100,
+          "wall_time_s": 0,
+          "error": "skipped (previous level too slow)"
+        },
+        {
+          "concurrency": 16,
+          "num_requests": 100,
+          "successful": 0,
+          "failed": 100,
+          "wall_time_s": 0,
+          "error": "skipped (previous level too slow)"
+        }
+      ],
+      "total_duration_s": 6702.811142666964
+    },
+    "mlx_lm": {
+      "framework": "mlx_lm",
+      "model": "/Users/haorzhang/applebench/.models/Qwen3-8B-bf16-mlx",
+      "endpoint": "http://localhost:8002",
+      "timestamp": "2026-04-09T21:52:42",
+      "concurrency_results": [
+        {
+          "concurrency": 1,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 15688,
+          "ttft_avg_ms": 1959.9345654057106,
+          "ttft_p50_ms": 1197.0032089739107,
+          "ttft_p99_ms": 7235.211250022985,
+          "throughput_avg_tps": 21.710400170413635,
+          "throughput_p50_tps": 22.064388360804255,
+          "itl_avg_ms": 46.11417199728494,
+          "itl_p50_ms": 45.330011480401716,
+          "latency_avg_s": 9.157352538377163,
+          "latency_p50_s": 10.368752375012264,
+          "latency_p99_s": 19.502855999977328,
+          "aggregate_throughput_tps": 804.3950075834143,
+          "wall_time_s": 915.7438853339991,
+          "error_samples": []
+        },
+        {
+          "concurrency": 8,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 15667,
+          "ttft_avg_ms": 6725.50994577643,
+          "ttft_p50_ms": 4674.256999976933,
+          "ttft_p99_ms": 22622.093458950985,
+          "throughput_avg_tps": 5.106548712314639,
+          "throughput_p50_tps": 4.613150270649257,
+          "itl_avg_ms": 216.65529996755632,
+          "itl_p50_ms": 216.852708166698,
+          "latency_avg_s": 40.26341309499694,
+          "latency_p50_s": 37.741214415989816,
+          "latency_p99_s": 81.06637254200177,
+          "aggregate_throughput_tps": 193.26139197708247,
+          "wall_time_s": 514.0702986249817,
+          "error_samples": []
+        },
+        {
+          "concurrency": 16,
+          "num_requests": 100,
+          "successful": 55,
+          "failed": 45,
+          "total_tokens_generated": 7101,
+          "ttft_avg_ms": 22695.928420487326,
+          "ttft_p50_ms": 22099.294832965825,
+          "ttft_p99_ms": 51432.45683400892,
+          "throughput_avg_tps": 3.6320590802092156,
+          "throughput_p50_tps": 3.3390332134604592,
+          "itl_avg_ms": 327.23202942151676,
+          "itl_p50_ms": 276.3654633931213,
+          "latency_avg_s": 67.38248891145393,
+          "latency_p50_s": 63.49057029199321,
+          "latency_p99_s": 143.12802025000565,
+          "aggregate_throughput_tps": 49.612926858042805,
+          "wall_time_s": 232.4636497500469,
+          "error_samples": [
+            "silent failure: server returned OK but generated only 0 token(s) for prompt 'p052_long_out64' (requested max_tokens=64)",
+            "silent failure: server returned OK but generated only 0 token(s) for prompt 'p068_long_out256' (requested max_tokens=256)",
+            "silent failure: server returned OK but generated only 0 token(s) for prompt 'p021_medium_out64' (requested max_tokens=64)",
+            "Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8002, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8002)]",
+            "Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8002), [Errno 61] Connect call failed ('::1', 8002, 0, 0)]"
+          ]
+        }
+      ],
+      "total_duration_s": 1718.868994458986
+    }
+  }
+}

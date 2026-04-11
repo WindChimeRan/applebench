@@ -1,0 +1,66 @@
+{
+  "framework": "mistralrs",
+  "model": "default",
+  "endpoint": "http://localhost:8003",
+  "timestamp": "2026-04-09T22:22:45",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 15812,
+      "ttft_avg_ms": 2524.160127963987,
+      "ttft_p50_ms": 1303.8252079859376,
+      "ttft_p99_ms": 8766.116290993523,
+      "throughput_avg_tps": 7.7319904829833135,
+      "throughput_p50_tps": 7.731211192225161,
+      "itl_avg_ms": 129.33738216814984,
+      "itl_p50_ms": 129.36323326778611,
+      "latency_avg_s": 22.864834105860208,
+      "latency_p50_s": 24.27769337501377,
+      "latency_p99_s": 42.238790665986016,
+      "aggregate_throughput_tps": 374.3478388156852,
+      "wall_time_s": 2286.4913573749945,
+      "error_samples": []
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 16,
+      "failed": 84,
+      "total_tokens_generated": 1006,
+      "ttft_avg_ms": 23787.64826299812,
+      "ttft_p50_ms": 23403.483041969594,
+      "ttft_p99_ms": 49752.04649998341,
+      "throughput_avg_tps": 0.6724560072571171,
+      "throughput_p50_tps": 0.723170302500876,
+      "itl_avg_ms": 1621.4420718527915,
+      "itl_p50_ms": 1491.7513306455446,
+      "latency_avg_s": 124.10560462225476,
+      "latency_p50_s": 112.42287537502125,
+      "latency_p99_s": 203.03185950004263,
+      "aggregate_throughput_tps": 4.954887388005176,
+      "wall_time_s": 944.5694665419869,
+      "error_samples": [
+        "",
+        "Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>",
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8003, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8003)]",
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8003), [Errno 61] Connect call failed ('::1', 8003, 0, 0)]"
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.023620042018592358,
+      "error": "no successful requests",
+      "error_samples": [
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8003), [Errno 61] Connect call failed ('::1', 8003, 0, 0)]",
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8003, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8003)]"
+      ]
+    }
+  ],
+  "total_duration_s": 3302.184683917032
+}

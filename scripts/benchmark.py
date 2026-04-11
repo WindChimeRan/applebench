@@ -294,8 +294,8 @@ def main():
     parser.add_argument("--prompts", default=None, help="Path to prompts JSON file")
     parser.add_argument("--split", default="chat", choices=["chat", "agent"],
                         help="Prompt split to use: 'chat' or 'agent' (default: chat)")
-    parser.add_argument("--max-wall-time", type=int, default=2400,
-                        help="Max wall time (seconds) per concurrency level before skipping remaining levels (default: 2400 = 40 min)")
+    parser.add_argument("--max-wall-time", type=int, default=3600,
+                        help="Max wall time (seconds) per concurrency level before skipping remaining levels (default: 3600 = 60 min)")
     args = parser.parse_args()
 
     base_url = f"http://{args.host}:{args.port}"

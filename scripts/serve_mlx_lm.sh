@@ -25,7 +25,7 @@ echo "PID: $(cat "$PROJECT_DIR/.frameworks/mlx_lm_server.pid")"
 
 # Wait for server to be ready
 echo "Waiting for server to be ready..."
-for i in $(seq 1 120); do
+for i in $(seq 1 300); do
     if curl -s "http://localhost:$MLX_LM_PORT/v1/models" > /dev/null 2>&1; then
         echo "mlx_lm server is ready on port $MLX_LM_PORT"
         exit 0
@@ -33,6 +33,6 @@ for i in $(seq 1 120); do
     sleep 1
 done
 
-echo "Error: Server failed to start within 120 seconds"
+echo "Error: Server failed to start within 300 seconds"
 cat "$PROJECT_DIR/.frameworks/mlx_lm_server.log"
 exit 1

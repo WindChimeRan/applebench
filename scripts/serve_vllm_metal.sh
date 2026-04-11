@@ -28,7 +28,7 @@ echo "PID: $(cat "$PROJECT_DIR/.frameworks/vllm_metal_server.pid")"
 
 # Wait for server to be ready
 echo "Waiting for server to be ready..."
-for i in $(seq 1 180); do
+for i in $(seq 1 300); do
     if curl -s "http://localhost:$VLLM_METAL_PORT/v1/models" > /dev/null 2>&1; then
         echo "vllm-metal server is ready on port $VLLM_METAL_PORT"
         exit 0
@@ -36,6 +36,6 @@ for i in $(seq 1 180); do
     sleep 1
 done
 
-echo "Error: Server failed to start within 180 seconds"
+echo "Error: Server failed to start within 300 seconds"
 cat "$PROJECT_DIR/.frameworks/vllm_metal_server.log"
 exit 1

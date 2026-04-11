@@ -1,0 +1,51 @@
+{
+  "framework": "ollama",
+  "model": "qwen3-8b-bf16",
+  "endpoint": "http://localhost:8006",
+  "timestamp": "2026-04-10T00:09:51",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 2,
+      "failed": 98,
+      "total_tokens_generated": 5,
+      "ttft_avg_ms": 76812.72818750585,
+      "ttft_p50_ms": 89454.77812498575,
+      "ttft_p99_ms": 89454.77812498575,
+      "throughput_avg_tps": 0.033034308403600006,
+      "throughput_p50_tps": 0.03710481628467328,
+      "itl_avg_ms": 19007.971270999406,
+      "itl_p50_ms": 23514.864541997667,
+      "latency_avg_s": 121.0263352705224,
+      "latency_p50_s": 143.3561365000205,
+      "latency_p99_s": 143.3561365000205,
+      "aggregate_throughput_tps": 0.03487817209693904,
+      "wall_time_s": 27865.912497208046,
+      "error_samples": [
+        "500, message='Internal Server Error', url='http://localhost:8006/v1/chat/completions'",
+        ""
+      ],
+      "sanity_warnings": [
+        "avg tokens/request (2) is far below expected (max_tokens avg=64). Possible silent failures."
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0,
+      "error": "skipped (previous level too slow)"
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0,
+      "error": "skipped (previous level too slow)"
+    }
+  ],
+  "total_duration_s": 27967.399656625
+}
