@@ -1,6 +1,6 @@
 ---
 name: weekly-bench
-description: Run the weekly AppleBench pipeline unattended — update frameworks, benchmark all 7, diagnose and fix per-framework failures, commit fixes as separate commits, sync results. Use this when the user says "run the weekly benchmark" or similar.
+description: Run the weekly AppleBench pipeline unattended — update frameworks, benchmark all 8, diagnose and fix per-framework failures, commit fixes as separate commits, sync results. Use this when the user says "run the weekly benchmark" or similar.
 ---
 
 # Weekly Bench Orchestrator
@@ -62,7 +62,7 @@ ls -la results/<MODEL>/<fw>_*.json
 find results/<MODEL> -maxdepth 1 -name '<fw>_*.json' -mtime -1
 ```
 
-For each of the 7 frameworks (`llamacpp`, `mlx_lm`, `mistralrs`, `vllm_metal`, `omlx`, `ollama`, `inferrs`), classify:
+For each of the 8 frameworks (`llamacpp`, `mlx_lm`, `mistralrs`, `vllm_metal`, `vllm_mlx`, `omlx`, `ollama`, `inferrs`), classify:
 - **ok** — has a result file from the last 24h
 - **failed** — no recent result file
 
@@ -218,6 +218,7 @@ Write to `$RESULTS_DIR/weekly_<DATE>.journal.md`. Structure:
 | mlx_lm | ok | — |
 | mistralrs | fixed | <short note, commit SHA> |
 | vllm_metal | skipped | <short reason> |
+| vllm_mlx | ok | — |
 | omlx | ok | — |
 | ollama | ok | — |
 | inferrs | ok | — |
@@ -273,6 +274,6 @@ Stop the whole workflow and surface a clear message to the user if:
 - The bench venv is broken and `install_bench.sh` fails
 - `caffeinate` is not available (running on non-macOS)
 - `weekly_bench.sh` fails to start at all (script permissions, missing file, etc.)
-- All 7 frameworks fail in Phase 1 (something systemic is wrong — maybe the model download, maybe a shared dep)
+- All 8 frameworks fail in Phase 1 (something systemic is wrong — maybe the model download, maybe a shared dep)
 
 In these cases, the right answer is to stop and tell the user what's wrong, not to keep trying.
