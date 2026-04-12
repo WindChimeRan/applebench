@@ -1,0 +1,77 @@
+{
+  "framework": "mistralrs",
+  "model": "default",
+  "endpoint": "http://localhost:8003",
+  "timestamp": "2026-04-11T16:35:19",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 15244,
+      "total_output_tokens": 15379,
+      "total_input_tokens": 99277,
+      "server_usage_available": true,
+      "ttft_avg_ms": 380.076624169742,
+      "ttft_p50_ms": 189.2147920007119,
+      "ttft_p99_ms": 1395.520749996649,
+      "throughput_avg_tps": 48.05300541526575,
+      "throughput_p50_tps": 48.1193001506809,
+      "itl_avg_ms": 20.81139569695737,
+      "itl_p50_ms": 20.76088440310653,
+      "latency_avg_s": 3.5417588154406987,
+      "latency_p50_s": 3.2803828330070246,
+      "latency_p99_s": 6.984453625002061,
+      "output_throughput_tps": 43.42102084518588,
+      "input_throughput_tps": 280.29837352542546,
+      "total_token_throughput_tps": 323.7193943706114,
+      "wall_time_s": 354.18328958300117,
+      "error_samples": []
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 57,
+      "failed": 43,
+      "total_tokens_generated": 8005,
+      "total_output_tokens": 8005,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 5658.843154280922,
+      "ttft_p50_ms": 3967.4219159933273,
+      "ttft_p99_ms": 29287.501750004594,
+      "throughput_avg_tps": 2.3958822151288492,
+      "throughput_p50_tps": 2.2775630030137997,
+      "itl_avg_ms": 649.5106654950098,
+      "itl_p50_ms": 439.0657165354277,
+      "latency_avg_s": 86.37416306215853,
+      "latency_p50_s": 72.318575917001,
+      "latency_p99_s": 284.02256395800214,
+      "output_throughput_tps": 3.3875969158131514,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 2363.0320250420045,
+      "error_samples": [
+        ""
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 1/57 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 155.7427227920125,
+      "error": "no successful requests",
+      "error_samples": [
+        "Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>",
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8003), [Errno 61] Connect call failed ('::1', 8003, 0, 0)]",
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8003, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8003)]"
+      ]
+    }
+  ],
+  "total_duration_s": 3787.3778784580063
+}
