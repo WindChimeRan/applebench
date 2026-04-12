@@ -48,9 +48,12 @@ While monitoring, watch for these patterns:
 - Framework-level errors (non-zero exits from serve/benchmark — `run_all.sh` uses `|| true` per framework, so it will continue past failures)
 - `"Weekly run finished"` — wrapper finished
 
-**Do not intervene mid-run.** Let `run_all.sh` pass through all frameworks once, even if some fail. Recovery happens in Phase 2.
+**Do not intervene on normal failures** — let `run_all.sh` pass through all frameworks once, even if some fail. Recovery happens in Phase 2.
 
-If the whole run has been silent for >20 minutes with no output, tail the log file (`results/<MODEL>/weekly_<DATE>.log`) via Read to check state. If truly hung (no process activity), fall back to Phase 3 (post-mortem).
+**But do detect hangs.** A single framework benchmark should complete in ~20-40 minutes. Use `ScheduleWakeup` to check the log every 30 minutes. On each check, tail the log and compare to the previous check:
+- If a new framework has started or completed → progress is normal, continue waiting.
+- If the log is unchanged for 30+ minutes, or the same framework has been running for >45 minutes → it is hung. Kill the `benchmark.py` process for that framework (`kill <PID>`), which will unblock `run_all.sh` to continue. Do **not** kill the orchestrator (`run_all.sh` / `weekly_bench.sh`).
+- If the whole run has been silent for >20 minutes with no output, tail the log file (`results/<MODEL>/weekly_<DATE>.log`) via Read to check state. If truly hung (no process activity), fall back to Phase 3 (post-mortem).
 
 ### Phase 2 — Identify failures
 
