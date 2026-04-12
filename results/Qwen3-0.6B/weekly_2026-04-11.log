@@ -4348,3 +4348,37 @@ Report saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/REPORT.md
 =========================================
  [00:30:17] sync_github.sh
 =========================================
+[weekly/2026-04-11 1e7c08d] Benchmark results: 2026-04-12 00:30
+ 20 files changed, 5407 insertions(+), 1016 deletions(-)
+ delete mode 100644 results/Qwen3-0.6B/inferrs_20260409_003618.json
+ create mode 100644 results/Qwen3-0.6B/inferrs_20260411_183544.json
+ delete mode 100644 results/Qwen3-0.6B/llamacpp_20260408_215848.json
+ delete mode 100644 results/Qwen3-0.6B/llamacpp_20260409_004557.json
+ create mode 100644 results/Qwen3-0.6B/llamacpp_20260411_162739.json
+ delete mode 100644 results/Qwen3-0.6B/mistralrs_20260408_222031.json
+ create mode 100644 results/Qwen3-0.6B/mistralrs_20260411_173827.json
+ delete mode 100644 results/Qwen3-0.6B/mlx_lm_20260408_220443.json
+ delete mode 100644 results/Qwen3-0.6B/mlx_lm_20260409_005117.json
+ create mode 100644 results/Qwen3-0.6B/mlx_lm_20260411_163335.json
+ delete mode 100644 results/Qwen3-0.6B/ollama_20260408_231250.json
+ create mode 100644 results/Qwen3-0.6B/ollama_20260411_183433.json
+ delete mode 100644 results/Qwen3-0.6B/omlx_20260408_223923.json
+ create mode 100644 results/Qwen3-0.6B/omlx_20260411_175746.json
+ delete mode 100644 results/Qwen3-0.6B/vllm_metal_20260408_223413.json
+ create mode 100644 results/Qwen3-0.6B/vllm_metal_20260411_175232.json
+ create mode 100644 results/Qwen3-0.6B/weekly_2026-04-11.journal.md
+ create mode 100644 results/Qwen3-0.6B/weekly_2026-04-11.log
+fatal: The current branch weekly/2026-04-11 has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin weekly/2026-04-11
+
+To have this happen automatically for branches without a tracking
+upstream, see 'push.autoSetupRemote' in 'git help config'.
+
+Push failed — check remote configuration
+[00:30:17] sync_github.sh: OK
+
+=========================================
+ Weekly run finished: 2026-04-12T00:30:17
+=========================================
