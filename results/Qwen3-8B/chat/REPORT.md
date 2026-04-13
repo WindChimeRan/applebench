@@ -1,7 +1,8 @@
-# AppleBench Results
+# AppleBench Results — Qwen3-8B (chat)
 
 **Model:** Qwen3-8B
-**Generated:** 2026-04-10 09:50:19
+**Split:** chat
+**Generated:** 2026-04-13 18:11:16
 
 ## Concurrency: 1
 
@@ -12,7 +13,9 @@
 | TTFT p50 (ms) | 1324.0 | 89454.8 | 189.7 | 1303.8 | 1637.4 | 1197.0 |
 | TTFT p99 (ms) | 15960.2 | 89454.8 | 288.1 | 8766.1 | 16611.1 | 7235.2 |
 | Throughput avg (tok/s) | 17.3 | 0.0 | 181.9 | 7.7 | 2.0 | 21.7 |
-| Aggregate throughput (tok/s) | 455.0 | 0.0 | 7831.6 | 374.3 | 36.2 | 804.4 |
+| Output throughput (tok/s) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Input throughput (tok/s) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Total token throughput (tok/s) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | ITL avg (ms) | 58.5 | 19008.0 | 5.5 | 129.3 | 552.2 | 46.1 |
 | ITL p50 (ms) | 55.1 | 23514.9 | 5.4 | 129.4 | 441.3 | 45.3 |
 | Latency avg (s) | 12.97 | 121.03 | 1.03 | 22.86 | 64.62 | 9.16 |
@@ -28,7 +31,9 @@
 | TTFT p50 (ms) | 3290.9 | 0.0 | 405.5 | 23403.5 | 0.0 | 4674.3 |
 | TTFT p99 (ms) | 34660.5 | 0.0 | 1800.7 | 49752.0 | 0.0 | 22622.1 |
 | Throughput avg (tok/s) | 3.7 | 0.0 | 32.3 | 0.7 | 0.0 | 5.1 |
-| Aggregate throughput (tok/s) | 136.1 | 0.0 | 1494.1 | 5.0 | 0.0 | 193.3 |
+| Output throughput (tok/s) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Input throughput (tok/s) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Total token throughput (tok/s) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | ITL avg (ms) | 308.9 | 0.0 | 32.0 | 1621.4 | 0.0 | 216.7 |
 | ITL p50 (ms) | 302.4 | 0.0 | 32.5 | 1491.8 | 0.0 | 216.9 |
 | Latency avg (s) | 55.54 | 0.00 | 5.26 | 124.11 | 0.00 | 40.26 |
@@ -44,7 +49,9 @@
 | TTFT p50 (ms) | 12004.9 | 0.0 | 5584.7 | 0.0 | 0.0 | 22099.3 |
 | TTFT p99 (ms) | 48929.7 | 0.0 | 7139.1 | 0.0 | 0.0 | 51432.5 |
 | Throughput avg (tok/s) | 2.5 | 0.0 | 32.9 | 0.0 | 0.0 | 3.6 |
-| Aggregate throughput (tok/s) | 85.6 | 0.0 | 949.5 | 0.0 | 0.0 | 49.6 |
+| Output throughput (tok/s) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Input throughput (tok/s) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Total token throughput (tok/s) | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
 | ITL avg (ms) | 476.5 | 0.0 | 31.3 | 0.0 | 0.0 | 327.2 |
 | ITL p50 (ms) | 465.1 | 0.0 | 31.9 | 0.0 | 0.0 | 276.4 |
 | Latency avg (s) | 86.18 | 0.00 | 9.94 | 0.00 | 0.00 | 67.38 |

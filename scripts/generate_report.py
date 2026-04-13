@@ -31,12 +31,24 @@ def main():
     frameworks = data["frameworks"]
     results = data["results"]
 
-    model_name = data.get("model_name", results_dir.name)
+    # Prefer model name from the comparison file. Fall back to dir layout:
+    # if results_dir is results/<MODEL>/<split>, the model name lives one up.
+    if data.get("model_name"):
+        model_name = data["model_name"]
+    elif results_dir.name in ("chat", "agent"):
+        model_name = results_dir.parent.name
+    else:
+        model_name = results_dir.name
+
+    split = data.get("split") or (results_dir.name if results_dir.name in ("chat", "agent") else None)
 
     lines = []
-    lines.append("# AppleBench Results")
+    title_suffix = f" — {model_name}" + (f" ({split})" if split else "")
+    lines.append(f"# AppleBench Results{title_suffix}")
     lines.append("")
     lines.append(f"**Model:** {model_name}")
+    if split:
+        lines.append(f"**Split:** {split}")
     lines.append(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     lines.append("")
 

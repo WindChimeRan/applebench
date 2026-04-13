@@ -80,10 +80,15 @@ FRAMEWORKS=(
 
 CONCURRENCY_ARG=$(echo $CONCURRENCY_LEVELS | tr ' ' ',')
 
+# Per-split output directory: results/<MODEL>/<split>/
+SPLIT_RESULTS_DIR="$RESULTS_DIR/$SPLIT"
+mkdir -p "$SPLIT_RESULTS_DIR"
+
 echo "========================================="
 echo " AppleBench — Full Benchmark Run"
 echo " Model: $MODEL_NAME"
 echo " Split: $SPLIT"
+echo " Output: $SPLIT_RESULTS_DIR"
 echo " Skip-existing: $SKIP_EXISTING"
 echo " $(date)"
 echo "========================================="
@@ -93,7 +98,7 @@ echo ""
 # (skipped in resume mode so prior successful frameworks stay intact)
 if [ "$SKIP_EXISTING" = "false" ]; then
     echo "Cleaning old result files..."
-    rm -f "$RESULTS_DIR"/*_*.json "$RESULTS_DIR/comparison.json"
+    rm -f "$SPLIT_RESULTS_DIR"/*_*.json "$SPLIT_RESULTS_DIR/comparison.json"
 else
     echo "Resume mode — keeping existing results."
 fi
@@ -115,7 +120,7 @@ for entry in "${FRAMEWORKS[@]}"; do
 
     # Skip if --skip-existing and a result file from the last 24h exists
     if [ "$SKIP_EXISTING" = "true" ]; then
-        recent=$(find "$RESULTS_DIR" -maxdepth 1 -name "${name}_*.json" -mtime -1 2>/dev/null | head -1)
+        recent=$(find "$SPLIT_RESULTS_DIR" -maxdepth 1 -name "${name}_*.json" -mtime -1 2>/dev/null | head -1)
         if [ -n "$recent" ]; then
             echo "Skipping $name — recent result exists: $(basename "$recent")"
             continue
@@ -142,7 +147,7 @@ for entry in "${FRAMEWORKS[@]}"; do
         --concurrency "$CONCURRENCY_ARG" \
         --requests "$BENCHMARK_REQUESTS" \
         --warmup "$WARMUP_REQUESTS" \
-        --results-dir "$RESULTS_DIR" \
+        --results-dir "$SPLIT_RESULTS_DIR" \
         --split "$SPLIT" \
         $MODEL_FLAG || true
     echo ""
@@ -163,8 +168,8 @@ done
 echo "==========================================="
 echo " Collecting results and generating report"
 echo "==========================================="
-python "$SCRIPT_DIR/collect_results.py" --results-dir "$RESULTS_DIR"
-python "$SCRIPT_DIR/generate_report.py" --results-dir "$RESULTS_DIR"
+python "$SCRIPT_DIR/collect_results.py" --results-dir "$SPLIT_RESULTS_DIR"
+python "$SCRIPT_DIR/generate_report.py" --results-dir "$SPLIT_RESULTS_DIR"
 
 echo ""
 echo "========================================="

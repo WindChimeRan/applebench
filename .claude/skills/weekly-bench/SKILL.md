@@ -5,14 +5,28 @@ description: Run the weekly AppleBench pipeline unattended — update frameworks
 
 # Weekly Bench Orchestrator
 
-You are orchestrating AppleBench's weekly benchmark run. Your job is to execute the full pipeline (`update_all.sh` → `run_all.sh` → `sync_github.sh`) unattended, recover from per-framework failures with targeted fixes when you can, and produce a structured journal so the user can review what happened on Monday morning.
+You are orchestrating AppleBench's weekly benchmark run. Your job is to execute the full pipeline (`update_all.sh` → `run_all.sh` for each split → `sync_github.sh`) unattended, recover from per-framework failures with targeted fixes when you can, and produce a structured journal so the user can review what happened on Monday morning.
 
 This skill is for this repo only. It assumes `caffeinate`, bash, and all the scripts in `scripts/` exist.
 
+## Splits
+
+The benchmark runs over **two prompt splits** by default: `chat` (single-turn) and `agent` (multi-turn, ~4K input tokens, prefill-heavy). Each split lives in its own results subdirectory and produces its own `comparison.json` + `REPORT.md`:
+
+```
+results/<MODEL>/
+├── chat/{<fw>_<ts>.json, comparison.json, REPORT.md}
+├── agent/{<fw>_<ts>.json, comparison.json, REPORT.md}
+├── weekly_<DATE>.log
+└── weekly_<DATE>.journal.md
+```
+
+Treat the unit of success as the **(framework, split) cell**, not the framework. A framework can pass chat and fail agent — both must be tracked independently.
+
 ## Goal
 
-Finish the weekly run with as many frameworks benchmarked as possible, leaving behind:
-1. Updated `results/<MODEL>/comparison.json` and `REPORT.md`
+Finish the weekly run with as many (framework, split) cells benchmarked as possible, leaving behind:
+1. Updated `results/<MODEL>/<split>/comparison.json` and `REPORT.md` for each split
 2. A structured journal at `results/<MODEL>/weekly_<YYYY-MM-DD>.journal.md`
 3. Any auto-fix commits pushed to a `weekly/<YYYY-MM-DD>` branch (never main directly)
 
@@ -40,36 +54,54 @@ Run `scripts/weekly_bench.sh` as a background process:
 bash scripts/weekly_bench.sh 2>&1
 ```
 
-Use `run_in_background: true`. Capture the bash job ID. Then use the `Monitor` tool to stream output.
+Use `run_in_background: true`. Capture the bash job ID. Then use the `Monitor` tool to stream output. The wrapper runs **two full passes** of `run_all.sh` — one per split (chat, then agent) — so expect ~16 framework cycles total (8 frameworks × 2 splits) before `Weekly run finished`.
 
 While monitoring, watch for these patterns:
+- `"run_all.sh --split chat"` / `"run_all.sh --split agent"` — split boundary
 - `" Benchmarking: <name>"` — a framework run is starting
-- `" AppleBench complete!"` — the whole run finished cleanly
+- `" AppleBench complete!"` — one split finished cleanly
 - Framework-level errors (non-zero exits from serve/benchmark — `run_all.sh` uses `|| true` per framework, so it will continue past failures)
 - `"Weekly run finished"` — wrapper finished
 
 **Do not intervene on normal failures** — let `run_all.sh` pass through all frameworks once, even if some fail. Recovery happens in Phase 2.
 
-**But do detect hangs.** A single framework benchmark should complete in ~20-40 minutes. Use `ScheduleWakeup` to check the log every 30 minutes. On each check, tail the log and compare to the previous check:
+**Track the active split** so you know which subdirectory the current framework's results land in (`results/<MODEL>/chat/` vs `results/<MODEL>/agent/`).
+
+**But do detect hangs.** Per-framework wall-time budget depends on the split:
+- **chat split**: a single framework should complete in ~20-40 minutes. Hang threshold: 45 minutes for the same framework, or 30 minutes of unchanged log.
+- **agent split**: prompts are ~4K input tokens — both prefill and decode are slower, and KV cache pressure at concurrency 16 is much higher. Allow up to ~60-90 minutes per framework before declaring a hang. Hang threshold: 90 minutes for the same framework, or 45 minutes of unchanged log.
+
+Use `ScheduleWakeup` to check the log every 30 minutes. On each check, tail the log and compare to the previous check:
 - If a new framework has started or completed → progress is normal, continue waiting.
-- If the log is unchanged for 30+ minutes, or the same framework has been running for >45 minutes → it is hung. Kill the `benchmark.py` process for that framework (`kill <PID>`), which will unblock `run_all.sh` to continue. Do **not** kill the orchestrator (`run_all.sh` / `weekly_bench.sh`).
+- If the log is unchanged past the threshold for the active split → it is hung. Kill the `benchmark.py` process for that framework (`kill <PID>`), which will unblock `run_all.sh` to continue. Do **not** kill the orchestrator (`run_all.sh` / `weekly_bench.sh`).
 - If the whole run has been silent for >20 minutes with no output, tail the log file (`results/<MODEL>/weekly_<DATE>.log`) via Read to check state. If truly hung (no process activity), fall back to Phase 3 (post-mortem).
 
 ### Phase 2 — Identify failures
 
-When Phase 1 finishes, inventory what succeeded and what didn't:
+When Phase 1 finishes, inventory what succeeded and what didn't, **per (framework, split)**:
 
 ```bash
-# Frameworks with a result file from the last 24h = succeeded
-ls -la results/<MODEL>/<fw>_*.json
-find results/<MODEL> -maxdepth 1 -name '<fw>_*.json' -mtime -1
+# A (framework, split) cell succeeded if a result file from the last 24h exists
+# in results/<MODEL>/<split>/
+for split in chat agent; do
+    for fw in llamacpp mlx_lm mistralrs vllm_metal vllm_mlx omlx ollama inferrs; do
+        recent=$(find "results/<MODEL>/$split" -maxdepth 1 -name "${fw}_*.json" -mtime -1 2>/dev/null | head -1)
+        if [ -n "$recent" ]; then
+            echo "ok      $split $fw $(basename $recent)"
+        else
+            echo "FAILED  $split $fw"
+        fi
+    done
+done
 ```
 
-For each of the 8 frameworks (`llamacpp`, `mlx_lm`, `mistralrs`, `vllm_metal`, `vllm_mlx`, `omlx`, `ollama`, `inferrs`), classify:
-- **ok** — has a result file from the last 24h
-- **failed** — no recent result file
+For each of the 8 frameworks × 2 splits = 16 cells, classify:
+- **ok** — has a result file from the last 24h in the split's subdirectory
+- **failed** — no recent result file in that split's subdirectory
 
-For each failed framework, gather evidence before deciding:
+A framework can be `ok` in chat and `failed` in agent (or vice versa). Treat these as independent diagnoses — the agent split's larger context (~4K input tokens) exposes failure modes (KV cache OOM, prompt-length limits, tokenizer bugs on multi-turn payloads) that chat doesn't.
+
+For each failed cell, gather evidence before deciding:
 
 ```bash
 # 1. The framework's serve log (if the serve script captures it)
@@ -137,7 +169,7 @@ Skipping is a valid outcome. It's not failure — it's a clear signal for the us
 
 ### Phase 4 — Verify the fix (for Action A only)
 
-Before re-running the full benchmark, verify in isolation:
+Before re-running the full benchmark, verify in isolation. **Use the same split that failed** — a chat-only verify will not catch agent-specific regressions (longer context, multi-turn payloads).
 
 ```bash
 # 1. Start the server manually
@@ -147,12 +179,12 @@ bash scripts/serve_<fw>.sh
 sleep 10
 curl -s http://localhost:<port>/v1/models
 
-# 3. Run a handful of quick requests via benchmark.py
+# 3. Run a handful of quick requests via benchmark.py against the failing split.
 # (use --requests 3 --concurrency 1 --warmup 0 to make it fast)
 source .venvs/bench/bin/activate
 python scripts/benchmark.py --framework <fw> --port <port> \
     --requests 3 --concurrency 1 --warmup 0 \
-    --results-dir /tmp/fix_verify_$$ --split chat || echo "verify failed"
+    --results-dir /tmp/fix_verify_$$ --split <chat|agent> || echo "verify failed"
 
 # 4. Stop the server
 bash scripts/stop_<fw>.sh
@@ -161,47 +193,57 @@ bash scripts/stop_<fw>.sh
 rm -rf /tmp/fix_verify_$$
 ```
 
+If the fix is supposed to repair both splits (e.g., a server-side flag change), verify both — run step 3 twice, once with `--split chat` and once with `--split agent`.
+
 If verification fails:
 - Revert the fix: `git checkout -- <files>`
 - Fall through to Action (C), skip.
 
 If verification succeeds:
-- Commit the fix: `git add <files> && git commit -m "auto-fix(<fw>): <what changed> <why>"` — clear, specific messages. Reference the upstream commit or changelog entry if you have one.
+- Commit the fix: `git add <files> && git commit -m "auto-fix(<fw>, <split>): <what changed> <why>"` — clear, specific messages. Mention which split(s) the fix is verified against. Reference the upstream commit or changelog entry if you have one.
 - Continue to Phase 5.
 
-### Phase 5 — Retry the failed/fixed frameworks
+### Phase 5 — Retry the failed/fixed cells
 
-For each framework that (a) had a fix applied and verified, or (b) is being retried once for transient reasons, relaunch `run_all.sh` targeted at just those frameworks:
+For each (framework, split) cell that (a) had a fix applied and verified, or (b) is being retried once for transient reasons, relaunch `run_all.sh` **targeted at one split**, listing only the frameworks that need to retry on that split:
 
 ```bash
-bash scripts/run_all.sh --skip-existing <fw1> <fw2> ...
+# Retry chat-only failures
+bash scripts/run_all.sh --split chat --skip-existing <fw1> <fw2> ...
+
+# Retry agent-only failures (separate invocation)
+bash scripts/run_all.sh --split agent --skip-existing <fw3> <fw4> ...
 ```
 
-The `--skip-existing` flag ensures successful frameworks from Phase 1 are preserved.
+The `--skip-existing` flag ensures successful cells from Phase 1 (within that split's subdirectory) are preserved. Note that `--skip-existing` is per-split — it looks at `results/<MODEL>/<split>/`, so a chat retry will not touch agent results and vice versa.
 
-After this retry pass, re-inventory. Update the journal with final status.
+After this retry pass, re-inventory all 16 cells. Update the journal with final status.
 
 ### Phase 6 — Finalize
 
-1. Regenerate `comparison.json` and `REPORT.md` (the final `run_all.sh` call already does this, but run it again if you retried anything):
+1. Regenerate `comparison.json` and `REPORT.md` **per split** (the final `run_all.sh` call already does this for any split it ran, but re-run for any split you retried anything in):
    ```bash
    source .venvs/bench/bin/activate
-   python scripts/collect_results.py --results-dir $RESULTS_DIR
-   python scripts/generate_report.py --results-dir $RESULTS_DIR
+   for split in chat agent; do
+       if [ -d "$RESULTS_DIR/$split" ] && ls "$RESULTS_DIR/$split"/*_*.json &>/dev/null; then
+           python scripts/collect_results.py --results-dir "$RESULTS_DIR/$split"
+           python scripts/generate_report.py --results-dir "$RESULTS_DIR/$split"
+       fi
+   done
    ```
 
-2. Write the final journal (see format below).
+2. Write the final journal (see format below). One journal covers both splits.
 
 3. Commit + push:
-   - `git add $RESULTS_DIR && git commit -m "results: weekly run <DATE>"` on the `weekly/<DATE>` branch
+   - `git add $RESULTS_DIR && git commit -m "results: weekly run <DATE> (chat + agent)"` on the `weekly/<DATE>` branch (omit the part in parens if you only ran one split)
    - `git push -u origin weekly/<DATE>`
    - Do **not** merge to main automatically. The user reviews the branch.
 
-4. Summary to user: how many ok / fixed / skipped, where the journal lives, what they should review.
+4. Summary to user: how many cells ok / fixed / skipped per split, where the two REPORT.md files live, where the journal lives, what they should review.
 
 ## Journal Format
 
-Write to `$RESULTS_DIR/weekly_<DATE>.journal.md`. Structure:
+Write to `$RESULTS_DIR/weekly_<DATE>.journal.md` (one journal at the model level — covers both splits). Structure:
 
 ```markdown
 # Weekly Bench Run — <DATE>
@@ -210,11 +252,12 @@ Write to `$RESULTS_DIR/weekly_<DATE>.journal.md`. Structure:
 - Started: <ISO timestamp>
 - Finished: <ISO timestamp>
 - Model: <MODEL_NAME>
-- Split: <chat|agent>
+- Splits run: <chat, agent | chat | agent>
 - Status: <completed|completed_with_fixes|completed_with_skips|partial>
 - Branch: weekly/<DATE>
+- Reports: results/<MODEL>/chat/REPORT.md, results/<MODEL>/agent/REPORT.md
 
-## Frameworks
+## Frameworks — chat split
 | Framework | Status | Notes |
 |-----------|--------|-------|
 | llamacpp | ok | — |
@@ -226,29 +269,41 @@ Write to `$RESULTS_DIR/weekly_<DATE>.journal.md`. Structure:
 | ollama | ok | — |
 | inferrs | ok | — |
 
+## Frameworks — agent split
+| Framework | Status | Notes |
+|-----------|--------|-------|
+| llamacpp | ok | — |
+| mlx_lm | ok | — |
+| mistralrs | skipped | crashed at concurrency 16 (KV OOM, larger context) |
+| vllm_metal | ok | — |
+| vllm_mlx | ok | — |
+| omlx | ok | — |
+| ollama | ok | — |
+| inferrs | skipped | needs --paged-attention for 4K prompts |
+
 ## Fixes Applied
 
-### <framework>
+### <framework> (<split>)
 - **Error**: <first ~5 lines of error>
 - **Diagnosis**: <your reasoning, 1-3 sentences>
 - **Reference**: <upstream commit URL, changelog link, or "none found">
 - **Fix**: <file path + brief description>
-- **Verification**: <what tests passed>
+- **Verification**: <what tests passed, which split(s)>
 - **Commit**: <SHA and message>
 
-## Skipped Frameworks
+## Skipped Cells
 
-### <framework>
+### <framework> (<split>)
 - **Error**: <first ~5 lines of error>
 - **Why skipped**: <your reasoning>
-- **Prior occurrences**: <if this also happened in previous weeks>
+- **Prior occurrences**: <if this also happened in previous weeks, in the same split>
 - **Relevant logs**: <file paths + key excerpts>
 
 ## Suspicious Successes
 
-(Frameworks that ran but produced unusual numbers — flag for human review)
+(Cells that ran but produced unusual numbers — flag for human review. Always compare chat-to-chat and agent-to-agent only — never cross-compare splits.)
 
-### <framework>
+### <framework> (<split>)
 - **Observation**: <metric>: this week <N>, last week <M> (<X>x change)
 - **Note**: Not auto-fixed. Please review.
 
@@ -262,13 +317,14 @@ Keep the journal terse. It's a log for the user (and future Claude), not an essa
 
 ## Principles
 
-- **Finish the run, even if imperfect.** Don't let one broken framework block the others.
-- **One fix attempt per framework per run.** No loops.
+- **Finish the run, even if imperfect.** Don't let one broken cell block the others. A chat failure does not stop agent from running, and vice versa.
+- **One fix attempt per (framework, split) cell per run.** No loops.
+- **The unit of success is the cell, not the framework.** Track and report each (framework, split) independently — chat success doesn't excuse agent failure.
 - **Never modify forbidden files** even if it would fix the issue. Escalate instead.
 - **Branch, don't push to main.** All auto-fix commits land on `weekly/<DATE>` for user review.
 - **Log everything.** If it's not in the journal, it didn't happen.
-- **Suspicious success ≠ success.** Tokens/sec 10x off from last week is a signal, not a fix target.
-- **Prior skips matter.** If framework X was skipped last week for reason Y and reason Y still holds, skip again silently (one line in the journal). Don't re-diagnose from scratch.
+- **Suspicious success ≠ success.** Tokens/sec 10x off from last week is a signal, not a fix target. Compare chat-to-chat and agent-to-agent only — never cross-compare splits, since prefill-heavy agent prompts produce systematically different numbers.
+- **Prior skips matter.** If a (framework, split) cell was skipped last week for reason Y and reason Y still holds, skip again silently (one line in the journal). Don't re-diagnose from scratch.
 
 ## When to bail out completely
 

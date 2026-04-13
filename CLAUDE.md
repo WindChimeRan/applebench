@@ -9,13 +9,13 @@ AppleBench benchmarks 8 local LLM inference frameworks on Apple Silicon side-by-
 ## Key Commands
 
 ```bash
-# Full benchmark (default: chat split, Qwen3-0.6B)
+# Full benchmark (one split at a time; default: chat, Qwen3-0.6B)
 scripts/run_all.sh
 
-# Agent split (multi-turn, tool-calling workload)
+# Agent split (multi-turn, ~4K input tokens, prefill-heavy)
 scripts/run_all.sh --split agent
 
-# Resume an interrupted run (skip frameworks with results <24h old)
+# Resume an interrupted run (skip frameworks with results <24h old, scoped to the split)
 scripts/run_all.sh --skip-existing
 
 # Specific model
@@ -25,8 +25,10 @@ scripts/run_all.sh --model qwen3-30b-a3b
 scripts/run_all.sh llamacpp omlx
 scripts/run_all.sh --split agent --model qwen3-30b-a3b llamacpp
 
-# Unattended weekly run (wraps update → run → sync under caffeinate + logging)
+# Unattended weekly run — runs BOTH splits (chat then agent) by default,
+# wraps update → run (×2) → sync under caffeinate + logging
 scripts/weekly_bench.sh
+scripts/weekly_bench.sh --split chat                     # constrain to one split
 scripts/weekly_bench.sh --skip-update --skip-existing    # resume-only mode
 
 # Install / update everything
@@ -51,9 +53,19 @@ scripts/stop_llamacpp.sh
 - `stop_<fw>.sh` — kill by PID with SIGTERM→wait→SIGKILL fallback
 - `update_<fw>.sh` — pull latest + rebuild/reinstall
 
-**Benchmark pipeline** (`run_all.sh`): for each framework → serve → `benchmark.py` → stop → cleanup → cooldown. Results go to `results/<MODEL_NAME>/<framework>_<timestamp>.json`. Then `collect_results.py` picks the latest per framework (by mtime) into `comparison.json`, and `generate_report.py` renders `REPORT.md`. `sync_github.sh` commits and pushes the `results/` tree. `--skip-existing` makes the pipeline resumable: frameworks with result files newer than 24h are skipped, and old results are preserved rather than deleted at startup.
+**Benchmark pipeline** (`run_all.sh`): one split per invocation. For each framework → serve → `benchmark.py` → stop → cleanup → cooldown. Results go to `results/<MODEL_NAME>/<split>/<framework>_<timestamp>.json`. Then `collect_results.py` picks the latest per framework (by mtime, scoped to the split's subdir) into `<split>/comparison.json`, and `generate_report.py` renders `<split>/REPORT.md`. `sync_github.sh` commits and pushes the `results/` tree. `--skip-existing` makes the pipeline resumable per-split: frameworks with result files newer than 24h in the active split's subdir are skipped, and old results are preserved rather than deleted at startup.
 
-**Weekly workflow:** `scripts/weekly_bench.sh` is the unattended wrapper — it runs `update_all.sh → run_all.sh → sync_github.sh` under `caffeinate -i -m` (prevents Mac sleep) and tees all output to `results/<MODEL>/weekly_<date>.log`. It continues past per-framework failures so a single broken framework doesn't block the rest. Intelligent recovery (diagnose failures, apply scoped fixes, verify, retry with `--skip-existing`) lives in the `.claude/skills/weekly-bench/` skill, invoked as `/weekly-bench`. The skill commits auto-fixes to a `weekly/<date>` branch (never main) and produces a structured journal at `results/<MODEL>/weekly_<date>.journal.md`.
+**Results layout** (per model):
+```
+results/<MODEL_NAME>/
+├── chat/{<fw>_<ts>.json, comparison.json, REPORT.md}
+├── agent/{<fw>_<ts>.json, comparison.json, REPORT.md}
+├── weekly_<DATE>.log
+└── weekly_<DATE>.journal.md
+```
+`comparison.json` and `REPORT.md` are per-split — there is no model-level aggregate. Weekly logs and journals stay at the model level since a single weekly run covers both splits.
+
+**Weekly workflow:** `scripts/weekly_bench.sh` is the unattended wrapper — it runs `update_all.sh → run_all.sh --split chat → run_all.sh --split agent → sync_github.sh` under `caffeinate -i -m` (prevents Mac sleep) and tees all output to `results/<MODEL>/weekly_<date>.log`. Both splits run by default; pass `--split chat` or `--split agent` to constrain to one. It continues past per-framework failures so a single broken cell doesn't block the rest, and chat failures don't stop agent from running. Intelligent recovery (diagnose failures per `(framework, split)` cell, apply scoped fixes, verify against the matching split, retry with `--skip-existing`) lives in the `.claude/skills/weekly-bench/` skill, invoked as `/weekly-bench`. The skill commits auto-fixes to a `weekly/<date>` branch (never main) and produces a structured journal at `results/<MODEL>/weekly_<date>.journal.md` with separate per-split status tables.
 
 **Benchmark defaults** (in `config.sh`): `CONCURRENCY_LEVELS="1 8 16"`, `BENCHMARK_REQUESTS=100` per level, `WARMUP_REQUESTS=3`, `COOLDOWN_SECONDS=60` between frameworks. Override via `benchmark.py` flags (`--concurrency`, `--requests`, `--warmup`) when running a single framework manually.
 

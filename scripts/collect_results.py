@@ -41,11 +41,18 @@ def main():
         print("No results found")
         sys.exit(1)
 
-    # Derive model name from results directory name
-    model_name = results_dir.name
+    # If results_dir is a split subdir (results/<MODEL>/<split>), the model
+    # name lives one level up. Otherwise the dir name is the model name.
+    if results_dir.name in ("chat", "agent"):
+        model_name = results_dir.parent.name
+        split = results_dir.name
+    else:
+        model_name = results_dir.name
+        split = None
 
     comparison = {
         "model_name": model_name,
+        "split": split,
         "frameworks": list(frameworks.keys()),
         "results": frameworks,
     }

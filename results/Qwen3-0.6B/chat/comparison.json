@@ -1,5 +1,6 @@
 {
   "model_name": "Qwen3-0.6B",
+  "split": "chat",
   "frameworks": [
     "llamacpp",
     "vllm_metal",

@@ -1,5 +1,6 @@
 {
   "model_name": "Qwen3-8B",
+  "split": "chat",
   "frameworks": [
     "vllm_metal",
     "ollama",
