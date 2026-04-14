@@ -4,14 +4,16 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/config.sh"
 
-if ! command -v inferrs &>/dev/null; then
-    echo "Error: inferrs not found. Run install_inferrs.sh first."
+SERVER="$FRAMEWORKS_DIR/inferrs/target/release/inferrs"
+
+if [ ! -f "$SERVER" ]; then
+    echo "Error: inferrs binary not found. Run install_inferrs.sh first."
     exit 1
 fi
 
 echo "=== Starting inferrs server on port $INFERRS_PORT ==="
 
-inferrs serve "$HF_MODEL" \
+"$SERVER" serve "$HF_MODEL" \
     --port "$INFERRS_PORT" \
     --host 0.0.0.0 \
     --device metal \

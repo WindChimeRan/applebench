@@ -1,17 +1,21 @@
 #!/bin/bash
-# Install inferrs via brew
+# Install inferrs from source
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/config.sh"
 
+REPO_DIR="$FRAMEWORKS_DIR/inferrs"
+
 echo "=== Installing inferrs ==="
 
-if command -v inferrs &>/dev/null; then
-    echo "inferrs already installed: $(inferrs --version 2>&1 || echo 'unknown version')"
+if [ -d "$REPO_DIR" ]; then
+    echo "inferrs already cloned, run update_inferrs.sh to update"
 else
-    echo "Installing inferrs via brew..."
-    brew tap ericcurtin/inferrs
-    brew install inferrs
+    git clone https://github.com/ericcurtin/inferrs.git "$REPO_DIR"
 fi
 
+cd "$REPO_DIR"
+cargo build --release
+
 echo "=== inferrs installed ==="
+echo "Server binary: $REPO_DIR/target/release/inferrs"

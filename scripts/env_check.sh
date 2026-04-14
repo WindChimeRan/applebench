@@ -111,10 +111,10 @@ else
     warn "ollama not found" "Run: scripts/install_ollama.sh"
 fi
 
-if command -v inferrs &>/dev/null; then
+if [ -f "$FRAMEWORKS_DIR/inferrs/target/release/inferrs" ]; then
     ok "inferrs"
 else
-    warn "inferrs not found" "Run: scripts/install_inferrs.sh"
+    warn "inferrs binary not found" "Run: scripts/install_inferrs.sh"
 fi
 
 if [ -d "$VENVS_DIR/vllm_mlx" ]; then
