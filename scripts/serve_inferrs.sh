@@ -20,7 +20,7 @@ echo "=== Starting inferrs server on port $INFERRS_PORT ==="
     --dtype bf16 \
     --max-seq-len 16384 \
     --initial-blocks 512 \
-    --paged-attention \
+    --paged-attention=0.5 \
     &> "$PROJECT_DIR/.frameworks/inferrs_server.log" &
 
 echo $! > "$PROJECT_DIR/.frameworks/inferrs_server.pid"
