@@ -18,7 +18,6 @@ echo "=== Starting vllm-mlx server on port $VLLM_MLX_PORT ==="
 vllm-mlx serve "$MLX_MODEL" \
     --port "$VLLM_MLX_PORT" \
     --continuous-batching \
-    --gpu-memory-utilization 0.5 \
     &> "$PROJECT_DIR/.frameworks/vllm_mlx_server.log" &
 
 echo $! > "$PROJECT_DIR/.frameworks/vllm_mlx_server.pid"
