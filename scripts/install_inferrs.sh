@@ -6,6 +6,10 @@ source "$SCRIPT_DIR/config.sh"
 
 REPO_DIR="$FRAMEWORKS_DIR/inferrs"
 
+# Ensure cargo is on PATH (rustup installs to ~/.cargo/bin but unattended
+# shells like weekly_bench.sh don't source ~/.zshrc)
+[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+
 echo "=== Installing inferrs ==="
 
 if [ -d "$REPO_DIR" ]; then
