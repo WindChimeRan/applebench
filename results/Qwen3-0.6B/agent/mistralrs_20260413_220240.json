@@ -1,0 +1,83 @@
+{
+  "framework": "mistralrs",
+  "model": "default",
+  "endpoint": "http://localhost:8003",
+  "timestamp": "2026-04-13T21:42:13",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 24302,
+      "total_output_tokens": 24302,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 1625.2593600540422,
+      "ttft_p50_ms": 1185.499457991682,
+      "ttft_p99_ms": 5773.554374987725,
+      "throughput_avg_tps": 44.73244092441,
+      "throughput_p50_tps": 45.232182894287675,
+      "itl_avg_ms": 22.36615743541233,
+      "itl_p50_ms": 22.108105806941825,
+      "latency_avg_s": 7.034918590840534,
+      "latency_p50_s": 6.602019791025668,
+      "latency_p99_s": 11.923947707982734,
+      "output_throughput_tps": 34.544426760374535,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 703.4998776669963,
+      "error_samples": [],
+      "sanity_warnings": [
+        "server did not report token usage for 1/100 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 11,
+      "failed": 89,
+      "total_tokens_generated": 1982,
+      "total_output_tokens": 1982,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 29202.414768816776,
+      "ttft_p50_ms": 12445.981374999974,
+      "ttft_p99_ms": 109842.04320801655,
+      "throughput_avg_tps": 1.5154168120334865,
+      "throughput_p50_tps": 1.7312496940118076,
+      "itl_avg_ms": 10074.44138402367,
+      "itl_p50_ms": 577.6173771339777,
+      "latency_avg_s": 164.43719586735824,
+      "latency_p50_s": 158.98596399999224,
+      "latency_p99_s": 298.2370435830089,
+      "output_throughput_tps": 4.132397202616415,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 479.6247560000047,
+      "error_samples": [
+        "",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a017_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 0 token(s) for prompt 'a018_vlong_bfcl_v3' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 0 token(s) for prompt 'a019_long_clawsbench' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 0 token(s) for prompt 'a020_vlong_hermes' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "throughput (1.5 tok/s) inconsistent with ITL (10074.4ms, implies ~0.1 tok/s). Ratio: 15.27x.",
+        "server did not report token usage for 3/11 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.030959416995756328,
+      "error": "no successful requests",
+      "error_samples": [
+        "500, message='Internal Server Error', url='http://localhost:8003/v1/chat/completions'"
+      ]
+    }
+  ],
+  "total_duration_s": 1227.9422814160353
+}
