@@ -1,0 +1,99 @@
+{
+  "framework": "inferrs",
+  "model": "Qwen/Qwen3-0.6B",
+  "endpoint": "http://localhost:8007",
+  "timestamp": "2026-04-15T20:43:06",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 4470,
+      "total_output_tokens": 4470,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 2138.0784854100784,
+      "ttft_p50_ms": 918.9490000135265,
+      "ttft_p99_ms": 7860.609208000824,
+      "throughput_avg_tps": 4.9989199685018555,
+      "throughput_p50_tps": 5.495001042253794,
+      "itl_avg_ms": 221.57551798897657,
+      "itl_p50_ms": 169.74416733275922,
+      "latency_avg_s": 13.031868134580437,
+      "latency_p50_s": 8.719763667031657,
+      "latency_p99_s": 97.7088506250293,
+      "output_throughput_tps": 3.430026853093235,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 1303.1967944999924,
+      "error_samples": [],
+      "sanity_warnings": [
+        "server did not report token usage for 100/100 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 96,
+      "failed": 4,
+      "total_tokens_generated": 3047,
+      "total_output_tokens": 3047,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 6169.697009087031,
+      "ttft_p50_ms": 5122.557208000217,
+      "ttft_p99_ms": 19893.284833000507,
+      "throughput_avg_tps": 0.4396660345994617,
+      "throughput_p50_tps": 0.385543996223254,
+      "itl_avg_ms": 2322.076392527739,
+      "itl_p50_ms": 2284.255180498197,
+      "latency_avg_s": 74.51320884589647,
+      "latency_p50_s": 54.689984790980816,
+      "latency_p99_s": 287.6480557080358,
+      "output_throughput_tps": 2.784809793481712,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 1094.1501308750012,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p055_long_out256' (requested max_tokens=256)",
+        ""
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 96/96 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 97,
+      "failed": 3,
+      "total_tokens_generated": 2265,
+      "total_output_tokens": 2265,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 10212.610452708948,
+      "ttft_p50_ms": 7526.563041959889,
+      "ttft_p99_ms": 29568.749749974813,
+      "throughput_avg_tps": 0.22103158533181122,
+      "throughput_p50_tps": 0.16678261057404895,
+      "itl_avg_ms": 5417.720218021425,
+      "itl_p50_ms": 5150.116853998043,
+      "latency_avg_s": 84.59292812115565,
+      "latency_p50_s": 70.0358162499615,
+      "latency_p99_s": 296.7784197080182,
+      "output_throughput_tps": 3.291526592830549,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 688.1305485829944,
+      "error_samples": [
+        "",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p073_vlong_out64' (requested max_tokens=64)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 97/97 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    }
+  ],
+  "total_duration_s": 3230.620615041
+}
