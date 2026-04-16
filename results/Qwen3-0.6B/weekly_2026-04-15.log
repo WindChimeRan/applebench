@@ -4733,3 +4733,47 @@ Report saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/agent/REPORT.md
 =========================================
  [01:22:48] sync_github.sh
 =========================================
+[weekly/2026-04-15 105b2f4] Benchmark results: 2026-04-16 01:22
+ 32 files changed, 6879 insertions(+), 2127 deletions(-)
+ delete mode 100644 results/Qwen3-0.6B/agent/llamacpp_20260413_213000.json
+ create mode 100644 results/Qwen3-0.6B/agent/llamacpp_20260415_215201.json
+ rename results/Qwen3-0.6B/agent/{mistralrs_20260413_220240.json => mistralrs_20260415_222432.json} (64%)
+ rename results/Qwen3-0.6B/agent/{mlx_lm_20260413_214104.json => mlx_lm_20260415_220258.json} (54%)
+ rename results/Qwen3-0.6B/agent/{ollama_20260413_231803.json => ollama_20260415_234411.json} (53%)
+ delete mode 100644 results/Qwen3-0.6B/agent/omlx_20260413_222935.json
+ create mode 100644 results/Qwen3-0.6B/agent/omlx_20260415_233730.json
+ delete mode 100644 results/Qwen3-0.6B/agent/vllm_metal_20260413_221900.json
+ create mode 100644 results/Qwen3-0.6B/agent/vllm_metal_20260415_232800.json
+ delete mode 100644 results/Qwen3-0.6B/agent/vllm_mlx_20260414_031156.json
+ rename results/Qwen3-0.6B/{chat/vllm_mlx_20260414_030542.json => agent/vllm_mlx_20260416_012142.json} (51%)
+ delete mode 100644 results/Qwen3-0.6B/chat/inferrs_20260414_030229.json
+ create mode 100644 results/Qwen3-0.6B/chat/inferrs_20260415_213657.json
+ delete mode 100644 results/Qwen3-0.6B/chat/llamacpp_20260413_194230.json
+ create mode 100644 results/Qwen3-0.6B/chat/llamacpp_20260415_192452.json
+ delete mode 100644 results/Qwen3-0.6B/chat/mistralrs_20260413_202236.json
+ create mode 100644 results/Qwen3-0.6B/chat/mistralrs_20260415_194613.json
+ delete mode 100644 results/Qwen3-0.6B/chat/mlx_lm_20260413_194822.json
+ create mode 100644 results/Qwen3-0.6B/chat/mlx_lm_20260415_193045.json
+ delete mode 100644 results/Qwen3-0.6B/chat/ollama_20260413_211810.json
+ create mode 100644 results/Qwen3-0.6B/chat/ollama_20260415_204158.json
+ delete mode 100644 results/Qwen3-0.6B/chat/omlx_20260413_204129.json
+ create mode 100644 results/Qwen3-0.6B/chat/omlx_20260415_200513.json
+ delete mode 100644 results/Qwen3-0.6B/chat/vllm_metal_20260413_203617.json
+ create mode 100644 results/Qwen3-0.6B/chat/vllm_metal_20260415_200000.json
+ create mode 100644 results/Qwen3-0.6B/chat/vllm_mlx_20260415_214024.json
+ create mode 100644 results/Qwen3-0.6B/weekly_2026-04-15.journal.md
+ create mode 100644 results/Qwen3-0.6B/weekly_2026-04-15.log
+fatal: The current branch weekly/2026-04-15 has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin weekly/2026-04-15
+
+To have this happen automatically for branches without a tracking
+upstream, see 'push.autoSetupRemote' in 'git help config'.
+
+Push failed — check remote configuration
+[01:22:48] sync_github.sh: OK
+
+=========================================
+ Weekly run finished: 2026-04-16T01:22:48
+=========================================
