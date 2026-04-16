@@ -1,0 +1,76 @@
+{
+  "framework": "mistralrs",
+  "model": "default",
+  "endpoint": "http://localhost:8003",
+  "timestamp": "2026-04-15T19:31:55",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 15244,
+      "total_output_tokens": 15379,
+      "total_input_tokens": 99277,
+      "server_usage_available": true,
+      "ttft_avg_ms": 378.17504715931136,
+      "ttft_p50_ms": 179.7992920037359,
+      "ttft_p99_ms": 1396.627374982927,
+      "throughput_avg_tps": 47.70940017045769,
+      "throughput_p50_tps": 47.989793654307675,
+      "itl_avg_ms": 20.958321718917745,
+      "itl_p50_ms": 20.837601484550586,
+      "latency_avg_s": 3.5608456745697183,
+      "latency_p50_s": 3.314287042012438,
+      "latency_p99_s": 6.993627458985429,
+      "output_throughput_tps": 43.188263340163985,
+      "input_throughput_tps": 278.79583975690616,
+      "total_token_throughput_tps": 321.98410309707015,
+      "wall_time_s": 356.0921141669969,
+      "error_samples": []
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 53,
+      "failed": 47,
+      "total_tokens_generated": 7458,
+      "total_output_tokens": 7458,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 5337.191966924605,
+      "ttft_p50_ms": 3639.6719160256907,
+      "ttft_p99_ms": 18877.67829099903,
+      "throughput_avg_tps": 2.4906149918368805,
+      "throughput_p50_tps": 2.373284514232546,
+      "itl_avg_ms": 490.4009733955881,
+      "itl_p50_ms": 421.3567499997049,
+      "latency_avg_s": 73.85757540560543,
+      "latency_p50_s": 63.27404404198751,
+      "latency_p99_s": 220.72497083299095,
+      "output_throughput_tps": 15.207925886957998,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 490.40217945800396,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 0 token(s) for prompt 'p026_medium_out64' (requested max_tokens=64)",
+        "500, message='Internal Server Error', url='http://localhost:8003/v1/chat/completions'"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 7/53 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.0383879579603672,
+      "error": "no successful requests",
+      "error_samples": [
+        "500, message='Internal Server Error', url='http://localhost:8003/v1/chat/completions'"
+      ]
+    }
+  ],
+  "total_duration_s": 857.8107614999753
+}

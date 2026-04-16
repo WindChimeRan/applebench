@@ -2,7 +2,7 @@
   "framework": "mistralrs",
   "model": "default",
   "endpoint": "http://localhost:8003",
-  "timestamp": "2026-04-13T21:42:13",
+  "timestamp": "2026-04-15T22:04:07",
   "concurrency_results": [
     {
       "concurrency": 1,
@@ -13,20 +13,20 @@
       "total_output_tokens": 24302,
       "total_input_tokens": null,
       "server_usage_available": false,
-      "ttft_avg_ms": 1625.2593600540422,
-      "ttft_p50_ms": 1185.499457991682,
-      "ttft_p99_ms": 5773.554374987725,
-      "throughput_avg_tps": 44.73244092441,
-      "throughput_p50_tps": 45.232182894287675,
-      "itl_avg_ms": 22.36615743541233,
-      "itl_p50_ms": 22.108105806941825,
-      "latency_avg_s": 7.034918590840534,
-      "latency_p50_s": 6.602019791025668,
-      "latency_p99_s": 11.923947707982734,
-      "output_throughput_tps": 34.544426760374535,
+      "ttft_avg_ms": 1621.9123688002583,
+      "ttft_p50_ms": 1185.0942500168458,
+      "ttft_p99_ms": 5780.694750021212,
+      "throughput_avg_tps": 44.7455536511068,
+      "throughput_p50_tps": 45.08659410698627,
+      "itl_avg_ms": 22.361942683529584,
+      "itl_p50_ms": 22.179502621888894,
+      "latency_avg_s": 7.0301480929635,
+      "latency_p50_s": 6.610207082994748,
+      "latency_p99_s": 11.934164083038922,
+      "output_throughput_tps": 34.56785707663744,
       "input_throughput_tps": null,
       "total_token_throughput_tps": null,
-      "wall_time_s": 703.4998776669963,
+      "wall_time_s": 703.0230409169453,
       "error_samples": [],
       "sanity_warnings": [
         "server did not report token usage for 1/100 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
@@ -41,20 +41,20 @@
       "total_output_tokens": 1982,
       "total_input_tokens": null,
       "server_usage_available": false,
-      "ttft_avg_ms": 29202.414768816776,
-      "ttft_p50_ms": 12445.981374999974,
-      "ttft_p99_ms": 109842.04320801655,
-      "throughput_avg_tps": 1.5154168120334865,
-      "throughput_p50_tps": 1.7312496940118076,
-      "itl_avg_ms": 10074.44138402367,
-      "itl_p50_ms": 577.6173771339777,
-      "latency_avg_s": 164.43719586735824,
-      "latency_p50_s": 158.98596399999224,
-      "latency_p99_s": 298.2370435830089,
-      "output_throughput_tps": 4.132397202616415,
+      "ttft_avg_ms": 29211.40687863491,
+      "ttft_p50_ms": 12412.697749969084,
+      "ttft_p99_ms": 110648.6012499663,
+      "throughput_avg_tps": 1.528423555943503,
+      "throughput_p50_tps": 1.746627962376446,
+      "itl_avg_ms": 9938.865830264096,
+      "itl_p50_ms": 572.5317152244988,
+      "latency_avg_s": 163.32710362863938,
+      "latency_p50_s": 157.67091891600285,
+      "latency_p99_s": 296.8357245000079,
+      "output_throughput_tps": 4.1558376694108095,
       "input_throughput_tps": null,
       "total_token_throughput_tps": null,
-      "wall_time_s": 479.6247560000047,
+      "wall_time_s": 476.91949437500443,
       "error_samples": [
         "",
         "silent failure: server returned OK but generated only 1 token(s) for prompt 'a017_vlong_hermes' (requested max_tokens=256)",
@@ -63,7 +63,7 @@
         "silent failure: server returned OK but generated only 0 token(s) for prompt 'a020_vlong_hermes' (requested max_tokens=256)"
       ],
       "sanity_warnings": [
-        "throughput (1.5 tok/s) inconsistent with ITL (10074.4ms, implies ~0.1 tok/s). Ratio: 15.27x.",
+        "throughput (1.5 tok/s) inconsistent with ITL (9938.9ms, implies ~0.1 tok/s). Ratio: 15.19x.",
         "server did not report token usage for 3/11 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
       ]
     },
@@ -72,12 +72,12 @@
       "num_requests": 100,
       "successful": 0,
       "failed": 100,
-      "wall_time_s": 0.030959416995756328,
+      "wall_time_s": 0.03102145896991715,
       "error": "no successful requests",
       "error_samples": [
         "500, message='Internal Server Error', url='http://localhost:8003/v1/chat/completions'"
       ]
     }
   ],
-  "total_duration_s": 1227.9422814160353
+  "total_duration_s": 1224.9539585410384
 }
