@@ -18,12 +18,18 @@ fi
 
 echo "=== Starting llama.cpp server on port $LLAMACPP_PORT ==="
 
+CTX_ARG=""
+if [ -n "$LLAMACPP_CTX_SIZE" ]; then
+    CTX_ARG="-c $LLAMACPP_CTX_SIZE"
+fi
+
 "$SERVER" \
     -m "$GGUF_MODEL" \
     --port "$LLAMACPP_PORT" \
     --host 0.0.0.0 \
     -ngl 99 \
     --parallel 4 \
+    $CTX_ARG \
     &> "$PROJECT_DIR/.frameworks/llamacpp_server.log" &
 
 echo $! > "$PROJECT_DIR/.frameworks/llamacpp_server.pid"

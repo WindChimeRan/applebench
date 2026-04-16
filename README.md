@@ -50,6 +50,8 @@ Multi-turn agentic prompts with tool calls and tool responses already baked into
 
 Average ~4K input tokens, ~12 messages per prompt, 99/100 contain tool_calls and tool response messages in the conversation history. The model's job is to generate the next assistant turn.
 
+Because agent prompts reach ~8.8K tokens, `run_all.sh` bumps the context window to 16384/slot for llamacpp, ollama, and vllm-metal when running this split — the three frameworks that otherwise cap below that and would either reject (vllm-metal) or silently truncate (llamacpp, ollama). The other frameworks inherit Qwen3-0.6B's native 40K context and need no adjustment. Chat runs each framework untouched, so historical chat numbers remain comparable.
+
 ## Model
 
 [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) in BF16 across three formats. Small enough for fast weekly runs (~1.2 GB), available in every format we need, and runs without quantization for a fair apple-to-apple comparison.

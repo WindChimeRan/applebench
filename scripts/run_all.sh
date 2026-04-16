@@ -80,6 +80,14 @@ FRAMEWORKS=(
 
 CONCURRENCY_ARG=$(echo $CONCURRENCY_LEVELS | tr ' ' ',')
 
+# Bump context window for agent split — prompts reach ~8.8K tokens.
+# llamacpp's --parallel 4 divides ctx across slots, so 65536 = 16384/slot.
+if [ "$SPLIT" = "agent" ]; then
+    export VLLM_METAL_MAX_MODEL_LEN=16384
+    export LLAMACPP_CTX_SIZE=65536
+    export OLLAMA_CONTEXT_LENGTH=16384
+fi
+
 # Per-split output directory: results/<MODEL>/<split>/
 SPLIT_RESULTS_DIR="$RESULTS_DIR/$SPLIT"
 mkdir -p "$SPLIT_RESULTS_DIR"
