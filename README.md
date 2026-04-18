@@ -1,6 +1,6 @@
 # AppleBench
 
-Benchmarks 8 local LLM inference frameworks on Apple Silicon side-by-side, re-run weekly by a Claude Code agent so the numbers don't rot. Measures throughput, TTFT, ITL, and latency under concurrent load on both a classic chat workload and a multi-turn agentic workload composed from popular tool-calling benchmarks.
+Benchmarks 9 local LLM inference frameworks on Apple Silicon side-by-side, re-run weekly by a Claude Code agent so the numbers don't rot. Measures throughput, TTFT, ITL, and latency under concurrent load on both a classic chat workload and a multi-turn agentic workload composed from popular tool-calling benchmarks.
 
 Run the whole weekly pipeline — update, benchmark, diagnose failures, fix, publish — with one command: **`/weekly-bench`** in Claude Code.
 
@@ -18,8 +18,11 @@ Latest results: **[REPORT.md](results/qwen3-0.6b/REPORT.md)**
 | [omlx](https://github.com/jundot/omlx) | MLX / Metal | MLX BF16 |
 | [ollama](https://github.com/ollama/ollama) | Go + Metal | GGUF |
 | [inferrs](https://github.com/ericcurtin/inferrs) | Rust + Candle / Metal | Safetensors |
+| [transformers](https://github.com/huggingface/transformers) | PyTorch / MPS | Safetensors |
 
 All frameworks serve an OpenAI-compatible API. The benchmark hits `/v1/chat/completions` with streaming enabled and measures from the client side — no special instrumentation per framework.
+
+`transformers` is included as a PyTorch-native baseline — it uses the built-in `transformers serve` with continuous batching and `paged|sdpa`, the only CB-compatible attention backend that works on MPS (no FlashAttention or varlen kernel exists on Metal). Useful for measuring what PyTorch-native serving costs on Apple Silicon now that the algorithmic gap to vLLM has closed.
 
 ## Workloads
 
