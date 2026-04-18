@@ -122,6 +122,12 @@ if [ -d "$VENVS_DIR/vllm_mlx" ]; then
 else
     warn "vllm-mlx venv not found" "Run: scripts/install_vllm_mlx.sh"
 fi
+
+if [ -d "$VENVS_DIR/hf_transformers" ]; then
+    ok "hf_transformers"
+else
+    warn "hf_transformers venv not found" "Run: scripts/install_hf_transformers.sh"
+fi
 echo ""
 
 # --- Models ---

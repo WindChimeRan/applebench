@@ -7,6 +7,7 @@
     "omlx",
     "vllm_mlx",
     "ollama",
+    "hf_transformers",
     "mistralrs",
     "mlx_lm"
   ],
@@ -450,6 +451,100 @@
         }
       ],
       "total_duration_s": 332.988800290972
+    },
+    "hf_transformers": {
+      "framework": "hf_transformers",
+      "model": "/Users/haorzhang/applebench/.models/Qwen3-0.6B",
+      "endpoint": "http://localhost:8009",
+      "timestamp": "2026-04-17T23:50:28",
+      "concurrency_results": [
+        {
+          "concurrency": 1,
+          "num_requests": 100,
+          "successful": 100,
+          "failed": 0,
+          "total_tokens_generated": 23941,
+          "total_output_tokens": 23974,
+          "total_input_tokens": 399337,
+          "server_usage_available": true,
+          "ttft_avg_ms": 3412.9180437955074,
+          "ttft_p50_ms": 2291.749209049158,
+          "ttft_p99_ms": 11388.339458964765,
+          "throughput_avg_tps": 12.949332701600504,
+          "throughput_p50_tps": 12.561402649119021,
+          "itl_avg_ms": 92.4834449576835,
+          "itl_p50_ms": 79.2586000002704,
+          "latency_avg_s": 25.37742868663161,
+          "latency_p50_s": 21.856807708041742,
+          "latency_p99_s": 62.1634245000314,
+          "output_throughput_tps": 9.4469386620875,
+          "input_throughput_tps": 157.3584777050987,
+          "total_token_throughput_tps": 166.80541636718618,
+          "wall_time_s": 2537.753324917052,
+          "error_samples": [],
+          "sanity_warnings": [
+            "1/100 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.50x). Framework may be bundling multiple tokens per chunk \u2014 per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect."
+          ]
+        },
+        {
+          "concurrency": 8,
+          "num_requests": 100,
+          "successful": 75,
+          "failed": 25,
+          "total_tokens_generated": 17308,
+          "total_output_tokens": 17332,
+          "total_input_tokens": 285988,
+          "server_usage_available": true,
+          "ttft_avg_ms": 106636.27972446693,
+          "ttft_p50_ms": 105653.9024169324,
+          "ttft_p99_ms": 211877.1555410931,
+          "throughput_avg_tps": 2.2499363008959277,
+          "throughput_p50_tps": 2.194414011861519,
+          "itl_avg_ms": 459.70094966298853,
+          "itl_p50_ms": 455.7007522865509,
+          "latency_avg_s": 209.1667052244395,
+          "latency_p50_s": 211.11194445809815,
+          "latency_p99_s": 300.40018954104744,
+          "output_throughput_tps": 5.906459725585589,
+          "input_throughput_tps": 97.45999330722199,
+          "total_token_throughput_tps": 103.36645303280757,
+          "wall_time_s": 2934.4143201250117,
+          "error_samples": [
+            ""
+          ],
+          "sanity_warnings": [
+            "2/75 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.33x). Framework may be bundling multiple tokens per chunk \u2014 per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect."
+          ]
+        },
+        {
+          "concurrency": 16,
+          "num_requests": 100,
+          "successful": 1,
+          "failed": 99,
+          "total_tokens_generated": 210,
+          "total_output_tokens": 211,
+          "total_input_tokens": 2830,
+          "server_usage_available": true,
+          "ttft_avg_ms": 5616.001209011301,
+          "ttft_p50_ms": 5616.001209011301,
+          "ttft_p99_ms": 5616.001209011301,
+          "throughput_avg_tps": 2.05812983886542,
+          "throughput_p50_tps": 2.05812983886542,
+          "itl_avg_ms": 483.9658568564214,
+          "itl_p50_ms": 483.9658568564214,
+          "latency_avg_s": 107.16450220893603,
+          "latency_p50_s": 107.16450220893603,
+          "latency_p99_s": 107.16450220893603,
+          "output_throughput_tps": 0.10017581690863399,
+          "input_throughput_tps": 1.343590340528124,
+          "total_token_throughput_tps": 1.4437661574367582,
+          "wall_time_s": 2106.296774125076,
+          "error_samples": [
+            ""
+          ]
+        }
+      ],
+      "total_duration_s": 7810.8694406250725
     },
     "mistralrs": {
       "framework": "mistralrs",

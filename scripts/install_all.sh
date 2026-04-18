@@ -18,7 +18,8 @@ for script in \
     install_omlx.sh \
     install_ollama.sh \
     install_inferrs.sh \
-    install_vllm_mlx.sh; do
+    install_vllm_mlx.sh \
+    install_hf_transformers.sh; do
     echo "==========================================="
     echo " Running $script"
     echo "==========================================="
