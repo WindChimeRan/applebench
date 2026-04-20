@@ -119,11 +119,21 @@ git diff HEAD~10..HEAD -- CHANGELOG.md RELEASE_NOTES.md 2>/dev/null
 git log --oneline scripts/*<fw>*.sh
 
 # 5. Prior journal notes (already loaded in Phase 0)
+
+# 6. Jetsam kills (macOS memory-pressure terminations). A jetsam'd process
+#    looks identical to a plain crash in our logs, but the fix is different:
+#    it's OOM, not a bug. Correlate any hits below by timestamp with when
+#    this framework ran. Process names to grep for: python (mlx_lm, omlx,
+#    vllm_metal, vllm_mlx, hf_transformers), llama-server (llamacpp),
+#    ollama, mistralrs, inferrs.
+log show --last 24h --predicate 'eventMessage CONTAINS "jetsam"' 2>/dev/null | head -50
 ```
 
 ### Phase 3 — Diagnose and decide (per failed framework)
 
-This is the judgment phase. You have the error, the upstream history, and the local script history. Decide one of three actions:
+This is the judgment phase. You have the error, the upstream history, and the local script history. Decide one of three actions.
+
+**OOM pre-check.** Before applying (A)/(B)/(C), re-read Phase 2 step 6. If the jetsam log shows a kill for this framework's process during its run window, short-circuit: classify the cell as **oom** in the journal (a distinct status, not `skipped`). The framework code is probably fine; the machine just did not have RAM for (model × concurrency × prompt length). Auto-fixing a jetsam'd cell would chase a ghost regression. Do not retry, do not edit scripts, and record the jetsam log line plus timestamps in the OOM Cells section of the journal.
 
 #### (A) Auto-fix — you're confident about the root cause and the fix
 
@@ -253,9 +263,11 @@ Write to `$RESULTS_DIR/weekly_<DATE>.journal.md` (one journal at the model level
 - Finished: <ISO timestamp>
 - Model: <MODEL_NAME>
 - Splits run: <chat, agent | chat | agent>
-- Status: <completed|completed_with_fixes|completed_with_skips|partial>
+- Status: <completed|completed_with_fixes|completed_with_skips|completed_with_oom|partial>
 - Branch: weekly/<DATE>
 - Reports: results/<MODEL>/chat/REPORT.md, results/<MODEL>/agent/REPORT.md
+
+Cell status values: `ok` (benchmarked), `fixed` (auto-fix applied and verified), `skipped` (diagnosed but not fixed), `oom` (macOS jetsam killed the serving process during the run; distinct from `skipped` because the framework code is likely fine).
 
 ## Frameworks — chat split
 | Framework | Status | Notes |
@@ -275,7 +287,7 @@ Write to `$RESULTS_DIR/weekly_<DATE>.journal.md` (one journal at the model level
 |-----------|--------|-------|
 | llamacpp | ok | — |
 | mlx_lm | ok | — |
-| mistralrs | skipped | crashed at concurrency 16 (KV OOM, larger context) |
+| mistralrs | oom | jetsam killed mistralrs at 02:14 during agent concurrency 16 |
 | vllm_metal | ok | — |
 | vllm_mlx | ok | — |
 | omlx | ok | — |
@@ -300,6 +312,16 @@ Write to `$RESULTS_DIR/weekly_<DATE>.journal.md` (one journal at the model level
 - **Why skipped**: <your reasoning>
 - **Prior occurrences**: <if this also happened in previous weeks, in the same split>
 - **Relevant logs**: <file paths + key excerpts>
+
+## OOM Cells
+
+(Cells where macOS jetsam terminated the serving process. Not auto-fixed. The framework code is likely fine; the machine ran out of memory. Mitigation usually means reducing concurrency, picking a smaller model, or upgrading the host.)
+
+### <framework> (<split>)
+- **Jetsam line**: <raw `log show` line with process name, pid, and timestamp>
+- **Run window**: <when the framework started vs. when it died>
+- **Likely cause**: <one-sentence hypothesis, e.g. weights + KV cache at concurrency 16 exceeded free RAM>
+- **Prior OOMs**: <if this cell OOM'd in previous weeks>
 
 ## Suspicious Successes
 
