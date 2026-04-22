@@ -2,7 +2,7 @@
   "framework": "mistralrs",
   "model": "default",
   "endpoint": "http://localhost:8003",
-  "timestamp": "2026-04-15T22:04:07",
+  "timestamp": "2026-04-22T01:10:31",
   "concurrency_results": [
     {
       "concurrency": 1,
@@ -13,20 +13,20 @@
       "total_output_tokens": 24302,
       "total_input_tokens": null,
       "server_usage_available": false,
-      "ttft_avg_ms": 1621.9123688002583,
-      "ttft_p50_ms": 1185.0942500168458,
-      "ttft_p99_ms": 5780.694750021212,
-      "throughput_avg_tps": 44.7455536511068,
-      "throughput_p50_tps": 45.08659410698627,
-      "itl_avg_ms": 22.361942683529584,
-      "itl_p50_ms": 22.179502621888894,
-      "latency_avg_s": 7.0301480929635,
-      "latency_p50_s": 6.610207082994748,
-      "latency_p99_s": 11.934164083038922,
-      "output_throughput_tps": 34.56785707663744,
+      "ttft_avg_ms": 1628.5084033047315,
+      "ttft_p50_ms": 1204.0948749054223,
+      "ttft_p99_ms": 5786.238958011381,
+      "throughput_avg_tps": 44.756497697479446,
+      "throughput_p50_tps": 45.251575037517156,
+      "itl_avg_ms": 22.353873728208505,
+      "itl_p50_ms": 22.09863123230959,
+      "latency_avg_s": 7.034841255410575,
+      "latency_p50_s": 6.601617917069234,
+      "latency_p99_s": 11.918053291039541,
+      "output_throughput_tps": 34.54475100114695,
       "input_throughput_tps": null,
       "total_token_throughput_tps": null,
-      "wall_time_s": 703.0230409169453,
+      "wall_time_s": 703.4932745409897,
       "error_samples": [],
       "sanity_warnings": [
         "server did not report token usage for 1/100 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
@@ -35,26 +35,26 @@
     {
       "concurrency": 8,
       "num_requests": 100,
-      "successful": 11,
-      "failed": 89,
-      "total_tokens_generated": 1982,
-      "total_output_tokens": 1982,
+      "successful": 12,
+      "failed": 88,
+      "total_tokens_generated": 1987,
+      "total_output_tokens": 1987,
       "total_input_tokens": null,
       "server_usage_available": false,
-      "ttft_avg_ms": 29211.40687863491,
-      "ttft_p50_ms": 12412.697749969084,
-      "ttft_p99_ms": 110648.6012499663,
-      "throughput_avg_tps": 1.528423555943503,
-      "throughput_p50_tps": 1.746627962376446,
-      "itl_avg_ms": 9938.865830264096,
-      "itl_p50_ms": 572.5317152244988,
-      "latency_avg_s": 163.32710362863938,
-      "latency_p50_s": 157.67091891600285,
-      "latency_p99_s": 296.8357245000079,
-      "output_throughput_tps": 4.1558376694108095,
+      "ttft_avg_ms": 35866.38232641659,
+      "ttft_p50_ms": 12561.353666940704,
+      "ttft_p99_ms": 116039.54675002024,
+      "throughput_avg_tps": 1.3551068492968368,
+      "throughput_p50_tps": 1.692593152947986,
+      "itl_avg_ms": 13146.8860145007,
+      "itl_p50_ms": 655.343344161474,
+      "latency_avg_s": 175.932571566004,
+      "latency_p50_s": 178.85435333300848,
+      "latency_p99_s": 295.0350074170856,
+      "output_throughput_tps": 4.192494982288552,
       "input_throughput_tps": null,
       "total_token_throughput_tps": null,
-      "wall_time_s": 476.91949437500443,
+      "wall_time_s": 473.9421295420034,
       "error_samples": [
         "",
         "silent failure: server returned OK but generated only 1 token(s) for prompt 'a017_vlong_hermes' (requested max_tokens=256)",
@@ -63,8 +63,8 @@
         "silent failure: server returned OK but generated only 0 token(s) for prompt 'a020_vlong_hermes' (requested max_tokens=256)"
       ],
       "sanity_warnings": [
-        "throughput (1.5 tok/s) inconsistent with ITL (9938.9ms, implies ~0.1 tok/s). Ratio: 15.19x.",
-        "server did not report token usage for 3/11 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+        "throughput (1.4 tok/s) inconsistent with ITL (13146.9ms, implies ~0.1 tok/s). Ratio: 17.82x.",
+        "server did not report token usage for 4/12 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
       ]
     },
     {
@@ -72,12 +72,12 @@
       "num_requests": 100,
       "successful": 0,
       "failed": 100,
-      "wall_time_s": 0.03102145896991715,
+      "wall_time_s": 0.03529504197649658,
       "error": "no successful requests",
       "error_samples": [
         "500, message='Internal Server Error', url='http://localhost:8003/v1/chat/completions'"
       ]
     }
   ],
-  "total_duration_s": 1224.9539585410384
+  "total_duration_s": 1222.5409281669417
 }
