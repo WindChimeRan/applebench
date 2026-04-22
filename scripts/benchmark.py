@@ -27,6 +27,9 @@ class RequestResult:
     inter_token_latency: float  # average ms between tokens
     prompt_tokens: int | None = None      # server-reported, from usage chunk
     completion_tokens: int | None = None  # server-reported, from usage chunk
+    content: str = ""    # concatenated assistant content deltas
+    reasoning: str = ""  # concatenated reasoning_content / reasoning deltas
+    request_idx: int = -1  # submission index within the concurrency level
 
 
 async def benchmark_single(
@@ -53,6 +56,8 @@ async def benchmark_single(
     tokens_generated = 0
     prompt_tokens = None
     completion_tokens = None
+    content_chunks = []
+    reasoning_chunks = []
 
     async with session.post(
         f"{base_url}/v1/chat/completions",
@@ -77,13 +82,18 @@ async def benchmark_single(
             if not choices:
                 continue
             delta = choices[0].get("delta", {})
-            content = delta.get("content", "") or delta.get("reasoning_content", "") or delta.get("reasoning", "")
-            if content:
+            content_delta = delta.get("content", "")
+            reasoning_delta = delta.get("reasoning_content", "") or delta.get("reasoning", "")
+            if content_delta or reasoning_delta:
                 now = time.perf_counter()
                 if t_first_token is None:
                     t_first_token = now
                 token_times.append(now)
                 tokens_generated += 1
+                if content_delta:
+                    content_chunks.append(content_delta)
+                if reasoning_delta:
+                    reasoning_chunks.append(reasoning_delta)
 
     t_end = time.perf_counter()
 
@@ -121,6 +131,8 @@ async def benchmark_single(
         inter_token_latency=itl,
         prompt_tokens=prompt_tokens,
         completion_tokens=completion_tokens,
+        content="".join(content_chunks),
+        reasoning="".join(reasoning_chunks),
     )
 
 
@@ -153,14 +165,16 @@ async def run_concurrent(
         sem = asyncio.Semaphore(concurrency)
         results = []
 
-        async def bounded_request(prompt):
+        async def bounded_request(prompt, idx):
             async with sem:
-                return await benchmark_single(session, base_url, model, prompt, prompt["max_tokens"])
+                r = await benchmark_single(session, base_url, model, prompt, prompt["max_tokens"])
+                r.request_idx = idx
+                return r
 
         tasks = []
         for i in range(num_requests):
             prompt = prompts[i % len(prompts)]
-            tasks.append(bounded_request(prompt))
+            tasks.append(bounded_request(prompt, i))
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
         wall_time = time.perf_counter() - t_wall_start
@@ -346,6 +360,8 @@ def main():
     parser.add_argument("--framework", required=True, help="Framework name (for labeling results)")
     parser.add_argument("--model", default=None, help="Model name to use in API calls (auto-detected if not set)")
     parser.add_argument("--output", help="Output JSON file path")
+    parser.add_argument("--outputs", default=None,
+                        help="Optional path for per-request outputs JSONL sidecar (content + reasoning per request)")
     parser.add_argument("--results-dir", default=None, help="Directory for result files (overrides default)")
     parser.add_argument("--prompts", default=None, help="Path to prompts JSON file")
     parser.add_argument("--split", default="chat", choices=["chat", "agent"],
@@ -381,6 +397,10 @@ def main():
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "concurrency_results": [],
     }
+
+    # Per-request outputs accumulator. Only populated if --outputs is set; one
+    # record per successful request across all concurrency levels.
+    all_outputs = []
 
     t_total_start = time.perf_counter()
 
@@ -420,6 +440,17 @@ def main():
 
         all_results["concurrency_results"].append(summary)
 
+        if args.outputs:
+            for r in good:
+                all_outputs.append({
+                    "concurrency": conc,
+                    "request_idx": r.request_idx,
+                    "prompt_name": r.prompt_name,
+                    "content": r.content,
+                    "reasoning": r.reasoning,
+                    "tokens_generated": r.tokens_generated,
+                })
+
         # Print summary
         failed = summary.get('failed', 0)
         fail_str = f" | FAILED: {failed}" if failed else ""
@@ -449,6 +480,14 @@ def main():
     with open(output_path, "w") as f:
         json.dump(all_results, f, indent=2)
     print(f"Results saved to: {output_path}")
+
+    if args.outputs:
+        outputs_path = Path(args.outputs)
+        outputs_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(outputs_path, "w") as f:
+            for record in all_outputs:
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        print(f"Outputs saved to: {outputs_path} ({len(all_outputs)} records)")
 
     return all_results
 

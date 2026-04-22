@@ -108,7 +108,7 @@ echo ""
 # (skipped in resume mode so prior successful frameworks stay intact)
 if [ "$SKIP_EXISTING" = "false" ]; then
     echo "Cleaning old result files..."
-    rm -f "$SPLIT_RESULTS_DIR"/*_*.json "$SPLIT_RESULTS_DIR"/*_metalstat.jsonl "$SPLIT_RESULTS_DIR/comparison.json"
+    rm -f "$SPLIT_RESULTS_DIR"/*_*.json "$SPLIT_RESULTS_DIR"/*_metalstat.jsonl "$SPLIT_RESULTS_DIR"/*_outputs.jsonl "$SPLIT_RESULTS_DIR/comparison.json"
 else
     echo "Resume mode — keeping existing results."
 fi
@@ -152,9 +152,10 @@ for entry in "${FRAMEWORKS[@]}"; do
         MODEL_FLAG="--model $model_override"
     fi
 
-    # Shared timestamp so the benchmark JSON and the metalstat sidecar artifacts share a suffix
+    # Shared timestamp so the benchmark JSON, metalstat sidecar, and outputs sidecar share a suffix
     RUN_TS=$(date +%Y%m%d_%H%M%S)
     BENCH_OUT="$SPLIT_RESULTS_DIR/${name}_${RUN_TS}.json"
+    OUTPUTS_OUT="$SPLIT_RESULTS_DIR/${name}_${RUN_TS}_outputs.jsonl"
 
     # Optional metalstat sidecar (gated — A/B showed wrapping perturbs tok/s ~10%; sidecar is <1%)
     METAL_PID=""
@@ -172,6 +173,7 @@ for entry in "${FRAMEWORKS[@]}"; do
         --requests "$BENCHMARK_REQUESTS" \
         --warmup "$WARMUP_REQUESTS" \
         --output "$BENCH_OUT" \
+        --outputs "$OUTPUTS_OUT" \
         --split "$SPLIT" \
         $MODEL_FLAG || true
 
