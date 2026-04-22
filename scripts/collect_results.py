@@ -31,7 +31,11 @@ def main():
         except json.JSONDecodeError as e:
             print(f"Warning: skipping corrupted file {f.name}: {e}")
             continue
-        fw = data.get("framework", "unknown")
+        # Skip sidecar artifacts (e.g., *_metalstat.meta.json) that happen to
+        # land in the same directory — they don't carry benchmark results.
+        if "framework" not in data or "concurrency_results" not in data:
+            continue
+        fw = data["framework"]
         mtime = f.stat().st_mtime
         if fw not in frameworks or mtime > latest_mtime[fw]:
             frameworks[fw] = data

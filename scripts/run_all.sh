@@ -108,7 +108,7 @@ echo ""
 # (skipped in resume mode so prior successful frameworks stay intact)
 if [ "$SKIP_EXISTING" = "false" ]; then
     echo "Cleaning old result files..."
-    rm -f "$SPLIT_RESULTS_DIR"/*_*.json "$SPLIT_RESULTS_DIR/comparison.json"
+    rm -f "$SPLIT_RESULTS_DIR"/*_*.json "$SPLIT_RESULTS_DIR"/*_metalstat.jsonl "$SPLIT_RESULTS_DIR/comparison.json"
 else
     echo "Resume mode — keeping existing results."
 fi
@@ -130,7 +130,7 @@ for entry in "${FRAMEWORKS[@]}"; do
 
     # Skip if --skip-existing and a result file from the last 24h exists
     if [ "$SKIP_EXISTING" = "true" ]; then
-        recent=$(find "$SPLIT_RESULTS_DIR" -maxdepth 1 -name "${name}_*.json" -mtime -1 2>/dev/null | head -1)
+        recent=$(find "$SPLIT_RESULTS_DIR" -maxdepth 1 -name "${name}_*.json" ! -name "*_metalstat.*" -mtime -1 2>/dev/null | head -1)
         if [ -n "$recent" ]; then
             echo "Skipping $name — recent result exists: $(basename "$recent")"
             continue

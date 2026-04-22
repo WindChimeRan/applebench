@@ -16,3 +16,9 @@ __pycache__/
 
 # vllm-metal installer temp files
 vllm-*/
+
+# Metalstat sidecar artifacts — per-cell GPU/mem/power timelines written
+# next to benchmark result JSONs. Kept on disk for local diagnosis, not
+# committed (they grow ~1-2 MB/week and aren't needed by downstream consumers).
+results/**/*_metalstat.jsonl
+results/**/*_metalstat.meta.json
