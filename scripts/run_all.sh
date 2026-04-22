@@ -151,15 +151,34 @@ for entry in "${FRAMEWORKS[@]}"; do
     if [ -n "$model_override" ]; then
         MODEL_FLAG="--model $model_override"
     fi
+
+    # Shared timestamp so the benchmark JSON and the metalstat sidecar artifacts share a suffix
+    RUN_TS=$(date +%Y%m%d_%H%M%S)
+    BENCH_OUT="$SPLIT_RESULTS_DIR/${name}_${RUN_TS}.json"
+
+    # Optional metalstat sidecar (gated — A/B showed wrapping perturbs tok/s ~10%; sidecar is <1%)
+    METAL_PID=""
+    if [ "${APPLEBENCH_METALSTAT:-0}" = "1" ]; then
+        METAL_PREFIX="$SPLIT_RESULTS_DIR/${name}_${RUN_TS}_metalstat"
+        metalstat --meta-json > "${METAL_PREFIX}.meta.json" 2>/dev/null || true
+        metalstat --jsonl -i 1 --show-all > "${METAL_PREFIX}.jsonl" 2>/dev/null &
+        METAL_PID=$!
+    fi
+
     python "$SCRIPT_DIR/benchmark.py" \
         --framework "$name" \
         --port "$port" \
         --concurrency "$CONCURRENCY_ARG" \
         --requests "$BENCHMARK_REQUESTS" \
         --warmup "$WARMUP_REQUESTS" \
-        --results-dir "$SPLIT_RESULTS_DIR" \
+        --output "$BENCH_OUT" \
         --split "$SPLIT" \
         $MODEL_FLAG || true
+
+    if [ -n "$METAL_PID" ]; then
+        kill -TERM "$METAL_PID" 2>/dev/null || true
+        wait "$METAL_PID" 2>/dev/null || true
+    fi
     echo ""
 
     # Stop server gracefully

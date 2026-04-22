@@ -51,6 +51,10 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Enable per-cell metalstat sidecar for weekly runs unless explicitly disabled.
+# Sidecar overhead measured at <1% on llamacpp cc=16; wrapping was ~10%.
+export APPLEBENCH_METALSTAT="${APPLEBENCH_METALSTAT:-1}"
+
 source "$SCRIPT_DIR/config.sh"
 
 DATE=$(date +%Y-%m-%d)
@@ -92,6 +96,7 @@ run_step() {
     echo " Splits: ${SPLITS[*]}"
     echo " Log: $LOG"
     echo " Skip update: $SKIP_UPDATE"
+    echo " Metalstat: $APPLEBENCH_METALSTAT"
     echo " Run args: ${RUN_ALL_ARGS[*]}"
     echo "========================================="
 

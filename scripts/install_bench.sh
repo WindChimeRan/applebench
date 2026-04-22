@@ -15,6 +15,6 @@ else
 fi
 
 source "$VENV_DIR/bin/activate"
-uv pip install aiohttp
+uv pip install aiohttp metalstat
 
 echo "=== Benchmark environment installed ==="

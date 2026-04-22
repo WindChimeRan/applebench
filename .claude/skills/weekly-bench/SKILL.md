@@ -127,6 +127,17 @@ git log --oneline scripts/*<fw>*.sh
 #    vllm_metal, vllm_mlx, hf_transformers), llama-server (llamacpp),
 #    ollama, mistralrs, inferrs.
 log show --last 24h --predicate 'eventMessage CONTAINS "jetsam"' 2>/dev/null | head -50
+
+# 7. Metalstat sidecar artifacts for this (framework, split) cell, if the run had
+#    APPLEBENCH_METALSTAT=1 (default for weekly_bench.sh). Paths:
+#      results/<MODEL>/<split>/<fw>_<ts>_metalstat.jsonl   (per-second metrics)
+#      results/<MODEL>/<split>/<fw>_<ts>_metalstat.meta.json
+#    Read the jsonl to inspect gpu_util, gpu_freq_mhz, mem_used_gb, mem_pressure_level,
+#    gpu_mem_allocated_gb, gpu_w. Useful for distinguishing "server crashed mid-benchmark"
+#    (util drops to 0) vs "throttled hard" (freq drops, util stays high) vs "OOM-adjacent"
+#    (mem_pressure_level=warn/critical, compressed grows). Complements step 6: jetsam
+#    tells you the kernel killed the process; metalstat shows the pressure trajectory
+#    that led up to it.
 ```
 
 ### Phase 3 — Diagnose and decide (per failed framework)
@@ -347,7 +358,7 @@ Keep the journal terse. It's a log for the user (and future Claude), not an essa
 - **Never modify forbidden files** even if it would fix the issue. Escalate instead.
 - **Branch, don't push to main.** All auto-fix commits land on `weekly/<DATE>` for user review.
 - **Log everything.** If it's not in the journal, it didn't happen.
-- **Suspicious success ≠ success.** Tokens/sec 10x off from last week is a signal, not a fix target. Compare chat-to-chat and agent-to-agent only — never cross-compare splits, since prefill-heavy agent prompts produce systematically different numbers.
+- **Suspicious success ≠ success.** Tokens/sec 10x off from last week is a signal, not a fix target. Compare chat-to-chat and agent-to-agent only — never cross-compare splits, since prefill-heavy agent prompts produce systematically different numbers. When metalstat sidecar data is present, cross-check: GPU-util at 100% with throughput down suggests a real regression; GPU-util near-idle suggests a serving-side bug (batching broken, client-side bottleneck, etc.); GPU freq dropping mid-run suggests thermal throttling.
 - **Prior skips matter.** If a (framework, split) cell was skipped last week for reason Y and reason Y still holds, skip again silently (one line in the journal). Don't re-diagnose from scratch.
 
 ## When to bail out completely
