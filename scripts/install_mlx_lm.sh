@@ -15,10 +15,13 @@ else
 fi
 
 source "$VENV_DIR/bin/activate"
-# mlx-lm==0.31.2 works only with mlx==0.31.1 — mlx 0.31.2 made GPU streams
-# thread-local and mlx_lm.server's BatchGenerator worker thread then fails
-# with "There is no Stream(gpu, 0) in current thread." at mx.eval time,
-# causing silent-failure hangs. Pin mlx until upstream mlx_lm matches.
-uv pip install mlx-lm "mlx==0.31.1" "mlx-metal==0.31.1"
+# Track mlx-lm's git main instead of the PyPI release. PyPI 0.31.2 uses
+# mx.new_stream for the generation stream, which breaks under mlx 0.31.2+
+# (thread-local streams) because the server's BatchGenerator worker thread
+# can't reach a stream created on the main thread. Upstream fix landed on
+# main as ed1fca4 ("Thread local generation stream", #1090) — switches to
+# mx.new_thread_local_stream + threads the stream through BatchGenerator.
+# Revert to plain `mlx-lm` once a PyPI release contains that commit.
+uv pip install "mlx-lm @ git+https://github.com/ml-explore/mlx-lm"
 
 echo "=== mlx_lm installed ==="
