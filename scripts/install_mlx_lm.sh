@@ -15,6 +15,10 @@ else
 fi
 
 source "$VENV_DIR/bin/activate"
-uv pip install mlx-lm
+# mlx-lm==0.31.2 works only with mlx==0.31.1 — mlx 0.31.2 made GPU streams
+# thread-local and mlx_lm.server's BatchGenerator worker thread then fails
+# with "There is no Stream(gpu, 0) in current thread." at mx.eval time,
+# causing silent-failure hangs. Pin mlx until upstream mlx_lm matches.
+uv pip install mlx-lm "mlx==0.31.1" "mlx-metal==0.31.1"
 
 echo "=== mlx_lm installed ==="
