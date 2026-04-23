@@ -7196,3 +7196,348 @@ Report saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/agent/REPORT.md
  AppleBench complete!
 =========================================
 ===== mlx_lm AGENT RERUN COMPLETE =====
+=== AppleBench Environment Check ===
+
+Platform:
+  [ok]   Apple Silicon (arm64)
+  [ok]   Xcode Command Line Tools
+
+Required tools:
+  [ok]   uv
+  [ok]   cmake
+  [warn] cargo not found (mistral.rs already built)
+         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  [ok]   huggingface-cli (hf)
+
+Python:
+  [ok]   Python 3.12 (/Users/haorzhang/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12)
+
+Frameworks (run install scripts if missing):
+  [ok]   llama.cpp
+  [ok]   mlx_lm
+  [ok]   mistral.rs
+  [ok]   vllm-metal
+  [ok]   omlx
+  [ok]   ollama
+  [ok]   inferrs
+  [ok]   vllm-mlx
+  [ok]   hf_transformers
+
+Models (run scripts/download_model.sh if missing):
+  [ok]   GGUF: Qwen3-0.6B-BF16.gguf
+  [ok]   MLX: Qwen3-0.6B-bf16-mlx
+  [ok]   HF: Qwen3-0.6B
+
+Benchmark:
+  [ok]   bench venv
+
+===========================================
+ All prerequisites met, 1 warning(s)
+===========================================
+
+=========================================
+ AppleBench — Full Benchmark Run
+ Model: Qwen3-0.6B
+ Split: chat
+ Output: /Users/haorzhang/applebench/results/Qwen3-0.6B/chat
+ Skip-existing: true
+ Wed Apr 22 23:25:01 CDT 2026
+=========================================
+
+Resume mode — keeping existing results.
+  Cleaning up all inference processes...
+===========================================
+ Benchmarking: mlx_lm (port 8002)
+===========================================
+Starting mlx_lm server...
+=== Starting mlx_lm server on port 8002 ===
+PID: 10965
+Waiting for server to be ready...
+mlx_lm server is ready on port 8002
+
+Framework: mlx_lm
+Model: /Users/haorzhang/applebench/.models/Qwen3-0.6B-bf16-mlx
+Endpoint: http://localhost:8002
+
+--- Concurrency: 1 ---
+  Warming up (3 requests)...
+  Running 100 requests at concurrency 1...
+  ⚠ WARNING: 4/100 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.06x). Framework may be bundling multiple tokens per chunk — per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect.
+  TTFT avg: 310.3ms | Throughput avg: 139.3 tok/s | Output: 108.6 tok/s | ITL avg: 7.2ms | Wall: 141.9s
+
+--- Concurrency: 8 ---
+  Warming up (3 requests)...
+  Running 100 requests at concurrency 8...
+  ⚠ WARNING: 5/100 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.06x). Framework may be bundling multiple tokens per chunk — per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect.
+  TTFT avg: 1228.6ms | Throughput avg: 29.1 tok/s | Output: 173.6 tok/s | ITL avg: 37.2ms | Wall: 89.0s
+
+--- Concurrency: 16 ---
+  Warming up (3 requests)...
+  Running 100 requests at concurrency 16...
+  ⚠ WARNING: 4/100 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.06x). Framework may be bundling multiple tokens per chunk — per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect.
+  TTFT avg: 2992.0ms | Throughput avg: 18.5 tok/s | Output: 182.6 tok/s | ITL avg: 62.6ms | Wall: 84.5s
+
+Total benchmark duration: 324.3s
+Results saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/chat/mlx_lm_20260422_232508.json
+Outputs saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/chat/mlx_lm_20260422_232508_outputs.jsonl (300 records)
+
+Stopping mlx_lm server...
+mlx_lm server (PID 10965) stopped
+  Cleaning up all inference processes...
+Cooling down for 60s...
+
+===========================================
+ Collecting results and generating report
+===========================================
+Comparison saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/chat/comparison.json
+Frameworks: mlx_lm, mistralrs, ollama, vllm_metal, llamacpp, omlx, inferrs, hf_transformers, vllm_mlx
+Report saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/chat/REPORT.md
+
+# AppleBench Results — Qwen3-0.6B (chat)
+
+**Model:** Qwen3-0.6B
+**Split:** chat
+**Generated:** 2026-04-22 23:31:39
+
+## Concurrency: 1
+
+| Metric | mlx_lm | mistralrs | ollama | vllm_metal | llamacpp | omlx | inferrs | hf_transformers | vllm_mlx |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| Successful / Failed | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 | CRASHED |
+| TTFT avg (ms) | 310.3 | 378.9 | 962.6 | 586.3 | 181.5 | 193.1 | 2139.2 | 693.8 | 0.0 |
+| TTFT p50 (ms) | 199.8 | 181.7 | 376.9 | 175.7 | 102.8 | 189.3 | 921.2 | 351.9 | 0.0 |
+| TTFT p99 (ms) | 999.9 | 1402.8 | 3991.5 | 4192.0 | 856.7 | 292.9 | 7891.5 | 2848.9 | 0.0 |
+| Throughput avg (tok/s) | 139.3 | 47.7 | 24.7 | 72.5 | 177.1 | 184.0 | 5.0 | 34.3 | 0.0 |
+| Output throughput (tok/s) | 108.6 | 43.2 | 21.5 | 51.6 | 148.5 | 151.3 | 3.4 | 23.7 | 0.0 |
+| Input throughput (tok/s) | 699.4 | 278.7 | 132.2 | 332.1 | 946.1 | 970.2 | N/A | 150.8 | 0.0 |
+| Total token throughput (tok/s) | 808.1 | 321.9 | 153.7 | 383.7 | 1094.6 | 1121.5 | N/A | 174.5 | 0.0 |
+| ITL avg (ms) | 7.2 | 21.0 | 40.6 | 15.4 | 5.7 | 5.5 | 223.2 | 37.2 | 0.0 |
+| ITL p50 (ms) | 7.1 | 20.8 | 39.8 | 12.9 | 5.6 | 5.3 | 171.2 | 23.7 | 0.0 |
+| Latency avg (s) | 1.42 | 3.56 | 7.45 | 2.99 | 1.05 | 1.02 | 15.10 | 6.58 | 0.00 |
+| Latency p99 (s) | 3.25 | 7.00 | 15.47 | 11.59 | 2.53 | 1.94 | 104.98 | 25.63 | 0.00 |
+| Wall time (s) | 141.9 | 356.2 | 744.7 | 299.0 | 104.9 | 102.3 | 1509.5 | 658.3 | 0.6 |
+
+## Concurrency: 8
+
+| Metric | mlx_lm | mistralrs | ollama | vllm_metal | llamacpp | omlx | inferrs | hf_transformers | vllm_mlx |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| Successful / Failed | 100 / 0 | 53 / 47 | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 | 99 / 1 | 100 / 0 | CRASHED |
+| TTFT avg (ms) | 1228.6 | 5563.0 | 2528.9 | 96.3 | 1849.3 | 506.9 | 5864.8 | 2999.6 | 0.0 |
+| TTFT p50 (ms) | 918.0 | 3641.2 | 1155.6 | 95.5 | 1795.4 | 399.1 | 5291.9 | 1214.1 | 0.0 |
+| TTFT p99 (ms) | 3432.0 | 20652.0 | 9839.8 | 152.8 | 3412.9 | 1785.5 | 20124.2 | 18660.2 | 0.0 |
+| Throughput avg (tok/s) | 29.1 | 2.4 | 3.2 | 21.0 | 107.4 | 32.2 | 0.5 | 4.5 | 0.0 |
+| Output throughput (tok/s) | 173.6 | 14.7 | 23.7 | 158.2 | 358.7 | 226.8 | 3.2 | 29.3 | 0.0 |
+| Input throughput (tok/s) | 1115.7 | N/A | 146.0 | 1009.5 | 2290.1 | 1457.0 | N/A | 188.2 | 0.0 |
+| Total token throughput (tok/s) | 1289.2 | N/A | 169.7 | 1167.7 | 2648.9 | 1683.7 | N/A | 217.5 | 0.0 |
+| ITL avg (ms) | 37.2 | 508.9 | 320.8 | 49.2 | 10.1 | 32.0 | 2356.9 | 254.5 | 0.0 |
+| ITL p50 (ms) | 37.0 | 426.8 | 320.8 | 52.0 | 9.3 | 33.0 | 2358.0 | 281.2 | 0.0 |
+| Latency avg (s) | 6.95 | 76.53 | 52.91 | 7.58 | 3.37 | 5.32 | 97.74 | 41.05 | 0.00 |
+| Latency p99 (s) | 13.62 | 228.10 | 95.47 | 15.14 | 6.31 | 10.11 | 277.52 | 104.78 | 0.00 |
+| Wall time (s) | 89.0 | 508.1 | 674.6 | 98.3 | 43.3 | 68.1 | 1282.5 | 527.4 | 0.3 |
+
+## Concurrency: 16
+
+| Metric | mlx_lm | mistralrs | ollama | vllm_metal | llamacpp | omlx | inferrs | hf_transformers | vllm_mlx |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| Successful / Failed | 100 / 0 | CRASHED | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 | 85 / 15 | 100 / 0 | CRASHED |
+| TTFT avg (ms) | 2992.0 | 0.0 | 4645.7 | 145.3 | 4908.8 | 5218.4 | 10806.7 | 23375.4 | 0.0 |
+| TTFT p50 (ms) | 2380.8 | 0.0 | 2692.3 | 134.2 | 5210.2 | 5608.9 | 10136.9 | 18688.2 | 0.0 |
+| TTFT p99 (ms) | 6015.7 | 0.0 | 14446.5 | 210.6 | 7362.2 | 7097.0 | 29543.2 | 80606.2 | 0.0 |
+| Throughput avg (tok/s) | 18.5 | 0.0 | 1.7 | 15.7 | 107.0 | 32.9 | 0.2 | 2.4 | 0.0 |
+| Output throughput (tok/s) | 182.6 | 0.0 | 24.1 | 226.9 | 361.5 | 232.6 | 1.9 | 26.3 | 0.0 |
+| Input throughput (tok/s) | 1174.5 | 0.0 | 148.2 | 1450.8 | 2307.2 | 1492.2 | N/A | 172.0 | 0.0 |
+| Total token throughput (tok/s) | 1357.1 | 0.0 | 172.3 | 1677.7 | 2668.6 | 1724.8 | N/A | 198.3 | 0.0 |
+| ITL avg (ms) | 62.6 | 0.0 | 619.7 | 66.0 | 10.1 | 31.2 | 5305.4 | 425.0 | 0.0 |
+| ITL p50 (ms) | 60.6 | 0.0 | 634.8 | 70.3 | 8.9 | 31.9 | 5066.0 | 456.1 | 0.0 |
+| Latency avg (s) | 12.94 | 0.00 | 101.05 | 10.13 | 6.43 | 9.93 | 112.31 | 86.50 | 0.00 |
+| Latency p99 (s) | 25.97 | 0.00 | 182.65 | 19.89 | 9.80 | 16.02 | 271.08 | 205.61 | 0.00 |
+| Wall time (s) | 84.5 | 0.0 | 664.3 | 68.4 | 43.0 | 66.5 | 950.4 | 577.3 | 0.3 |
+
+## Total Benchmark Duration
+
+| Framework | mlx_lm | mistralrs | ollama | vllm_metal | llamacpp | omlx | inferrs | hf_transformers | vllm_mlx |
+|-----------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| Duration | 5.4m | 14.6m | 35.5m | 8.0m | 3.3m | 4.1m | 65.7m | 29.9m | 1.3s |
+
+
+=========================================
+ AppleBench complete!
+=========================================
+===== mlx_lm (git main) CHAT RERUN COMPLETE =====
+=== AppleBench Environment Check ===
+
+Platform:
+  [ok]   Apple Silicon (arm64)
+  [ok]   Xcode Command Line Tools
+
+Required tools:
+  [ok]   uv
+  [ok]   cmake
+  [warn] cargo not found (mistral.rs already built)
+         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  [ok]   huggingface-cli (hf)
+
+Python:
+  [ok]   Python 3.12 (/Users/haorzhang/.local/share/uv/python/cpython-3.12-macos-aarch64-none/bin/python3.12)
+
+Frameworks (run install scripts if missing):
+  [ok]   llama.cpp
+  [ok]   mlx_lm
+  [ok]   mistral.rs
+  [ok]   vllm-metal
+  [ok]   omlx
+  [ok]   ollama
+  [ok]   inferrs
+  [ok]   vllm-mlx
+  [ok]   hf_transformers
+
+Models (run scripts/download_model.sh if missing):
+  [ok]   GGUF: Qwen3-0.6B-BF16.gguf
+  [ok]   MLX: Qwen3-0.6B-bf16-mlx
+  [ok]   HF: Qwen3-0.6B
+
+Benchmark:
+  [ok]   bench venv
+
+===========================================
+ All prerequisites met, 1 warning(s)
+===========================================
+
+=========================================
+ AppleBench — Full Benchmark Run
+ Model: Qwen3-0.6B
+ Split: agent
+ Output: /Users/haorzhang/applebench/results/Qwen3-0.6B/agent
+ Skip-existing: true
+ Wed Apr 22 23:31:39 CDT 2026
+=========================================
+
+Resume mode — keeping existing results.
+  Cleaning up all inference processes...
+===========================================
+ Benchmarking: mlx_lm (port 8002)
+===========================================
+Starting mlx_lm server...
+=== Starting mlx_lm server on port 8002 ===
+PID: 12143
+Waiting for server to be ready...
+mlx_lm server is ready on port 8002
+
+Framework: mlx_lm
+Model: /Users/haorzhang/applebench/.models/Qwen3-0.6B-bf16-mlx
+Endpoint: http://localhost:8002
+
+--- Concurrency: 1 ---
+  Warming up (3 requests)...
+  Running 100 requests at concurrency 1...
+  ⚠ WARNING: 14/100 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.22x). Framework may be bundling multiple tokens per chunk — per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect.
+  TTFT avg: 1131.1ms | Throughput avg: 108.4 tok/s | Output: 73.3 tok/s | ITL avg: 9.1ms | Wall: 332.0s
+
+--- Concurrency: 8 ---
+  Warming up (3 requests)...
+  Running 100 requests at concurrency 8...
+  81/100 requests FAILED
+    > silent failure: server returned OK but generated only 0 token(s) for prompt 'a019_long_clawsbench' (requested max_tokens=256)
+    > silent failure: server returned OK but generated only 0 token(s) for prompt 'a020_vlong_hermes' (requested max_tokens=256)
+    > Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8002, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8002)]
+  ⚠ WARNING: server did not report token usage for 6/19 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`.
+  TTFT avg: 5663.1ms | Throughput avg: 14.8 tok/s | Output: 80.6 tok/s | ITL avg: 62.9ms | Wall: 45.7s | FAILED: 81
+
+--- Concurrency: 16 ---
+  Warming up (3 requests)...
+  Warmup error: Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8002, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8002)]
+  Warmup error: Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8002), [Errno 61] Connect call failed ('::1', 8002, 0, 0)]
+  Warmup error: Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8002, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8002)]
+  Running 100 requests at concurrency 16...
+  100/100 requests FAILED
+    > Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8002), [Errno 61] Connect call failed ('::1', 8002, 0, 0)]
+    > Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8002, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8002)]
+  TTFT avg: 0.0ms | Throughput avg: 0.0 tok/s | Output: 0.0 tok/s | ITL avg: 0.0ms | Wall: 0.0s | FAILED: 100
+
+Total benchmark duration: 400.7s
+Results saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/agent/mlx_lm_20260422_233146.json
+Outputs saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/agent/mlx_lm_20260422_233146_outputs.jsonl (119 records)
+
+Stopping mlx_lm server...
+mlx_lm server (PID 12143) was not running
+  Cleaning up all inference processes...
+Cooling down for 60s...
+
+===========================================
+ Collecting results and generating report
+===========================================
+Comparison saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/agent/comparison.json
+Frameworks: mistralrs, inferrs, vllm_metal, omlx, llamacpp, vllm_mlx, mlx_lm, hf_transformers, ollama
+Report saved to: /Users/haorzhang/applebench/results/Qwen3-0.6B/agent/REPORT.md
+
+# AppleBench Results — Qwen3-0.6B (agent)
+
+**Model:** Qwen3-0.6B
+**Split:** agent
+**Generated:** 2026-04-22 23:39:33
+
+## Concurrency: 1
+
+| Metric | mistralrs | inferrs | vllm_metal | omlx | llamacpp | vllm_mlx | mlx_lm | hf_transformers | ollama |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| Successful / Failed | 100 / 0 | 100 / 0 | 100 / 0 | 100 / 0 | 99 / 1 | CRASHED | 100 / 0 | 100 / 0 | 100 / 0 |
+| TTFT avg (ms) | 1628.5 | 12070.8 | 4071.4 | 282.2 | 934.3 | 0.0 | 1131.1 | 3427.9 | 72.6 |
+| TTFT p50 (ms) | 1204.1 | 8664.5 | 2109.6 | 263.4 | 663.6 | 0.0 | 818.9 | 2314.1 | 72.6 |
+| TTFT p99 (ms) | 5786.2 | 32963.3 | 24004.4 | 528.4 | 3458.5 | 0.0 | 3667.9 | 11562.4 | 92.5 |
+| Throughput avg (tok/s) | 44.8 | 2.1 | 34.6 | 147.5 | 136.6 | 0.0 | 108.4 | 12.9 | 157.3 |
+| Output throughput (tok/s) | 34.5 | 1.3 | 20.2 | 125.6 | 90.5 | 0.0 | 73.3 | 9.4 | 151.0 |
+| Input throughput (tok/s) | N/A | N/A | 352.0 | 2201.0 | 1572.6 | 0.0 | 1284.4 | 156.4 | N/A |
+| Total token throughput (tok/s) | N/A | N/A | 372.2 | 2326.6 | 1663.1 | 0.0 | 1357.7 | 165.8 | N/A |
+| ITL avg (ms) | 22.4 | 589.0 | 33.3 | 6.9 | 7.4 | 0.0 | 9.1 | 93.0 | 6.4 |
+| ITL p50 (ms) | 22.1 | 509.8 | 30.4 | 6.7 | 7.3 | 0.0 | 8.9 | 80.3 | 6.4 |
+| Latency avg (s) | 7.03 | 46.23 | 12.11 | 1.94 | 2.73 | 0.00 | 3.32 | 25.53 | 1.67 |
+| Latency p99 (s) | 11.92 | 216.34 | 39.06 | 2.76 | 5.73 | 0.00 | 6.39 | 62.19 | 1.73 |
+| Wall time (s) | 703.5 | 4623.1 | 1211.2 | 193.7 | 269.9 | 1.7 | 332.0 | 2552.8 | 166.7 |
+
+## Concurrency: 8
+
+| Metric | mistralrs | inferrs | vllm_metal | omlx | llamacpp | vllm_mlx | mlx_lm | hf_transformers | ollama |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| Successful / Failed | 12 / 88 | SKIPPED (PREVIOUS LEVEL TOO SLOW) | 100 / 0 | 100 / 0 | 99 / 1 | CRASHED | 19 / 81 | 74 / 26 | 100 / 0 |
+| TTFT avg (ms) | 35866.4 | 0.0 | 4742.0 | 1010.0 | 7539.2 | 0.0 | 5663.1 | 109804.1 | 137.5 |
+| TTFT p50 (ms) | 12561.4 | 0.0 | 3426.2 | 815.4 | 7142.7 | 0.0 | 6487.8 | 113723.9 | 141.0 |
+| TTFT p99 (ms) | 116039.5 | 0.0 | 18067.1 | 3009.7 | 12209.1 | 0.0 | 8085.9 | 212459.7 | 166.1 |
+| Throughput avg (tok/s) | 1.4 | 0.0 | 6.1 | 22.9 | 48.6 | 0.0 | 14.8 | 2.3 | 32.5 |
+| Output throughput (tok/s) | 4.2 | 0.0 | 39.6 | 164.2 | 149.2 | 0.0 | 80.6 | 5.9 | 248.2 |
+| Input throughput (tok/s) | N/A | 0.0 | 688.7 | 2854.3 | 2578.3 | 0.0 | N/A | 95.9 | N/A |
+| Total token throughput (tok/s) | N/A | 0.0 | 728.3 | 3018.4 | 2727.4 | 0.0 | N/A | 101.8 | N/A |
+| ITL avg (ms) | 13146.9 | 0.0 | 182.7 | 44.6 | 22.6 | 0.0 | 62.9 | 450.6 | 31.2 |
+| ITL p50 (ms) | 655.3 | 0.0 | 179.4 | 44.7 | 20.6 | 0.0 | 61.3 | 445.7 | 31.6 |
+| Latency avg (s) | 175.93 | 0.00 | 49.20 | 11.80 | 13.09 | 0.00 | 19.14 | 217.43 | 7.95 |
+| Latency p99 (s) | 295.04 | 0.00 | 88.12 | 14.60 | 18.67 | 0.00 | 28.86 | 294.75 | 8.25 |
+| Wall time (s) | 473.9 | 0.0 | 619.0 | 149.4 | 164.6 | 1.5 | 45.7 | 3016.2 | 101.4 |
+
+## Concurrency: 16
+
+| Metric | mistralrs | inferrs | vllm_metal | omlx | llamacpp | vllm_mlx | mlx_lm | hf_transformers | ollama |
+|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| Successful / Failed | CRASHED | SKIPPED (PREVIOUS LEVEL TOO SLOW) | 100 / 0 | 100 / 0 | 99 / 1 | CRASHED | CRASHED | 29 / 71 | 100 / 0 |
+| TTFT avg (ms) | 0.0 | 0.0 | 8357.8 | 11428.6 | 19530.3 | 0.0 | 0.0 | 140608.0 | 211.1 |
+| TTFT p50 (ms) | 0.0 | 0.0 | 5320.4 | 11926.6 | 20670.6 | 0.0 | 0.0 | 152352.8 | 226.3 |
+| TTFT p99 (ms) | 0.0 | 0.0 | 30695.4 | 15473.7 | 28173.5 | 0.0 | 0.0 | 208600.3 | 286.9 |
+| Throughput avg (tok/s) | 0.0 | 0.0 | 3.7 | 23.0 | 47.3 | 0.0 | 0.0 | 2.2 | 36.5 |
+| Output throughput (tok/s) | 0.0 | 0.0 | 45.0 | 169.0 | 149.5 | 0.0 | 0.0 | 3.3 | 530.5 |
+| Input throughput (tok/s) | 0.0 | 0.0 | 789.4 | 2960.3 | 2596.9 | 0.0 | 0.0 | 49.8 | N/A |
+| Total token throughput (tok/s) | 0.0 | 0.0 | 834.5 | 3129.3 | 2746.4 | 0.0 | 0.0 | 53.1 | N/A |
+| ITL avg (ms) | 0.0 | 0.0 | 315.5 | 44.1 | 23.0 | 0.0 | 0.0 | 486.3 | 27.6 |
+| ITL p50 (ms) | 0.0 | 0.0 | 332.1 | 45.2 | 22.4 | 0.0 | 0.0 | 483.1 | 28.0 |
+| Latency avg (s) | 0.00 | 0.00 | 85.09 | 22.05 | 25.07 | 0.00 | 0.00 | 236.21 | 7.14 |
+| Latency p99 (s) | 0.00 | 0.00 | 135.24 | 27.51 | 33.90 | 0.00 | 0.00 | 296.72 | 7.47 |
+| Wall time (s) | 0.0 | 0.0 | 540.1 | 144.0 | 163.4 | 1.4 | 0.0 | 1865.5 | 47.4 |
+
+## Total Benchmark Duration
+
+| Framework | mistralrs | inferrs | vllm_metal | omlx | llamacpp | vllm_mlx | mlx_lm | hf_transformers | ollama |
+|-----------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| Duration | 20.4m | 79.5m | 41.6m | 8.5m | 10.4m | 4.8s | 6.7m | 127.8m | 5.6m |
+
+
+=========================================
+ AppleBench complete!
+=========================================
+===== mlx_lm (git main) AGENT RERUN COMPLETE =====
