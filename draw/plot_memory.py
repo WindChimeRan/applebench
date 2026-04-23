@@ -45,16 +45,22 @@ def main() -> None:
     for ax, (key, title) in zip(axes, PANELS):
         for fw in frameworks:
             tr = traces[fw]
+            elapsed = tr.elapsed_s
+            total = elapsed[-1] if elapsed else 0
+            if total <= 0:
+                continue
+            x_pct = [100.0 * t / total for t in elapsed]
             ax.plot(
-                tr.elapsed_s,
+                x_pct,
                 tr.series(key),
                 label=fw,
                 color=colors[fw],
                 linewidth=1.2,
             )
         ax.set_title(title)
-        ax.set_xlabel("elapsed (s)")
+        ax.set_xlabel("run progress (%)")
         ax.set_ylabel("GB")
+        ax.set_xlim(0, 100)
         ax.grid(True, alpha=0.3)
 
     axes[-1].legend(
