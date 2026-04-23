@@ -1,0 +1,97 @@
+{
+  "framework": "mlx_lm",
+  "model": "/Users/haorzhang/applebench/.models/Qwen3-0.6B-bf16-mlx",
+  "endpoint": "http://localhost:8002",
+  "timestamp": "2026-04-23T10:42:38",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 23663,
+      "total_output_tokens": 24348,
+      "total_input_tokens": 426349,
+      "server_usage_available": true,
+      "ttft_avg_ms": 1137.404872935731,
+      "ttft_p50_ms": 823.579499963671,
+      "ttft_p99_ms": 3754.025917034596,
+      "throughput_avg_tps": 110.43464971500856,
+      "throughput_p50_tps": 116.13497971287393,
+      "itl_avg_ms": 8.971772386417861,
+      "itl_p50_ms": 8.73106093745929,
+      "latency_avg_s": 3.2833906954014673,
+      "latency_p50_s": 2.937133542029187,
+      "latency_p99_s": 6.472323750145733,
+      "output_throughput_tps": 74.15208701279704,
+      "input_throughput_tps": 1298.4503099153526,
+      "total_token_throughput_tps": 1372.6023969281496,
+      "wall_time_s": 328.3521877920721,
+      "error_samples": [],
+      "sanity_warnings": [
+        "14/100 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.22x). Framework may be bundling multiple tokens per chunk \u2014 per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect."
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 23680,
+      "total_output_tokens": 24296,
+      "total_input_tokens": 426349,
+      "server_usage_available": true,
+      "ttft_avg_ms": 3552.892842076253,
+      "ttft_p50_ms": 3012.6770839560777,
+      "ttft_p99_ms": 9886.90054207109,
+      "throughput_avg_tps": 15.404007922706217,
+      "throughput_p50_tps": 14.416097907093318,
+      "itl_avg_ms": 69.18752088600712,
+      "itl_p50_ms": 66.52064575158471,
+      "latency_avg_s": 20.04823888669489,
+      "latency_p50_s": 19.522202166961506,
+      "latency_p99_s": 29.436505916062742,
+      "output_throughput_tps": 95.99901756699744,
+      "input_throughput_tps": 1684.6017920921875,
+      "total_token_throughput_tps": 1780.600809659185,
+      "wall_time_s": 253.08592333295383,
+      "error_samples": [],
+      "sanity_warnings": [
+        "12/100 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.22x). Framework may be bundling multiple tokens per chunk \u2014 per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 16,
+      "failed": 84,
+      "total_tokens_generated": 2523,
+      "total_output_tokens": 2523,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 25398.52975269605,
+      "ttft_p50_ms": 25939.257957972586,
+      "ttft_p99_ms": 28106.370375026017,
+      "throughput_avg_tps": 13.899960580768447,
+      "throughput_p50_tps": 14.68981972628893,
+      "itl_avg_ms": 69.09226217298493,
+      "itl_p50_ms": 63.823252776637666,
+      "latency_avg_s": 37.1268283228128,
+      "latency_p50_s": 37.17048720805906,
+      "latency_p99_s": 37.17115308297798,
+      "output_throughput_tps": 67.83756181958653,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 37.19178479188122,
+      "error_samples": [
+        "Server disconnected",
+        "Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8002), [Errno 61] Connect call failed ('::1', 8002, 0, 0)]",
+        "Cannot connect to host localhost:8002 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8002, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8002)]"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 15/16 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    }
+  ],
+  "total_duration_s": 651.9193188750651
+}

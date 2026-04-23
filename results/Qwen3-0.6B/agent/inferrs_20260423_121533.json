@@ -1,0 +1,53 @@
+{
+  "framework": "inferrs",
+  "model": "Qwen/Qwen3-0.6B",
+  "endpoint": "http://localhost:8007",
+  "timestamp": "2026-04-23T12:15:34",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 6068,
+      "total_output_tokens": 6068,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 11963.954185801558,
+      "ttft_p50_ms": 8584.713416872546,
+      "ttft_p99_ms": 32621.48145819083,
+      "throughput_avg_tps": 2.1427246598649448,
+      "throughput_p50_tps": 1.9636989665570856,
+      "itl_avg_ms": 580.9674243149669,
+      "itl_p50_ms": 503.9642083358166,
+      "latency_avg_s": 45.844197718349754,
+      "latency_p50_s": 37.25046854210086,
+      "latency_p99_s": 213.1168845409993,
+      "output_throughput_tps": 1.3236060196724742,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 4584.445756375091,
+      "error_samples": [],
+      "sanity_warnings": [
+        "server did not report token usage for 100/100 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0,
+      "error": "skipped (previous level too slow)"
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0,
+      "error": "skipped (previous level too slow)"
+    }
+  ],
+  "total_duration_s": 4732.733066582819
+}
