@@ -51,6 +51,11 @@ fi
 source "$BENCH_VENV/bin/activate"
 export PYTHONUNBUFFERED=1
 
+# Default metalstat sidecar on — resumed runs from the weekly-bench skill
+# invoke this script in fresh shells where weekly_bench.sh's export has already
+# expired, so the gate at line ~162 would otherwise fall through to off.
+export APPLEBENCH_METALSTAT="${APPLEBENCH_METALSTAT:-1}"
+
 # Hard cleanup: kill any leftover inference processes
 cleanup() {
     echo "  Cleaning up all inference processes..."
