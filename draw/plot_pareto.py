@@ -127,7 +127,7 @@ def main() -> None:
     tput_vals = [v for ccs in tput.values() for v in ccs.values() if v > 0]
     mem_vals = [v for ccs in mem.values() for v in ccs.values()]
     x_lo = 0
-    x_hi = max(tput_vals) * 1.08
+    x_hi = max(tput_vals) * 1.15  # slight headroom so inline labels don't clip
     y_lo = 0
     y_hi = max(mem_vals) * 1.08 if mem_vals else 1
 
@@ -185,6 +185,17 @@ def main() -> None:
                 alpha=1.0 if on_front else 0.7,
                 zorder=4 if on_front else 3,
             )
+            # Inline label next to each marker. Offset in pixels so placement
+            # is stable regardless of data scale. Frontier points get bold
+            # black, dominated get normal dark gray.
+            ax.annotate(
+                fw, (x, y),
+                xytext=(8, 3), textcoords="offset points",
+                fontsize=8,
+                fontweight="bold" if on_front else "normal",
+                color="black" if on_front else "#3d3d3d",
+                zorder=5,
+            )
 
         ax.set_xlim(x_lo, x_hi)
         # Invert the memory axis so "less memory" sits *higher* on the plot.
@@ -197,14 +208,9 @@ def main() -> None:
 
     axes[0].set_ylabel("peak system memory (GB)")
 
-    # Framework legend (one colored dot per framework) + a small inset that
-    # explains the frontier / dominated styling.
-    fw_handles = [
-        plt.Line2D([0], [0], marker="o", color="white",
-                   markerfacecolor=colors[fw], markeredgecolor="#333",
-                   markersize=9, linestyle="None", label=fw)
-        for fw in all_fw
-    ]
+    # Small style legend — explains dashed line + bold-circle cue.
+    # Framework identity is carried by inline labels next to each point,
+    # so no per-framework legend. Title removed — paper caption handles it.
     style_handles = [
         plt.Line2D([0], [0], linestyle="--", color="black", alpha=0.6,
                    label="Pareto frontier"),
@@ -214,20 +220,11 @@ def main() -> None:
                    label="on frontier"),
     ]
     fig.legend(
-        handles=fw_handles,
-        loc="upper center", bbox_to_anchor=(0.5, 0.055),
-        ncol=len(all_fw), frameon=False, fontsize=9,
-    )
-    fig.legend(
         handles=style_handles,
-        loc="upper center", bbox_to_anchor=(0.5, 0.015),
+        loc="upper center", bbox_to_anchor=(0.5, 0.02),
         ncol=2, frameon=False, fontsize=9,
     )
-    fig.suptitle(
-        f"{args.model} — {args.split} split — throughput vs peak memory "
-        "(up-and-to-the-right is better; memory axis inverted)"
-    )
-    fig.tight_layout(rect=(0, 0.09, 1, 0.97))
+    fig.tight_layout(rect=(0, 0.05, 1, 1))
 
     out = args.out or REPO_ROOT / "draw" / f"pareto_{args.model}_{args.split}.png"
     out.parent.mkdir(parents=True, exist_ok=True)
