@@ -27,3 +27,10 @@ results/**/*_metalstat.meta.json
 # line per successful request). Used for cross-framework output comparison
 # during diagnosis; not committed (~3-5 MB/week, text-heavy, low reuse value).
 results/**/*_outputs.jsonl
+
+# correctness/ — framework-correctness eval (separate from AppleBench perf).
+# Raw fetched datasets, built prompts, and per-row model responses are large
+# and/or third-party; only scores.json is worth committing.
+correctness/data/
+correctness/prompts/*/
+correctness/results/**/responses.jsonl
