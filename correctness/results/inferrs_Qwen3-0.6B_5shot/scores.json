@@ -1,0 +1,157 @@
+{
+  "n_scored": 429,
+  "n_missing_responses": 717,
+  "n_extra_responses": 0,
+  "f1_weighted": 0.32180658543399315,
+  "f1_macro": 0.18068782856451027,
+  "exact_match": 0.2634032634032634,
+  "request_errors": 0,
+  "parse_failures": 68,
+  "oov_predictions_after_parse": 40,
+  "extraction_methods": {
+    "regex_category": 256,
+    "fuzzy_name": 71,
+    "none": 68,
+    "json": 34
+  },
+  "gold_label_distribution": {
+    "Worker Strike": 63,
+    "Accident": 79,
+    "Administrative Issue": 114,
+    "Weather": 145,
+    "Human Error": 4,
+    "Terrorism": 21,
+    "Cyber Attack": 3
+  },
+  "pred_label_distribution": {
+    "Worker Strike,": 1,
+    "Accident": 52,
+    "<NO_PREDICTION>": 68,
+    "Weather": 61,
+    "Administrative Issue": 94,
+    "Accident: Non-industrial Fire": 1,
+    "Others": 62,
+    "Administrative Issue:": 3,
+    "category": 7,
+    "13": 1,
+    "Accidentified as an accident": 1,
+    ",": 4,
+    "Cyber Attack": 5,
+    "": 6,
+    "Transport Disturbance": 1,
+    "Administrative": 2,
+    "Worker Strike": 9,
+    "Weather,": 2,
+    "weather": 1,
+    "Tornado": 1,
+    "Accidentifies a magnitude 5.1": 1,
+    "Cy (Terror": 1,
+    "Administrative. The input is classified as": 1,
+    "Weather\n\n{": 1,
+    "N\n\n{": 1,
+    "the number of 14,": 1,
+    "Administrativeative": 1,
+    "Terrorism": 4,
+    "Weather and other day, but the UK.\n} and the UK.": 1,
+    "WorkerStrike": 2,
+    "Non-individual_tags": 1,
+    "no think": 1,
+    "Strong winds likely to affect Port authorities, but the UK.\n} others, and the United.": 1,
+    "Administrative.": 1,
+    "Tropical Cyclone: \n\n{": 1,
+    "WorkerStrike,": 1,
+    "others": 1,
+    "Administrative\n\n{": 2,
+    "Administrative Issue: \n\n \n \n\n \n\n \n\n \n\n \n\n \n\n \n\n \n\n \n\n \n\n \n\n \n\n \n\n \n\n{": 1,
+    "Eastern Virginia - Majority of Dominion Energy customers had power restored. The out of the input: category": 1,
+    "Accidentifying category:": 1,
+    "Accidentical to the Panama Canal, Media sources report that LPG tanker collided with another anchored tankers at the incident is a": 1,
+    "Administrative to 21:30": 1,
+    "Administrative Issue\nspecific_tags: [": 2,
+    "WeatherAccidentical,": 1,
+    "Minor Disruption": 1,
+    "preparation of the derailment,": 1,
+    "in the port of the,": 1,
+    "Others, [": 1,
+    "Administrative Issue: [": 1,
+    "Fire": 1,
+    "Strong Winds": 1,
+    "Administrative workers,": 1,
+    "Others:": 1,
+    "Others\n\nspecific_tags": 1,
+    "Terror": 1,
+    "LPG Tankers Collide at Colon anchage, and the collision with an LPG tankers.  \n{": 1,
+    "Accidentifying the input is classified into the category": 1,
+    "Hurricane strikes": 1,
+    "AdministrativeIssue": 1,
+    "Container trucking and local government agencies have already reported the number of people who are still in progress.": 1
+  },
+  "per_class": {
+    "Weather": {
+      "precision": 0.5616438356164384,
+      "recall": 0.2827586206896552,
+      "f1-score": 0.3761467889908257,
+      "support": 145.0
+    },
+    "Worker Strike": {
+      "precision": 0.7,
+      "recall": 0.1111111111111111,
+      "f1-score": 0.1917808219178082,
+      "support": 63.0
+    },
+    "Administrative Issue": {
+      "precision": 0.33980582524271846,
+      "recall": 0.30701754385964913,
+      "f1-score": 0.3225806451612903,
+      "support": 114.0
+    },
+    "Human Error": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 4.0
+    },
+    "Cyber Attack": {
+      "precision": 0.2,
+      "recall": 0.3333333333333333,
+      "f1-score": 0.25,
+      "support": 3.0
+    },
+    "Terrorism": {
+      "precision": 0.2,
+      "recall": 0.047619047619047616,
+      "f1-score": 0.07692307692307693,
+      "support": 21.0
+    },
+    "Accident": {
+      "precision": 0.4827586206896552,
+      "recall": 0.35443037974683544,
+      "f1-score": 0.40875912408759124,
+      "support": 79.0
+    },
+    "Others": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 0.0
+    },
+    "micro avg": {
+      "precision": 0.35202492211838005,
+      "recall": 0.2634032634032634,
+      "f1-score": 0.30133333333333334,
+      "support": 429.0
+    },
+    "macro avg": {
+      "precision": 0.3105260351936015,
+      "recall": 0.17953375454495396,
+      "f1-score": 0.20327380713507404,
+      "support": 429.0
+    },
+    "weighted avg": {
+      "precision": 0.4830166696422755,
+      "recall": 0.2634032634032634,
+      "f1-score": 0.32180658543399315,
+      "support": 429.0
+    }
+  }
+}

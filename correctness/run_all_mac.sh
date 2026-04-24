@@ -20,6 +20,7 @@ CONCURRENCY=8
 MAX_ROWS=0
 SKIP_EXISTING=false
 OVERWRITE_RESPONSES=""
+EVAL_TIMEOUT_SECONDS=7200
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -34,6 +35,9 @@ while [[ $# -gt 0 ]]; do
             shift 2 ;;
         --max-rows)
             MAX_ROWS="$2"
+            shift 2 ;;
+        --eval-timeout)
+            EVAL_TIMEOUT_SECONDS="$2"
             shift 2 ;;
         --skip-existing)
             SKIP_EXISTING=true
@@ -74,10 +78,10 @@ cleanup() {
 # Same framework array as scripts/run_all.sh — duplicated intentionally so
 # correctness/ stays deletable without touching scripts/.
 FRAMEWORKS=(
+    "vllm_metal:$VLLM_METAL_PORT:serve_vllm_metal.sh:stop_vllm_metal.sh:"
     "llamacpp:$LLAMACPP_PORT:serve_llamacpp.sh:stop_llamacpp.sh:"
     "mlx_lm:$MLX_LM_PORT:serve_mlx_lm.sh:stop_mlx_lm.sh:$MLX_MODEL"
     "mistralrs:$MISTRALRS_PORT:serve_mistralrs.sh:stop_mistralrs.sh:"
-    "vllm_metal:$VLLM_METAL_PORT:serve_vllm_metal.sh:stop_vllm_metal.sh:"
     "omlx:$OMLX_PORT:serve_omlx.sh:stop_omlx.sh:"
     "ollama:$OLLAMA_PORT:serve_ollama.sh:stop_ollama.sh:$OLLAMA_MODEL_NAME"
     "inferrs:$INFERRS_PORT:serve_inferrs.sh:stop_inferrs.sh:"
@@ -98,6 +102,7 @@ echo " Shots: $SHOTS_LIST"
 echo " Concurrency: $CONCURRENCY"
 echo " Skip-existing: $SKIP_EXISTING"
 echo " Overwrite-responses: ${OVERWRITE_RESPONSES:-no}"
+echo " Eval timeout: ${EVAL_TIMEOUT_SECONDS}s"
 if [ "$MAX_ROWS" -gt 0 ]; then
     echo " Max rows: $MAX_ROWS (SMOKE TEST)"
 fi
@@ -180,14 +185,21 @@ for entry in "${FRAMEWORKS[@]}"; do
         RESULT_DIR="$RESULTS_DIR/${name}_${MODEL_SLUG}_${N}shot"
         mkdir -p "$RESULT_DIR"
 
-        echo "--- ${name} ${N}-shot eval ---"
-        python3 "$SCRIPT_DIR/scripts/run_eval.py" \
+        echo "--- ${name} ${N}-shot eval (timeout ${EVAL_TIMEOUT_SECONDS}s) ---"
+        rc=0
+        perl -e 'alarm shift; exec @ARGV' "$EVAL_TIMEOUT_SECONDS" \
+            python3 "$SCRIPT_DIR/scripts/run_eval.py" \
             --base-url "http://localhost:${port}" \
             $MODEL_FLAG \
             --prompts "$SCRIPT_DIR/prompts/${N}shot/prompts.jsonl" \
             --output "$RESULT_DIR/responses.jsonl" \
             --concurrency "$CONCURRENCY" \
-            $OVERWRITE_RESPONSES || true
+            $OVERWRITE_RESPONSES || rc=$?
+        if [ "$rc" = "142" ]; then
+            echo "  TIMEOUT after ${EVAL_TIMEOUT_SECONDS}s — will score whatever was written so far"
+        elif [ "$rc" != "0" ]; then
+            echo "  eval exited rc=$rc — will score whatever was written so far"
+        fi
 
         echo "--- ${name} ${N}-shot score ---"
         python3 "$SCRIPT_DIR/scripts/score_f1.py" \

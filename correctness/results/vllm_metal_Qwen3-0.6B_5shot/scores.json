@@ -1,0 +1,108 @@
+{
+  "n_scored": 1146,
+  "n_missing_responses": 0,
+  "n_extra_responses": 0,
+  "f1_weighted": 0.7343384034063637,
+  "f1_macro": 0.3970404633493012,
+  "exact_match": 0.7373472949389179,
+  "request_errors": 1,
+  "parse_failures": 0,
+  "oov_predictions_after_parse": 5,
+  "extraction_methods": {
+    "json": 1145,
+    "request_error": 1
+  },
+  "gold_label_distribution": {
+    "Worker Strike": 178,
+    "Accident": 191,
+    "Administrative Issue": 333,
+    "Human Error": 9,
+    "Weather": 366,
+    "Terrorism": 60,
+    "Cyber Attack": 4,
+    "Others": 5
+  },
+  "pred_label_distribution": {
+    "Worker Strike": 131,
+    "Accident": 219,
+    "Administrative Issue": 486,
+    "Weather": 252,
+    "Cyber Attack": 23,
+    "Others": 20,
+    "Human Error": 4,
+    "Hurricane Dorian": 1,
+    "Tropical Storm": 1,
+    "Terrorism": 5,
+    "Tropical Cyclone": 2,
+    "<NO_PREDICTION>": 1,
+    "Hurricane Delphi": 1
+  },
+  "per_class": {
+    "Weather": {
+      "precision": 0.9642857142857143,
+      "recall": 0.6639344262295082,
+      "f1-score": 0.7864077669902912,
+      "support": 366.0
+    },
+    "Worker Strike": {
+      "precision": 0.9541984732824428,
+      "recall": 0.702247191011236,
+      "f1-score": 0.8090614886731392,
+      "support": 178.0
+    },
+    "Administrative Issue": {
+      "precision": 0.6378600823045267,
+      "recall": 0.9309309309309309,
+      "f1-score": 0.757020757020757,
+      "support": 333.0
+    },
+    "Human Error": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 9.0
+    },
+    "Cyber Attack": {
+      "precision": 0.17391304347826086,
+      "recall": 1.0,
+      "f1-score": 0.2962962962962963,
+      "support": 4.0
+    },
+    "Terrorism": {
+      "precision": 1.0,
+      "recall": 0.08333333333333333,
+      "f1-score": 0.15384615384615385,
+      "support": 60.0
+    },
+    "Accident": {
+      "precision": 0.7214611872146118,
+      "recall": 0.8272251308900523,
+      "f1-score": 0.7707317073170732,
+      "support": 191.0
+    },
+    "Others": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 5.0
+    },
+    "micro avg": {
+      "precision": 0.7412280701754386,
+      "recall": 0.7373472949389179,
+      "f1-score": 0.7392825896762905,
+      "support": 1146.0
+    },
+    "macro avg": {
+      "precision": 0.5564648125706946,
+      "recall": 0.5259588765493826,
+      "f1-score": 0.44667052126796386,
+      "support": 1146.0
+    },
+    "weighted avg": {
+      "precision": 0.8147277888413241,
+      "recall": 0.7373472949389179,
+      "f1-score": 0.7343384034063637,
+      "support": 1146.0
+    }
+  }
+}

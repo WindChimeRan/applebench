@@ -164,7 +164,7 @@ def main():
                                   "error": resp["error"]})
             continue
 
-        text = resp["content"] + resp["reasoning"]
+        text = (resp.get("content") or "") + (resp.get("reasoning") or "")
         raw_pred, method = extract_category(text, categories_lc_sorted)
         canonical = normalize_to_canonical(raw_pred, categories)
         extraction_method_counts[method] += 1

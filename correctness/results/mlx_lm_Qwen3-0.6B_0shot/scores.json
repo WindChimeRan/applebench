@@ -1,0 +1,95 @@
+{
+  "n_scored": 1146,
+  "n_missing_responses": 0,
+  "n_extra_responses": 0,
+  "f1_weighted": 0.3952705003458921,
+  "f1_macro": 0.2957366141134532,
+  "exact_match": 0.4389179755671902,
+  "request_errors": 0,
+  "parse_failures": 0,
+  "oov_predictions_after_parse": 0,
+  "extraction_methods": {
+    "json": 1146
+  },
+  "gold_label_distribution": {
+    "Worker Strike": 178,
+    "Accident": 191,
+    "Administrative Issue": 333,
+    "Human Error": 9,
+    "Weather": 366,
+    "Terrorism": 60,
+    "Cyber Attack": 4,
+    "Others": 5
+  },
+  "pred_label_distribution": {
+    "Worker Strike": 41,
+    "Accident": 330,
+    "Administrative Issue": 569,
+    "Others": 157,
+    "Weather": 46,
+    "Cyber Attack": 3
+  },
+  "per_class": {
+    "Weather": {
+      "precision": 1.0,
+      "recall": 0.12568306010928962,
+      "f1-score": 0.22330097087378642,
+      "support": 366.0
+    },
+    "Worker Strike": {
+      "precision": 0.975609756097561,
+      "recall": 0.2247191011235955,
+      "f1-score": 0.365296803652968,
+      "support": 178.0
+    },
+    "Administrative Issue": {
+      "precision": 0.43233743409490333,
+      "recall": 0.7387387387387387,
+      "f1-score": 0.5454545454545454,
+      "support": 333.0
+    },
+    "Human Error": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 9.0
+    },
+    "Cyber Attack": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1-score": 0.8571428571428571,
+      "support": 4.0
+    },
+    "Terrorism": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 60.0
+    },
+    "Accident": {
+      "precision": 0.5,
+      "recall": 0.8638743455497382,
+      "f1-score": 0.6333973128598849,
+      "support": 191.0
+    },
+    "Others": {
+      "precision": 0.01910828025477707,
+      "recall": 0.6,
+      "f1-score": 0.037037037037037035,
+      "support": 5.0
+    },
+    "accuracy": 0.4389179755671902,
+    "macro avg": {
+      "precision": 0.49088193380590517,
+      "recall": 0.41287690569017027,
+      "f1-score": 0.33270369087763485,
+      "support": 1146.0
+    },
+    "weighted avg": {
+      "precision": 0.6834401776092867,
+      "recall": 0.4389179755671902,
+      "f1-score": 0.3952705003458921,
+      "support": 1146.0
+    }
+  }
+}
