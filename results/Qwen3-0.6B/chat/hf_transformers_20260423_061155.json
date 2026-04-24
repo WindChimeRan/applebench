@@ -1,0 +1,50 @@
+{
+  "framework": "hf_transformers",
+  "model": "/Users/haorzhang/applebench/.models/Qwen3-0.6B",
+  "endpoint": "http://localhost:8009",
+  "timestamp": "2026-04-23T06:11:56",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 15588,
+      "total_output_tokens": 15603,
+      "total_input_tokens": 99277,
+      "server_usage_available": true,
+      "ttft_avg_ms": 7424.481820452493,
+      "ttft_p50_ms": 4450.631916988641,
+      "ttft_p99_ms": 27582.327750045806,
+      "throughput_avg_tps": 1.0692917112789087,
+      "throughput_p50_tps": 1.0797952155034114,
+      "itl_avg_ms": 935.0458853434186,
+      "itl_p50_ms": 925.721036458223,
+      "latency_avg_s": 152.46645328290992,
+      "latency_p50_s": 175.91195179196075,
+      "latency_p99_s": 279.18418570794165,
+      "output_throughput_tps": 1.0233720056825495,
+      "input_throughput_tps": 6.511395411660992,
+      "total_token_throughput_tps": 7.5347674173435415,
+      "wall_time_s": 15246.655090583023,
+      "error_samples": []
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0,
+      "error": "skipped (previous level too slow)"
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0,
+      "error": "skipped (previous level too slow)"
+    }
+  ],
+  "total_duration_s": 15464.362851249985
+}

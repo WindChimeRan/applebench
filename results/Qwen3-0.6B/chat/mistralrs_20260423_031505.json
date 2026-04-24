@@ -1,0 +1,80 @@
+{
+  "framework": "mistralrs",
+  "model": "default",
+  "endpoint": "http://localhost:8003",
+  "timestamp": "2026-04-23T03:15:05",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 100,
+      "failed": 0,
+      "total_tokens_generated": 15244,
+      "total_output_tokens": 15379,
+      "total_input_tokens": 99277,
+      "server_usage_available": true,
+      "ttft_avg_ms": 377.40746872266755,
+      "ttft_p50_ms": 178.5417078062892,
+      "ttft_p99_ms": 1402.8556251432747,
+      "throughput_avg_tps": 47.79568504417576,
+      "throughput_p50_tps": 48.10101547383364,
+      "itl_avg_ms": 20.920437352726605,
+      "itl_p50_ms": 20.79293432401582,
+      "latency_avg_s": 3.5546304442058316,
+      "latency_p50_s": 3.311542792012915,
+      "latency_p99_s": 6.97563562495634,
+      "output_throughput_tps": 43.26372044467748,
+      "input_throughput_tps": 279.28294262216315,
+      "total_token_throughput_tps": 322.5466630668406,
+      "wall_time_s": 355.4710469171405,
+      "error_samples": []
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 55,
+      "failed": 45,
+      "total_tokens_generated": 7879,
+      "total_output_tokens": 7879,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 5762.030421129682,
+      "ttft_p50_ms": 3773.748790845275,
+      "ttft_p99_ms": 30871.834916062653,
+      "throughput_avg_tps": 2.43261034350571,
+      "throughput_p50_tps": 2.3333077239476956,
+      "itl_avg_ms": 590.7468588243045,
+      "itl_p50_ms": 428.5757627766279,
+      "latency_avg_s": 85.11209338698113,
+      "latency_p50_s": 60.06166070792824,
+      "latency_p99_s": 296.3007621669676,
+      "output_throughput_tps": 4.273650051268849,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 1843.623110334156,
+      "error_samples": [
+        "",
+        "Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>",
+        "[Errno 54] Connection reset by peer",
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8003, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8003)]",
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8003), [Errno 61] Connect call failed ('::1', 8003, 0, 0)]"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 1/55 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 0,
+      "failed": 100,
+      "wall_time_s": 0.029717042110860348,
+      "error": "no successful requests",
+      "error_samples": [
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('127.0.0.1', 8003), [Errno 61] Connect call failed ('::1', 8003, 0, 0)]",
+        "Cannot connect to host localhost:8003 ssl:default [Multiple exceptions: [Errno 61] Connect call failed ('::1', 8003, 0, 0), [Errno 61] Connect call failed ('127.0.0.1', 8003)]"
+      ]
+    }
+  ],
+  "total_duration_s": 2210.4293582080863
+}

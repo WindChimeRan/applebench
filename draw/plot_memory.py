@@ -1,4 +1,9 @@
-"""Plot memory-over-time from metalstat sidecars as a 1x3 panel figure.
+"""Plot system-memory-over-time from metalstat sidecars.
+
+One row, three columns — one subplot per concurrency level (1, 8, 16).
+Each trace is sliced per phase using cumulative wall_time_s recorded in
+the benchmark result JSON; the per-phase x-axis is normalized to 0-100%
+so shapes are directly comparable across frameworks.
 
 Usage:
     python draw/plot_memory.py                    # Qwen3-0.6B chat
@@ -17,12 +22,24 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from parse import discover_traces  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+CONCURRENCIES = [1, 8, 16]
+METRIC = "mem_used_gb"
 
-PANELS = [
-    ("mem_used_gb", "System memory used"),
-    ("gpu_mem_allocated_gb", "GPU memory allocated"),
-    ("mem_wired_gb", "Wired memory"),
+# Colorblind-safe palette: Wong (2011) 8 colors + Tol muted grey — distinguishable
+# under protanopia, deuteranopia, and tritanopia. 9 slots for up to 9 frameworks.
+CVD_COLORS = [
+    "#E69F00",  # orange
+    "#56B4E9",  # sky blue
+    "#009E73",  # bluish green
+    "#F0E442",  # yellow
+    "#0072B2",  # blue
+    "#D55E00",  # vermillion
+    "#CC79A7",  # reddish purple
+    "#000000",  # black
+    "#999999",  # grey
 ]
+# Extra redundancy via linestyle rotation — helps when two lines overlap.
+CVD_LINESTYLES = ["-", "--", "-.", ":", "-", "--", "-.", ":", "-"]
 
 
 def main() -> None:
@@ -37,31 +54,40 @@ def main() -> None:
     if not traces:
         raise SystemExit(f"No *_metalstat.jsonl under {split_dir}")
 
-    fig, axes = plt.subplots(1, 3, figsize=(15, 4.5), sharex=True)
-    cmap = plt.get_cmap("tab10")
+    fig, axes = plt.subplots(1, 3, figsize=(15, 4.5), sharey=True)
     frameworks = sorted(traces)
-    colors = {fw: cmap(i % 10) for i, fw in enumerate(frameworks)}
+    colors = {fw: CVD_COLORS[i % len(CVD_COLORS)] for i, fw in enumerate(frameworks)}
+    styles = {fw: CVD_LINESTYLES[i % len(CVD_LINESTYLES)] for i, fw in enumerate(frameworks)}
 
-    for ax, (key, title) in zip(axes, PANELS):
+    for ax, conc in zip(axes, CONCURRENCIES):
         for fw in frameworks:
             tr = traces[fw]
+            phase = tr.phase_slice(conc)
+            if phase is None:
+                continue
+            x_pct, idxs = phase
+            series = tr.series(METRIC)
+            y = [series[i] for i in idxs]
             ax.plot(
-                tr.elapsed_s,
-                tr.series(key),
-                label=fw,
-                color=colors[fw],
-                linewidth=1.2,
+                x_pct, y, label=fw,
+                color=colors[fw], linestyle=styles[fw], linewidth=1.6,
             )
-        ax.set_title(title)
-        ax.set_xlabel("elapsed (s)")
-        ax.set_ylabel("GB")
+        ax.set_title(f"concurrency {conc}")
+        ax.set_xlabel("phase progress (%)")
+        ax.set_xlim(0, 100)
         ax.grid(True, alpha=0.3)
+    axes[0].set_ylabel("system memory used (GB)")
 
+    # Legend built from the c=1 panel so frameworks that only benched at c=1
+    # (e.g. hf_transformers when c=8/c=16 were adaptively skipped) still appear.
+    handles, labels = axes[0].get_legend_handles_labels()
     axes[-1].legend(
-        loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=False
+        handles, labels,
+        loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=False,
     )
     fig.suptitle(
-        f"{args.model} — {args.split} split ({len(traces)}/9 frameworks traced)"
+        f"{args.model} — {args.split} split — system memory by concurrency "
+        f"({len(traces)}/9 frameworks traced)"
     )
     fig.tight_layout()
 
