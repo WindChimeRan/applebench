@@ -1,0 +1,90 @@
+{
+  "framework": "llamacpp",
+  "model": "Qwen3-0.6B-BF16.gguf",
+  "endpoint": "http://localhost:8001",
+  "timestamp": "2026-04-23T10:30:56",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 99,
+      "failed": 1,
+      "total_tokens_generated": 24123,
+      "total_output_tokens": 24426,
+      "total_input_tokens": 424447,
+      "server_usage_available": true,
+      "ttft_avg_ms": 939.399148471597,
+      "ttft_p50_ms": 669.725000159815,
+      "ttft_p99_ms": 3448.5130838584155,
+      "throughput_avg_tps": 130.4212718739738,
+      "throughput_p50_tps": 131.61831546388456,
+      "itl_avg_ms": 7.749867082593416,
+      "itl_p50_ms": 7.5961987822953425,
+      "latency_avg_s": 2.8170018012898814,
+      "latency_p50_s": 2.470813292078674,
+      "latency_p99_s": 5.69614641694352,
+      "output_throughput_tps": 87.57644772317067,
+      "input_throughput_tps": 1521.8030175532883,
+      "total_token_throughput_tps": 1609.379465276459,
+      "wall_time_s": 278.9106047919486,
+      "error_samples": [
+        "400, message='Bad Request', url='http://localhost:8001/v1/chat/completions'"
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 99,
+      "failed": 1,
+      "total_tokens_generated": 24259,
+      "total_output_tokens": 24558,
+      "total_input_tokens": 424447,
+      "server_usage_available": true,
+      "ttft_avg_ms": 7401.659364908502,
+      "ttft_p50_ms": 6874.893374973908,
+      "ttft_p99_ms": 11995.564332930371,
+      "throughput_avg_tps": 49.75128276185614,
+      "throughput_p50_tps": 49.34313415415831,
+      "itl_avg_ms": 22.18283231878339,
+      "itl_p50_ms": 20.265156458400693,
+      "latency_avg_s": 12.837125297997975,
+      "latency_p50_s": 12.675121000036597,
+      "latency_p99_s": 18.434620834188536,
+      "output_throughput_tps": 152.14093112669605,
+      "input_throughput_tps": 2629.5203922930514,
+      "total_token_throughput_tps": 2781.6613234197475,
+      "wall_time_s": 161.4161279159598,
+      "error_samples": [
+        "400, message='Bad Request', url='http://localhost:8001/v1/chat/completions'"
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 99,
+      "failed": 1,
+      "total_tokens_generated": 24141,
+      "total_output_tokens": 24448,
+      "total_input_tokens": 424447,
+      "server_usage_available": true,
+      "ttft_avg_ms": 20091.86554335603,
+      "ttft_p50_ms": 21010.34545782022,
+      "ttft_p99_ms": 29841.404458042234,
+      "throughput_avg_tps": 47.64730862974523,
+      "throughput_p50_tps": 43.98129341955144,
+      "itl_avg_ms": 23.276299063938552,
+      "itl_p50_ms": 22.672215825341606,
+      "latency_avg_s": 25.736016372870182,
+      "latency_p50_s": 27.073386084055528,
+      "latency_p99_s": 35.335126207908615,
+      "output_throughput_tps": 146.45167411934366,
+      "input_throughput_tps": 2542.5790954242907,
+      "total_token_throughput_tps": 2689.0307695436345,
+      "wall_time_s": 166.93561304104514,
+      "error_samples": [
+        "400, message='Bad Request', url='http://localhost:8001/v1/chat/completions'"
+      ]
+    }
+  ],
+  "total_duration_s": 633.3023342920933
+}
