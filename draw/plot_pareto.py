@@ -1,14 +1,10 @@
 """Throughput-vs-memory Pareto scatter, one panel per concurrency.
 
 One row, three columns — one scatter per concurrency level (1, 8, 16). Each
-point is a framework; x = output throughput (tok/s, log), y = peak system
-memory (GB, linear). A dashed line connects the Pareto frontier (non-dominated
-points: no other framework has both higher throughput *and* lower memory).
-
-This replaces the earlier grouped bar chart. Bars with dual log/linear axes
-invite visual false-comparison between height and value; a Pareto plot makes
-the speed-vs-memory tradeoff explicit and naturally surfaces off-frontier
-frameworks (e.g. inferrs, hf_transformers) without misleading empty slots.
+point is a framework; x = output throughput (tok/s, linear), y = peak system
+memory (GB, linear, inverted so less-is-higher). A dashed staircase connects
+the Pareto frontier (non-dominated points: no other framework has both higher
+throughput *and* lower memory).
 
 Usage:
     python draw/plot_pareto.py                          # Qwen3-0.6B chat
@@ -23,23 +19,14 @@ import sys
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from parse import discover_traces  # noqa: E402
+from parse import CVD_COLORS, discover_traces, load_concurrency_metric  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONCURRENCIES = [1, 8, 16]
 THROUGHPUT_KEY = "output_throughput_tps"
 MEMORY_KEY = "mem_used_gb"
-
-# Same CVD-safe palette as plot_memory.py so framework colors are stable
-# across figures in the paper.
-CVD_COLORS = [
-    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
-    "#D55E00", "#CC79A7", "#000000", "#999999",
-]
-MARKERS = ["o", "s", "^", "D", "v", "P", "X", "<", ">"]
 
 
 def load_throughput(split_dir: Path) -> dict[str, dict[int, float]]:
@@ -53,16 +40,11 @@ def load_throughput(split_dir: Path) -> dict[str, dict[int, float]]:
             continue
         fw = data.get("framework")
         ts = data.get("timestamp")
-        if not fw or not ts or "concurrency_results" not in data:
+        if not fw or not ts:
             continue
         if fw in by_fw and by_fw[fw][0] >= ts:
             continue
-        ccs = {
-            int(r["concurrency"]): float(r[THROUGHPUT_KEY])
-            for r in data["concurrency_results"]
-            if r.get("concurrency") is not None and r.get(THROUGHPUT_KEY) is not None
-        }
-        by_fw[fw] = (ts, ccs)
+        by_fw[fw] = (ts, load_concurrency_metric(path, THROUGHPUT_KEY))
     return {fw: ccs for fw, (_, ccs) in by_fw.items()}
 
 
@@ -118,16 +100,11 @@ def main() -> None:
 
     all_fw = sorted(set(tput) | set(mem))
     colors = {fw: CVD_COLORS[i % len(CVD_COLORS)] for i, fw in enumerate(all_fw)}
-    markers = {fw: MARKERS[i % len(MARKERS)] for i, fw in enumerate(all_fw)}
 
-    # Shared axis bounds so panels are visually comparable. Linear x starts
-    # at 0 (slow frameworks compress toward the y-axis, which is fine — the
-    # interesting comparisons are among fast frameworks). Memory y-axis
-    # inverted below: less memory = higher on the plot.
     tput_vals = [v for ccs in tput.values() for v in ccs.values() if v > 0]
     mem_vals = [v for ccs in mem.values() for v in ccs.values()]
     x_lo = 0
-    x_hi = max(tput_vals) * 1.15  # slight headroom so inline labels don't clip
+    x_hi = max(tput_vals) * 1.15  # headroom so rightmost inline labels don't clip
     y_lo = 0
     y_hi = max(mem_vals) * 1.08 if mem_vals else 1
 
@@ -147,27 +124,17 @@ def main() -> None:
         front_idx = pareto_front(list(zip(xs, ys)))
         front_set = set(front_idx)
 
-        # Staircase Pareto boundary: with max-x/min-y, between two frontier
-        # points sorted by x the boundary runs horizontal (at lower y) to the
-        # next x, then vertical up to the next y. Shade the dominated region
-        # (above the staircase) lightly so "no framework can reach here" reads
-        # at a glance.
         if front_idx:
             fx = [xs[i] for i in front_idx]
             fy = [ys[i] for i in front_idx]
-            # Build staircase vertices for both the line and the shaded polygon.
             step_x = [fx[0]]
             step_y = [fy[0]]
             for i in range(1, len(fx)):
                 step_x.extend([fx[i], fx[i]])
                 step_y.extend([fy[i - 1], fy[i]])
-            # Extend the left end to the axis so the line clearly reads as a
-            # boundary rather than floating mid-plot.
             line_x = [x_lo, *step_x, x_hi]
             line_y = [step_y[0], *step_y, step_y[-1]]
             ax.plot(line_x, line_y, "k--", linewidth=1.0, alpha=0.55, zorder=2)
-            # Shade the dominated region — above the staircase, bounded by
-            # the top of the panel.
             ax.fill_between(
                 line_x, line_y, y_hi,
                 color="gray", alpha=0.08, zorder=1,
@@ -185,9 +152,6 @@ def main() -> None:
                 alpha=1.0 if on_front else 0.7,
                 zorder=4 if on_front else 3,
             )
-            # Inline label next to each marker. Offset in pixels so placement
-            # is stable regardless of data scale. Frontier points get bold
-            # black, dominated get normal dark gray.
             ax.annotate(
                 fw, (x, y),
                 xytext=(8, 3), textcoords="offset points",
@@ -198,9 +162,8 @@ def main() -> None:
             )
 
         ax.set_xlim(x_lo, x_hi)
-        # Invert the memory axis so "less memory" sits *higher* on the plot.
-        # Combined with "more throughput = further right," the read becomes
-        # "up-and-to-the-right is better," matching the Pareto intuition.
+        # Invert so "less memory" sits higher — with "more throughput to the
+        # right," up-and-to-the-right becomes the good corner.
         ax.set_ylim(y_hi, y_lo)
         ax.set_title(f"concurrency {c}")
         ax.set_xlabel("output throughput (tok/s)")
@@ -208,9 +171,6 @@ def main() -> None:
 
     axes[0].set_ylabel("peak system memory (GB)")
 
-    # Small style legend — explains dashed line + bold-circle cue.
-    # Framework identity is carried by inline labels next to each point,
-    # so no per-framework legend. Title removed — paper caption handles it.
     style_handles = [
         plt.Line2D([0], [0], linestyle="--", color="black", alpha=0.6,
                    label="Pareto frontier"),

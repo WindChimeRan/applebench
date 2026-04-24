@@ -14,6 +14,13 @@ FILENAME_RE = re.compile(
     r"^(?P<framework>.+)_(?P<date>\d{8})_(?P<time>\d{6})_metalstat\.jsonl$"
 )
 
+# Colorblind-safe palette (Wong 2011, 8 colors + Tol muted grey). Stable order
+# gives each framework the same color across every figure in the paper.
+CVD_COLORS = [
+    "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2",
+    "#D55E00", "#CC79A7", "#000000", "#999999",
+]
+
 
 @dataclass
 class Trace:
@@ -63,16 +70,18 @@ class Trace:
         return x_pct, idxs
 
 
-def _load_wall_times(result_json: Path) -> dict[int, float]:
+def load_concurrency_metric(result_json: Path, key: str) -> dict[int, float]:
+    """{concurrency: value} from a result JSON's concurrency_results entries."""
     if not result_json.exists():
         return {}
     data = json.loads(result_json.read_text())
     out: dict[int, float] = {}
     for r in data.get("concurrency_results", []):
         c = r.get("concurrency")
-        if c is None:
+        v = r.get(key)
+        if c is None or v is None:
             continue
-        out[int(c)] = float(r.get("wall_time_s") or 0)
+        out[int(c)] = float(v)
     return out
 
 
@@ -95,7 +104,7 @@ def discover_traces(split_dir: Path) -> dict[str, Trace]:
         if not rows:
             continue
         result_json = path.with_name(f"{fw}_{m['date']}_{m['time']}.json")
-        wall_times = _load_wall_times(result_json)
+        wall_times = load_concurrency_metric(result_json, "wall_time_s")
         by_fw[fw] = Trace(
             framework=fw, timestamp=ts, path=path, rows=rows,
             wall_times=wall_times,

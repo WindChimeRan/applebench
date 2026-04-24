@@ -195,6 +195,7 @@ for entry in "${FRAMEWORKS[@]}"; do
             --output "$RESULT_DIR/responses.jsonl" \
             --concurrency "$CONCURRENCY" \
             $OVERWRITE_RESPONSES || rc=$?
+        # rc=142 means perl's alarm fired (128 + SIGALRM=14) — i.e. hit --eval-timeout.
         if [ "$rc" = "142" ]; then
             echo "  TIMEOUT after ${EVAL_TIMEOUT_SECONDS}s — will score whatever was written so far"
         elif [ "$rc" != "0" ]; then

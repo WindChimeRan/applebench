@@ -19,25 +19,12 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from parse import discover_traces  # noqa: E402
+from parse import CVD_COLORS, discover_traces  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CONCURRENCIES = [1, 8, 16]
 METRIC = "mem_used_gb"
 
-# Colorblind-safe palette: Wong (2011) 8 colors + Tol muted grey — distinguishable
-# under protanopia, deuteranopia, and tritanopia. 9 slots for up to 9 frameworks.
-CVD_COLORS = [
-    "#E69F00",  # orange
-    "#56B4E9",  # sky blue
-    "#009E73",  # bluish green
-    "#F0E442",  # yellow
-    "#0072B2",  # blue
-    "#D55E00",  # vermillion
-    "#CC79A7",  # reddish purple
-    "#000000",  # black
-    "#999999",  # grey
-]
 # Extra redundancy via linestyle rotation — helps when two lines overlap.
 CVD_LINESTYLES = ["-", "--", "-.", ":", "-", "--", "-.", ":", "-"]
 
