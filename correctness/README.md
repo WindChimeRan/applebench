@@ -85,11 +85,52 @@ python correctness/scripts/score_f1.py \
   --output correctness/results/vllm-nvidia_Qwen3-0.6B_5shot/scores.json
 ```
 
-## On Mac later
+## Running all 9 Mac frameworks
 
-Each of the 9 AppleBench frameworks already serves OpenAI on ports 8001–8007.
-Same procedure — start `serve_<fw>.sh`, point `run.sh` at it, stop, next. A
-helper wrapper that loops over all 9 will land alongside.
+`run_all_mac.sh` is the correctness analog of `scripts/run_all.sh`. It loops
+over all frameworks, serves each one, runs 0-shot + 5-shot eval, scores, stops
+the server, and cleans up — same serve/stop/cleanup/cooldown pattern as the
+perf driver.
+
+```bash
+# All 9 frameworks, 0-shot + 5-shot, concurrency=8
+bash correctness/run_all_mac.sh
+
+# Smoke test first with a small slice
+bash correctness/run_all_mac.sh --max-rows 20
+
+# Resume — skip (framework × shot) cells that already have scores.json
+bash correctness/run_all_mac.sh --skip-existing
+
+# Restrict to specific frameworks (positional args, same pattern as run_all.sh)
+bash correctness/run_all_mac.sh llamacpp omlx
+
+# Force re-run after a fix — wipes prior responses for the listed framework
+bash correctness/run_all_mac.sh --overwrite-responses llamacpp
+```
+
+Flags:
+
+- `--model MODEL` — AppleBench model profile (default: `qwen3-0.6b`).
+- `--shots "0 5"` — space-separated shot counts to run (default: `"0 5"`).
+- `--concurrency 8` — parallel API requests (default: 8).
+- `--skip-existing` — per-cell resume. Skips a (framework × shot) cell when
+  its `scores.json` already exists. If all shots for a framework are done,
+  the server is never started for that framework — so resumes after a partial
+  run are fast.
+- `--overwrite-responses` — wipes `responses.jsonl` before running. Use this
+  to rerun after fixing a framework bug (old bad responses are discarded;
+  fresh ones are generated and re-scored).
+- `--max-rows N` — cap dataset size (default: 0 = all 1147 rows).
+- Positional args — framework names to restrict to a subset.
+
+Outputs land in `correctness/results/`:
+- `<framework>_<model-slug>_<N>shot/{responses.jsonl, scores.json}` — one cell per (framework × shot).
+- `<model-slug>_comparison.json` + `<model-slug>_comparison.md` — aggregated side-by-side table across all 9 frameworks, written at the end of the run.
+
+The driver sources `scripts/config.sh` for ports + per-framework model-name
+overrides; it's a one-way dependency (deleting `correctness/` still leaves
+AppleBench intact).
 
 ## Decoding
 
