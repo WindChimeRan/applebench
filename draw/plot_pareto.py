@@ -144,35 +144,43 @@ def main() -> None:
         front_idx = pareto_front(list(zip(xs, ys)))
         front_set = set(front_idx)
 
-        # Pareto frontier — dashed line through non-dominated points,
-        # extended to the plot edges to visually suggest the unreachable region.
-        if len(front_idx) >= 1:
+        # Staircase Pareto boundary: with max-x/min-y, between two frontier
+        # points sorted by x the boundary runs horizontal (at lower y) to the
+        # next x, then vertical up to the next y. Shade the dominated region
+        # (above the staircase) lightly so "no framework can reach here" reads
+        # at a glance.
+        if front_idx:
             fx = [xs[i] for i in front_idx]
             fy = [ys[i] for i in front_idx]
-            # Staircase step: best-throughput-so-far at each memory level.
-            # Draw only between frontier points themselves; avoid extrapolating.
-            ax.plot(fx, fy, "k--", linewidth=1.0, alpha=0.6, zorder=2,
-                    label="Pareto frontier")
+            # Build staircase vertices for both the line and the shaded polygon.
+            step_x = [fx[0]]
+            step_y = [fy[0]]
+            for i in range(1, len(fx)):
+                step_x.extend([fx[i], fx[i]])
+                step_y.extend([fy[i - 1], fy[i]])
+            # Extend the left end to the axis so the line clearly reads as a
+            # boundary rather than floating mid-plot.
+            line_x = [x_lo, *step_x, x_hi]
+            line_y = [step_y[0], *step_y, step_y[-1]]
+            ax.plot(line_x, line_y, "k--", linewidth=1.0, alpha=0.55, zorder=2)
+            # Shade the dominated region — above the staircase, bounded by
+            # the top of the panel.
+            ax.fill_between(
+                line_x, line_y, y_hi,
+                color="gray", alpha=0.08, zorder=1,
+            )
 
         for i, (x, y, fw) in enumerate(zip(xs, ys, fws)):
             on_front = i in front_set
             ax.scatter(
                 x, y,
-                s=120 if on_front else 70,
-                marker=markers[fw],
+                s=140 if on_front else 70,
+                marker="o",
                 color=colors[fw],
-                edgecolors="black" if on_front else "gray",
-                linewidths=1.4 if on_front else 0.7,
+                edgecolors="black" if on_front else "#666666",
+                linewidths=1.6 if on_front else 0.5,
+                alpha=1.0 if on_front else 0.7,
                 zorder=4 if on_front else 3,
-            )
-            # Label with a small offset; nudge dominated points down-right
-            # and frontier points up-right so they rarely collide.
-            dx = 1.08
-            dy = 0.5 if on_front else -1.2
-            ax.annotate(
-                fw, (x, y), xytext=(x * dx, y + dy),
-                fontsize=8, alpha=0.95,
-                color="black" if on_front else "#555555",
             )
 
         ax.set_xscale("log")
@@ -184,27 +192,37 @@ def main() -> None:
 
     axes[0].set_ylabel("peak system memory (GB)")
 
-    # Single legend (frontier line + "frontier / dominated" marker cue).
-    legend_elements = [
+    # Framework legend (one colored dot per framework) + a small inset that
+    # explains the frontier / dominated styling.
+    fw_handles = [
+        plt.Line2D([0], [0], marker="o", color="white",
+                   markerfacecolor=colors[fw], markeredgecolor="#333",
+                   markersize=9, linestyle="None", label=fw)
+        for fw in all_fw
+    ]
+    style_handles = [
         plt.Line2D([0], [0], linestyle="--", color="black", alpha=0.6,
                    label="Pareto frontier"),
         plt.Line2D([0], [0], marker="o", color="white",
-                   markerfacecolor="#999", markeredgecolor="black",
-                   markersize=10, linestyle="None", label="on frontier"),
-        plt.Line2D([0], [0], marker="o", color="white",
-                   markerfacecolor="#999", markeredgecolor="gray",
-                   markersize=7, linestyle="None", label="dominated"),
+                   markerfacecolor="#aaa", markeredgecolor="black",
+                   markersize=11, markeredgewidth=1.6, linestyle="None",
+                   label="on frontier"),
     ]
     fig.legend(
-        handles=legend_elements,
-        loc="upper center", bbox_to_anchor=(0.5, 0.02),
-        ncol=3, frameon=False,
+        handles=fw_handles,
+        loc="upper center", bbox_to_anchor=(0.5, 0.055),
+        ncol=len(all_fw), frameon=False, fontsize=9,
+    )
+    fig.legend(
+        handles=style_handles,
+        loc="upper center", bbox_to_anchor=(0.5, 0.015),
+        ncol=2, frameon=False, fontsize=9,
     )
     fig.suptitle(
         f"{args.model} — {args.split} split — throughput vs peak memory "
-        "(up-and-to-the-right is better; frontier dashed)"
+        "(down-and-to-the-right is better)"
     )
-    fig.tight_layout(rect=(0, 0.04, 1, 0.97))
+    fig.tight_layout(rect=(0, 0.09, 1, 0.97))
 
     out = args.out or REPO_ROOT / "draw" / f"pareto_{args.model}_{args.split}.png"
     out.parent.mkdir(parents=True, exist_ok=True)
