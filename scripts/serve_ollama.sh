@@ -23,6 +23,7 @@ echo "=== Starting Ollama server on port $OLLAMA_PORT ==="
 OLLAMA_HOST="0.0.0.0:$OLLAMA_PORT" \
 OLLAMA_NUM_PARALLEL=16 \
 OLLAMA_KEEP_ALIVE="10m" \
+OLLAMA_CONTEXT_LENGTH=16384 \
     ollama serve &> "$PROJECT_DIR/.frameworks/ollama_server.log" &
 
 echo $! > "$PROJECT_DIR/.frameworks/ollama_server.pid"
