@@ -36,7 +36,11 @@ GGUF_MODEL="$MODELS_DIR/$GGUF_FILE"
 MLX_MODEL="$MODELS_DIR/$MLX_DIR_NAME"
 HF_MODEL="$MODELS_DIR/$HF_DIR_NAME"
 RESULTS_DIR="$RESULTS_BASE_DIR/$MODEL_NAME"
-OLLAMA_MODEL_NAME="$(echo "$MODEL_NAME" | tr '[:upper:]' '[:lower:]')-bf16"
+# Fallback only — model profiles should set OLLAMA_MODEL_NAME explicitly
+# (to an ollama registry tag like qwen3:0.6b-fp16). The older derived form
+# built a lowercase-<model>-bf16 tag used with a bare-FROM Modelfile, which
+# produced a broken chat template for Qwen3.
+OLLAMA_MODEL_NAME="${OLLAMA_MODEL_NAME:-$(echo "$MODEL_NAME" | tr '[:upper:]' '[:lower:]')-bf16}"
 
 # Benchmark
 CONCURRENCY_LEVELS="1 8 16"
