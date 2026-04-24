@@ -120,11 +120,14 @@ def main() -> None:
     colors = {fw: CVD_COLORS[i % len(CVD_COLORS)] for i, fw in enumerate(all_fw)}
     markers = {fw: MARKERS[i % len(MARKERS)] for i, fw in enumerate(all_fw)}
 
-    # Shared axis bounds so panels are visually comparable.
+    # Shared axis bounds so panels are visually comparable. Linear x starts
+    # at 0 (slow frameworks compress toward the y-axis, which is fine — the
+    # interesting comparisons are among fast frameworks). Memory y-axis
+    # inverted below: less memory = higher on the plot.
     tput_vals = [v for ccs in tput.values() for v in ccs.values() if v > 0]
     mem_vals = [v for ccs in mem.values() for v in ccs.values()]
-    x_lo = min(tput_vals) * 0.6
-    x_hi = max(tput_vals) * 1.6
+    x_lo = 0
+    x_hi = max(tput_vals) * 1.08
     y_lo = 0
     y_hi = max(mem_vals) * 1.08 if mem_vals else 1
 
@@ -183,12 +186,14 @@ def main() -> None:
                 zorder=4 if on_front else 3,
             )
 
-        ax.set_xscale("log")
         ax.set_xlim(x_lo, x_hi)
-        ax.set_ylim(y_lo, y_hi)
+        # Invert the memory axis so "less memory" sits *higher* on the plot.
+        # Combined with "more throughput = further right," the read becomes
+        # "up-and-to-the-right is better," matching the Pareto intuition.
+        ax.set_ylim(y_hi, y_lo)
         ax.set_title(f"concurrency {c}")
-        ax.set_xlabel("output throughput (tok/s, log)")
-        ax.grid(True, which="both", alpha=0.25)
+        ax.set_xlabel("output throughput (tok/s)")
+        ax.grid(True, alpha=0.25)
 
     axes[0].set_ylabel("peak system memory (GB)")
 
@@ -220,7 +225,7 @@ def main() -> None:
     )
     fig.suptitle(
         f"{args.model} — {args.split} split — throughput vs peak memory "
-        "(down-and-to-the-right is better)"
+        "(up-and-to-the-right is better; memory axis inverted)"
     )
     fig.tight_layout(rect=(0, 0.09, 1, 0.97))
 
