@@ -14,8 +14,9 @@
 __pycache__/
 *.pyc
 
-# vllm-metal installer temp files
-vllm-*/
+# vllm-metal installer temp files (at repo root only — anchored so the
+# correctness/ subtree's vllm-nvidia_* result dirs aren't caught).
+/vllm-*/
 
 # Metalstat sidecar artifacts — per-cell GPU/mem/power timelines written
 # next to benchmark result JSONs. Kept on disk for local diagnosis, not

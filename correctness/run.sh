@@ -43,8 +43,8 @@ if [ -z "$BACKEND" ] || [ -z "$MODEL" ] || [ -z "$BASE_URL" ]; then
     exit 1
 fi
 
-# Slugify the model name for directory use (strip "org/" prefix, replace special chars)
-MODEL_SLUG=$(echo "$MODEL" | sed 's|.*/||' | tr -c 'A-Za-z0-9._-' '_')
+# Strip any "org/" prefix for directory naming.
+MODEL_SLUG="${MODEL##*/}"
 
 # 1. Fetch dataset if not already present
 if [ ! -f "$SCRIPT_DIR/data/GMRID_v3-test.csv" ] || [ ! -f "$SCRIPT_DIR/data/categories.json" ]; then
