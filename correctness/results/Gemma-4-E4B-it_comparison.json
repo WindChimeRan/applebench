@@ -1,0 +1,69 @@
+{
+  "model": "Gemma-4-E4B-it",
+  "shots": [
+    0,
+    5
+  ],
+  "frameworks": {
+    "llamacpp": {
+      "0shot": {
+        "f1_weighted": 0.8497277055475193,
+        "f1_macro": 0.6796973411955448,
+        "exact_match": 0.8481675392670157,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      },
+      "5shot": {
+        "f1_weighted": 0.9107044917574857,
+        "f1_macro": 0.6906988849390324,
+        "exact_match": 0.9057591623036649,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      }
+    },
+    "mlx_lm": {
+      "0shot": {
+        "f1_weighted": 0.7496909637356063,
+        "f1_macro": 0.6464669681224305,
+        "exact_match": 0.7617801047120419,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      },
+      "5shot": {
+        "f1_weighted": 0.8855591984691223,
+        "f1_macro": 0.6979382144042356,
+        "exact_match": 0.8848167539267016,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      }
+    },
+    "omlx": {
+      "0shot": {
+        "f1_weighted": 0.3933720073958675,
+        "f1_macro": 0.2944391296495217,
+        "exact_match": 0.43804537521815007,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      },
+      "5shot": {
+        "f1_weighted": 0.7321349190827069,
+        "f1_macro": 0.3952236409098881,
+        "exact_match": 0.7347294938917975,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 6
+      }
+    }
+  }
+}

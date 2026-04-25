@@ -25,3 +25,21 @@ source "$VENV_DIR/bin/activate"
 uv pip install "mlx-lm @ git+https://github.com/ml-explore/mlx-lm"
 
 echo "=== mlx_lm installed ==="
+
+# Sibling venv for mlx-vlm. Multimodal MLX ports (e.g.
+# mlx-community/gemma-4-e4b-it-bf16) embed weights with the multimodal
+# layout (`language_model.model.<X>`, `vision_tower.*`, `audio_tower.*`)
+# that mlx_lm's text-only loader doesn't recognize. mlx-vlm understands
+# that layout and exposes the same /v1/chat/completions endpoint, so we
+# can route by MLX_BACKEND=mlx_vlm in the model profile without touching
+# benchmark code.
+VLM_VENV="$VENVS_DIR/mlx_vlm"
+echo "=== Installing mlx_vlm (sibling venv for multimodal MLX ports) ==="
+if [ -d "$VLM_VENV" ]; then
+    echo "Venv already exists at $VLM_VENV"
+else
+    uv venv "$VLM_VENV" --python 3.12
+fi
+source "$VLM_VENV/bin/activate"
+uv pip install mlx-vlm
+echo "=== mlx_vlm installed ==="

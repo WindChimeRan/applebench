@@ -1,0 +1,102 @@
+{
+  "framework": "mlx_lm",
+  "model": "/Users/haorzhang/applebench/.models/gemma-4-e4b-it-bf16-mlx",
+  "endpoint": "http://localhost:8002",
+  "timestamp": "2026-04-25T05:02:26",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 98,
+      "failed": 2,
+      "total_tokens_generated": 4993,
+      "total_output_tokens": 4993,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 1041.6887806400619,
+      "ttft_p50_ms": 805.9572079218924,
+      "ttft_p99_ms": 2762.0334171224385,
+      "throughput_avg_tps": 20.905424250579802,
+      "throughput_p50_tps": 20.64248951190811,
+      "itl_avg_ms": 48.626617588674456,
+      "itl_p50_ms": 48.01081249024719,
+      "latency_avg_s": 3.4908867573118485,
+      "latency_p50_s": 2.894994125002995,
+      "latency_p99_s": 10.32661350001581,
+      "output_throughput_tps": 14.541028015052833,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 343.3732467079535,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p028_medium_out64' (requested max_tokens=64)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p063_long_out256' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 98/98 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 98,
+      "failed": 2,
+      "total_tokens_generated": 4993,
+      "total_output_tokens": 4993,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 23544.013462694627,
+      "ttft_p50_ms": 23546.123166102916,
+      "ttft_p99_ms": 39129.72729187459,
+      "throughput_avg_tps": 20.916359376430353,
+      "throughput_p50_tps": 20.6852636843522,
+      "itl_avg_ms": 48.61452091121562,
+      "itl_p50_ms": 47.974812565371394,
+      "latency_avg_s": 25.992433535778535,
+      "latency_p50_s": 25.998855874873698,
+      "latency_p99_s": 44.14650312485173,
+      "output_throughput_tps": 14.540238977642353,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 343.3918801250402,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p028_medium_out64' (requested max_tokens=64)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p063_long_out256' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 98/98 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 98,
+      "failed": 2,
+      "total_tokens_generated": 4993,
+      "total_output_tokens": 4993,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 46946.270864278704,
+      "ttft_p50_ms": 49597.15533303097,
+      "ttft_p99_ms": 68445.80808281898,
+      "throughput_avg_tps": 20.916960338614114,
+      "throughput_p50_tps": 20.658433835435705,
+      "itl_avg_ms": 48.60229935124976,
+      "itl_p50_ms": 47.87334751520191,
+      "latency_avg_s": 49.39445806027637,
+      "latency_p50_s": 51.65574741619639,
+      "latency_p99_s": 70.16558054182678,
+      "output_throughput_tps": 14.544668461243269,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 343.2873023750726,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p028_medium_out64' (requested max_tokens=64)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p063_long_out256' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 98/98 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    }
+  ],
+  "total_duration_s": 1057.8046395829879
+}

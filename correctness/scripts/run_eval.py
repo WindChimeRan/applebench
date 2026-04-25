@@ -43,6 +43,12 @@ async def one_request(
         "temperature": temperature,
         "top_p": top_p,
         "stream": False,
+        # Disable thinking for templates that opt into it (Qwen3, Gemma4,
+        # ...). Forwarded to the Jinja chat template by vllm/llamacpp/
+        # mlx-vlm; harmless on templates that don't read the kwarg. Without
+        # this, Gemma4-E4B-it consumed the entire 256-token max_tokens
+        # budget on reasoning and never emitted JSON, scoring F1≈0.14.
+        "chat_template_kwargs": {"enable_thinking": False},
     }
 
     last_err = None
@@ -64,15 +70,19 @@ async def one_request(
             content = message["content"]
             # Optional — not all backends split reasoning from content
             reasoning = message.get("reasoning_content") or message.get("reasoning") or ""
-            usage = data["usage"]
+            # mlx-vlm reports input_tokens/output_tokens; OpenAI standard is
+            # prompt_tokens/completion_tokens. Tolerate either.
+            usage = data.get("usage") or {}
+            prompt_tokens = usage.get("prompt_tokens") or usage.get("input_tokens") or 0
+            completion_tokens = usage.get("completion_tokens") or usage.get("output_tokens") or 0
 
             return {
                 "id": record["id"],
                 "content": content,
                 "reasoning": reasoning,
-                "prompt_tokens": usage["prompt_tokens"],
-                "completion_tokens": usage["completion_tokens"],
-                "finish_reason": choice["finish_reason"],
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
+                "finish_reason": choice.get("finish_reason"),
                 "latency_s": latency,
                 "error": None,
             }

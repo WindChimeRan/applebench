@@ -1,0 +1,111 @@
+{
+  "framework": "mlx_lm",
+  "model": "/Users/haorzhang/applebench/.models/gemma-4-e4b-it-bf16-mlx",
+  "endpoint": "http://localhost:8002",
+  "timestamp": "2026-04-25T05:55:31",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 64,
+      "failed": 36,
+      "total_tokens_generated": 3907,
+      "total_output_tokens": 3907,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 3594.1652766887273,
+      "ttft_p50_ms": 2925.188957946375,
+      "ttft_p99_ms": 15045.973709085956,
+      "throughput_avg_tps": 18.138441637473143,
+      "throughput_p50_tps": 20.893848217934753,
+      "itl_avg_ms": 68.6093126205912,
+      "itl_p50_ms": 48.03195057948138,
+      "latency_avg_s": 6.77926458849106,
+      "latency_p50_s": 5.5160024161450565,
+      "latency_p99_s": 16.214153375010937,
+      "output_throughput_tps": 5.334153726574059,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 732.4498318328988,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a000_vlong_bfcl_v3' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a001_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a003_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a005_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a009_vlong_bfcl_v3' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 64/64 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 64,
+      "failed": 36,
+      "total_tokens_generated": 3907,
+      "total_output_tokens": 3907,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 53228.146343055414,
+      "ttft_p50_ms": 54264.85233288258,
+      "ttft_p99_ms": 78762.73483294062,
+      "throughput_avg_tps": 18.145219558685614,
+      "throughput_p50_tps": 20.945317290725573,
+      "itl_avg_ms": 68.52395131845167,
+      "itl_p50_ms": 48.03393831403524,
+      "latency_avg_s": 56.413141051496495,
+      "latency_p50_s": 56.84471929189749,
+      "latency_p99_s": 81.35734529211186,
+      "output_throughput_tps": 5.333514914921358,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 732.5375596249942,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a000_vlong_bfcl_v3' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a001_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a003_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a005_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a009_vlong_bfcl_v3' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 64/64 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 64,
+      "failed": 36,
+      "total_tokens_generated": 3907,
+      "total_output_tokens": 3907,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 108013.23248503104,
+      "ttft_p50_ms": 113497.66525020823,
+      "ttft_p99_ms": 136101.5208750032,
+      "throughput_avg_tps": 18.148318503512815,
+      "throughput_p50_tps": 20.999120656114062,
+      "itl_avg_ms": 68.54805148986043,
+      "itl_p50_ms": 47.99821487326613,
+      "latency_avg_s": 111.19756929434516,
+      "latency_p50_s": 115.75133495801128,
+      "latency_p99_s": 140.584977874998,
+      "output_throughput_tps": 5.33500779599895,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 732.332575583132,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a000_vlong_bfcl_v3' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a001_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a003_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a005_vlong_hermes' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'a009_vlong_bfcl_v3' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 64/64 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    }
+  ],
+  "total_duration_s": 2274.510035832878
+}

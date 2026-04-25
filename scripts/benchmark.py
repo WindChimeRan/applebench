@@ -48,6 +48,11 @@ async def benchmark_single(
         "temperature": 0.0,
         "stream": True,
         "stream_options": {"include_usage": True},
+        # Forward enable_thinking=False to the Jinja chat template. Required
+        # for Gemma4-E4B-it (its template defaults thinking on); harmless on
+        # templates that don't read the kwarg. Vllm/llamacpp/mlx-vlm all
+        # honor this OpenAI extension.
+        "chat_template_kwargs": {"enable_thinking": False},
     }
 
     t_start = time.perf_counter()
