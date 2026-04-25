@@ -14,15 +14,21 @@ fi
 
 source "$VENV_DIR/bin/activate"
 
-# omlx is a multi-model server that auto-discovers everything in its
-# --model-dir at startup. Refresh the symlink for the currently active
-# MLX_MODEL so adding a new model profile doesn't silently fall back to
-# whatever symlink already happens to be there (e.g. Qwen3-0.6B served
-# as "Gemma-4" because no Gemma symlink existed).
+# omlx is a multi-model server that auto-discovers every subdir/symlink
+# in --model-dir. Run_all_mac.sh picks `/v1/models data[0]` for the API
+# `model` field, so a stale extra symlink (e.g. Qwen3-0.6B left from a
+# prior profile) silently wins on alphabetical/discovery order and the
+# benchmark scores the wrong model. Make the dir contain ONLY the active
+# model so discovery is unambiguous.
 mkdir -p "$OMLX_MODEL_DIR"
-ACTIVE_LINK="$OMLX_MODEL_DIR/$(basename "$MLX_MODEL")"
-ln -snf "$MLX_MODEL" "$ACTIVE_LINK"
-echo "Refreshed omlx symlink: $ACTIVE_LINK -> $MLX_MODEL"
+ACTIVE_NAME="$(basename "$MLX_MODEL")"
+for entry in "$OMLX_MODEL_DIR"/*; do
+    [ -e "$entry" ] || continue
+    [ "$(basename "$entry")" = "$ACTIVE_NAME" ] && continue
+    rm -rf "$entry"
+done
+ln -snf "$MLX_MODEL" "$OMLX_MODEL_DIR/$ACTIVE_NAME"
+echo "omlx model dir reset to single entry: $ACTIVE_NAME -> $MLX_MODEL"
 
 echo "=== Starting omlx server on port $OMLX_PORT ==="
 

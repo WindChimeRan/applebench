@@ -1,0 +1,93 @@
+{
+  "framework": "omlx",
+  "model": "gemma-4-e4b-it-bf16-mlx",
+  "endpoint": "http://localhost:8005",
+  "timestamp": "2026-04-25T14:00:43",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 98,
+      "failed": 2,
+      "total_tokens_generated": 7745,
+      "total_output_tokens": 7745,
+      "total_input_tokens": 97804,
+      "server_usage_available": true,
+      "ttft_avg_ms": 617.5402618863867,
+      "ttft_p50_ms": 409.3462498858571,
+      "ttft_p99_ms": 2514.0169591177255,
+      "throughput_avg_tps": 25.198422941832543,
+      "throughput_p50_tps": 26.39723573764584,
+      "itl_avg_ms": 37.06610053088114,
+      "itl_p50_ms": 37.074580699914975,
+      "latency_avg_s": 3.5416271746258383,
+      "latency_p50_s": 2.7879540829453617,
+      "latency_p99_s": 10.24368920805864,
+      "output_throughput_tps": 22.2540112203301,
+      "input_throughput_tps": 281.0240559578005,
+      "total_token_throughput_tps": 303.2780671781306,
+      "wall_time_s": 348.0271454579197,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p063_long_out256' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p040_long_out64' (requested max_tokens=64)"
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 98,
+      "failed": 2,
+      "total_tokens_generated": 8219,
+      "total_output_tokens": 8219,
+      "total_input_tokens": 93566,
+      "server_usage_available": true,
+      "ttft_avg_ms": 845.5423248470855,
+      "ttft_p50_ms": 683.5079579614103,
+      "ttft_p99_ms": 2837.1725000906736,
+      "throughput_avg_tps": 7.664613860784001,
+      "throughput_p50_tps": 8.05641717132034,
+      "itl_avg_ms": 128.9094322882755,
+      "itl_p50_ms": 117.46986735273492,
+      "latency_avg_s": 10.663935092227932,
+      "latency_p50_s": 8.15959950000979,
+      "latency_p99_s": 32.9533278751187,
+      "output_throughput_tps": 59.29632125287415,
+      "input_throughput_tps": 675.0358430887484,
+      "total_token_throughput_tps": 734.3321643416225,
+      "wall_time_s": 138.60893604089506,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p072_vlong_out64' (requested max_tokens=64)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p098_vlong_out256' (requested max_tokens=256)"
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 98,
+      "failed": 2,
+      "total_tokens_generated": 9056,
+      "total_output_tokens": 9056,
+      "total_input_tokens": 93566,
+      "server_usage_available": true,
+      "ttft_avg_ms": 10383.892202307947,
+      "ttft_p50_ms": 9835.268208058551,
+      "ttft_p99_ms": 26526.756665902212,
+      "throughput_avg_tps": 7.820431233332744,
+      "throughput_p50_tps": 8.116483302576638,
+      "itl_avg_ms": 118.53235673220418,
+      "itl_p50_ms": 118.34124139776188,
+      "latency_avg_s": 21.181163597315056,
+      "latency_p50_s": 16.305052915820852,
+      "latency_p99_s": 59.08183962502517,
+      "output_throughput_tps": 61.0153579802207,
+      "input_throughput_tps": 630.4066900151645,
+      "total_token_throughput_tps": 691.4220479953852,
+      "wall_time_s": 148.42164825019427,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p072_vlong_out64' (requested max_tokens=64)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p098_vlong_out256' (requested max_tokens=256)"
+      ]
+    }
+  ],
+  "total_duration_s": 663.3265826669522
+}

@@ -2,14 +2,17 @@
   "n_scored": 1146,
   "n_missing_responses": 0,
   "n_extra_responses": 0,
-  "f1_weighted": 0.7317278108327172,
-  "f1_macro": 0.3960066434821074,
-  "exact_match": 0.7347294938917975,
+  "f1_weighted": 0.04534630576531826,
+  "f1_macro": 0.028355625961949776,
+  "exact_match": 0.02356020942408377,
   "request_errors": 0,
-  "parse_failures": 0,
+  "parse_failures": 1103,
   "oov_predictions_after_parse": 6,
   "extraction_methods": {
-    "json": 1146
+    "none": 1103,
+    "regex_category": 38,
+    "fuzzy_name": 2,
+    "json": 3
   },
   "gold_label_distribution": {
     "Worker Strike": 178,
@@ -22,36 +25,36 @@
     "Others": 5
   },
   "pred_label_distribution": {
-    "Worker Strike": 133,
-    "Accident": 225,
-    "Administrative Issue": 483,
-    "Weather": 246,
-    "Cyber Attack": 23,
-    "Others": 21,
-    "Human Error": 4,
-    "Hurricane Dorian": 1,
-    "Tropical Storm": 2,
-    "Terrorism": 5,
-    "Tropical Cyclone": 2,
-    "Hurricane Delphi": 1
+    "<NO_PREDICTION>": 1103,
+    "Administrative Issue": 13,
+    "Weather": 4,
+    "": 2,
+    "Worker Strike": 9,
+    "specific_output:": 1,
+    "category": 2,
+    "Others": 4,
+    "Accident": 2,
+    "Terrorism": 3,
+    "}": 1,
+    "Output:": 2
   },
   "per_class": {
     "Weather": {
-      "precision": 0.967479674796748,
-      "recall": 0.6502732240437158,
-      "f1-score": 0.7777777777777778,
+      "precision": 0.6666666666666666,
+      "recall": 0.01092896174863388,
+      "f1-score": 0.021505376344086023,
       "support": 366.0
     },
     "Worker Strike": {
-      "precision": 0.9548872180451128,
-      "recall": 0.7134831460674157,
-      "f1-score": 0.8167202572347267,
+      "precision": 1.0,
+      "recall": 0.05056179775280899,
+      "f1-score": 0.0962566844919786,
       "support": 178.0
     },
     "Administrative Issue": {
-      "precision": 0.6418219461697723,
-      "recall": 0.9309309309309309,
-      "f1-score": 0.7598039215686274,
+      "precision": 0.8461538461538461,
+      "recall": 0.03303303303303303,
+      "f1-score": 0.06358381502890173,
       "support": 333.0
     },
     "Human Error": {
@@ -61,21 +64,21 @@
       "support": 9.0
     },
     "Cyber Attack": {
-      "precision": 0.17391304347826086,
-      "recall": 1.0,
-      "f1-score": 0.2962962962962963,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
       "support": 4.0
     },
     "Terrorism": {
-      "precision": 1.0,
-      "recall": 0.08333333333333333,
-      "f1-score": 0.15384615384615385,
+      "precision": 0.6666666666666666,
+      "recall": 0.03333333333333333,
+      "f1-score": 0.06349206349206349,
       "support": 60.0
     },
     "Accident": {
-      "precision": 0.7022222222222222,
-      "recall": 0.8272251308900523,
-      "f1-score": 0.7596153846153846,
+      "precision": 0.5,
+      "recall": 0.005235602094240838,
+      "f1-score": 0.010362694300518135,
       "support": 191.0
     },
     "Others": {
@@ -85,21 +88,21 @@
       "support": 5.0
     },
     "micro avg": {
-      "precision": 0.7385964912280701,
-      "recall": 0.7347294938917975,
-      "f1-score": 0.73665791776028,
+      "precision": 0.7297297297297297,
+      "recall": 0.02356020942408377,
+      "f1-score": 0.04564666103127642,
       "support": 1146.0
     },
     "macro avg": {
-      "precision": 0.5550405130890146,
-      "recall": 0.525655720658181,
-      "f1-score": 0.44550747391737083,
+      "precision": 0.4599358974358974,
+      "recall": 0.01663659099525626,
+      "f1-score": 0.031900079207193496,
       "support": 1146.0
     },
     "weighted avg": {
-      "precision": 0.813799555393134,
-      "recall": 0.7347294938917975,
-      "f1-score": 0.7317278108327172,
+      "precision": 0.7323466237078802,
+      "recall": 0.02356020942408377,
+      "f1-score": 0.04534630576531826,
       "support": 1146.0
     }
   }
