@@ -47,17 +47,17 @@
     },
     "omlx": {
       "0shot": {
-        "f1_weighted": 0.3933720073958675,
-        "f1_macro": 0.2944391296495217,
-        "exact_match": 0.43804537521815007,
+        "f1_weighted": 0.3944471685718391,
+        "f1_macro": 0.29450194238665894,
+        "exact_match": 0.4389179755671902,
         "n_scored": 1146,
         "request_errors": 0,
         "parse_failures": 0,
         "oov_predictions_after_parse": 0
       },
       "5shot": {
-        "f1_weighted": 0.7321349190827069,
-        "f1_macro": 0.3952236409098881,
+        "f1_weighted": 0.7317278108327172,
+        "f1_macro": 0.3960066434821074,
         "exact_match": 0.7347294938917975,
         "n_scored": 1146,
         "request_errors": 0,

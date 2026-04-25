@@ -2,9 +2,9 @@
   "n_scored": 1146,
   "n_missing_responses": 0,
   "n_extra_responses": 0,
-  "f1_weighted": 0.3933720073958675,
-  "f1_macro": 0.2944391296495217,
-  "exact_match": 0.43804537521815007,
+  "f1_weighted": 0.3944471685718391,
+  "f1_macro": 0.29450194238665894,
+  "exact_match": 0.4389179755671902,
   "request_errors": 0,
   "parse_failures": 0,
   "oov_predictions_after_parse": 0,
@@ -23,30 +23,30 @@
     "Others": 5
   },
   "pred_label_distribution": {
-    "Worker Strike": 40,
-    "Accident": 330,
-    "Administrative Issue": 569,
-    "Others": 159,
-    "Weather": 45,
+    "Worker Strike": 39,
+    "Accident": 328,
+    "Administrative Issue": 570,
+    "Others": 160,
+    "Weather": 46,
     "Cyber Attack": 3
   },
   "per_class": {
     "Weather": {
       "precision": 1.0,
-      "recall": 0.12295081967213115,
-      "f1-score": 0.21897810218978103,
+      "recall": 0.12568306010928962,
+      "f1-score": 0.22330097087378642,
       "support": 366.0
     },
     "Worker Strike": {
-      "precision": 0.975,
-      "recall": 0.21910112359550563,
-      "f1-score": 0.3577981651376147,
+      "precision": 0.9743589743589743,
+      "recall": 0.21348314606741572,
+      "f1-score": 0.35023041474654376,
       "support": 178.0
     },
     "Administrative Issue": {
-      "precision": 0.4358523725834798,
-      "recall": 0.7447447447447447,
-      "f1-score": 0.549889135254989,
+      "precision": 0.4368421052631579,
+      "recall": 0.7477477477477478,
+      "f1-score": 0.5514950166112956,
       "support": 333.0
     },
     "Human Error": {
@@ -68,28 +68,28 @@
       "support": 60.0
     },
     "Accident": {
-      "precision": 0.49696969696969695,
+      "precision": 0.5,
       "recall": 0.8586387434554974,
-      "f1-score": 0.6295585412667947,
+      "f1-score": 0.6319845857418112,
       "support": 191.0
     },
     "Others": {
-      "precision": 0.018867924528301886,
+      "precision": 0.01875,
       "recall": 0.6,
-      "f1-score": 0.036585365853658534,
+      "f1-score": 0.03636363636363636,
       "support": 5.0
     },
-    "accuracy": 0.43804537521815007,
+    "accuracy": 0.4389179755671902,
     "macro avg": {
-      "precision": 0.4908362492601848,
-      "recall": 0.41192942893348483,
-      "f1-score": 0.3312440208557119,
+      "precision": 0.4912438849527665,
+      "recall": 0.4119440871724938,
+      "f1-score": 0.3313146851849913,
       "support": 1146.0
     },
     "weighted avg": {
-      "precision": 0.6838607258413197,
-      "recall": 0.43804537521815007,
-      "f1-score": 0.3933720073958675,
+      "precision": 0.6845532883844058,
+      "recall": 0.4389179755671902,
+      "f1-score": 0.3944471685718391,
       "support": 1146.0
     }
   }

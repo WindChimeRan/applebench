@@ -14,6 +14,16 @@ fi
 
 source "$VENV_DIR/bin/activate"
 
+# omlx is a multi-model server that auto-discovers everything in its
+# --model-dir at startup. Refresh the symlink for the currently active
+# MLX_MODEL so adding a new model profile doesn't silently fall back to
+# whatever symlink already happens to be there (e.g. Qwen3-0.6B served
+# as "Gemma-4" because no Gemma symlink existed).
+mkdir -p "$OMLX_MODEL_DIR"
+ACTIVE_LINK="$OMLX_MODEL_DIR/$(basename "$MLX_MODEL")"
+ln -snf "$MLX_MODEL" "$ACTIVE_LINK"
+echo "Refreshed omlx symlink: $ACTIVE_LINK -> $MLX_MODEL"
+
 echo "=== Starting omlx server on port $OMLX_PORT ==="
 
 omlx serve \
