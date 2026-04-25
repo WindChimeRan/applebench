@@ -108,6 +108,13 @@ def main() -> None:
     y_lo = 0
     y_hi = max(mem_vals) * 1.08 if mem_vals else 1
 
+    plt.rcParams.update({
+        "font.size": 13,
+        "axes.titlesize": 14,
+        "axes.labelsize": 13,
+        "xtick.labelsize": 12,
+        "ytick.labelsize": 12,
+    })
     fig, axes = plt.subplots(1, 3, figsize=(16, 5.3), sharey=True)
 
     for ax, c in zip(axes, CONCURRENCIES):
@@ -155,7 +162,7 @@ def main() -> None:
             ax.annotate(
                 fw, (x, y),
                 xytext=(8, 3), textcoords="offset points",
-                fontsize=8,
+                fontsize=11,
                 fontweight="bold" if on_front else "normal",
                 color="black" if on_front else "#3d3d3d",
                 zorder=5,
@@ -182,14 +189,25 @@ def main() -> None:
     fig.legend(
         handles=style_handles,
         loc="upper center", bbox_to_anchor=(0.5, 0.02),
-        ncol=2, frameon=False, fontsize=9,
+        ncol=2, frameon=False, fontsize=12,
     )
     fig.tight_layout(rect=(0, 0.05, 1, 1))
 
-    out = args.out or REPO_ROOT / "draw" / f"pareto_{args.model}_{args.split}.png"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, dpi=150, bbox_inches="tight")
-    print(f"wrote {out}")
+    # Default to PDF (vector, paper-ready); also drop a PNG sibling for
+    # GitHub/preview rendering. --out overrides the stem; both formats are
+    # always written.
+    # Stem string + manual suffix — Path.with_suffix() would truncate
+    # at the first dot in names like "Qwen3-0.6B".
+    if args.out:
+        stem = str(args.out.parent / args.out.stem) if args.out.suffix else str(args.out)
+    else:
+        stem = str(REPO_ROOT / "draw" / f"pareto_{args.model}_{args.split}")
+    Path(stem).parent.mkdir(parents=True, exist_ok=True)
+    pdf_path, png_path = stem + ".pdf", stem + ".png"
+    fig.savefig(pdf_path, bbox_inches="tight")
+    fig.savefig(png_path, dpi=150, bbox_inches="tight")
+    print(f"wrote {pdf_path}")
+    print(f"wrote {png_path}")
 
 
 if __name__ == "__main__":

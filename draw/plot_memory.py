@@ -41,6 +41,13 @@ def main() -> None:
     if not traces:
         raise SystemExit(f"No *_metalstat.jsonl under {split_dir}")
 
+    plt.rcParams.update({
+        "font.size": 13,
+        "axes.titlesize": 14,
+        "axes.labelsize": 13,
+        "xtick.labelsize": 12,
+        "ytick.labelsize": 12,
+    })
     fig, axes = plt.subplots(1, 3, figsize=(15, 4.5), sharey=True)
     frameworks = sorted(traces)
     colors = {fw: CVD_COLORS[i % len(CVD_COLORS)] for i, fw in enumerate(frameworks)}
@@ -57,7 +64,7 @@ def main() -> None:
             y = [series[i] for i in idxs]
             ax.plot(
                 x_pct, y, label=fw,
-                color=colors[fw], linestyle=styles[fw], linewidth=1.6,
+                color=colors[fw], linestyle=styles[fw], linewidth=2.0,
             )
         ax.set_title(f"concurrency {conc}")
         ax.set_xlabel("phase progress (%)")
@@ -71,17 +78,22 @@ def main() -> None:
     axes[-1].legend(
         handles, labels,
         loc="upper left", bbox_to_anchor=(1.02, 1.0), frameon=False,
-    )
-    fig.suptitle(
-        f"{args.model} — {args.split} split — system memory by concurrency "
-        f"({len(traces)}/9 frameworks traced)"
+        fontsize=12,
     )
     fig.tight_layout()
 
-    out = args.out or REPO_ROOT / "draw" / f"memory_{args.model}_{args.split}.png"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, dpi=150, bbox_inches="tight")
-    print(f"wrote {out}")
+    # Stem string + manual suffix — Path.with_suffix() would truncate
+    # at the first dot in names like "Qwen3-0.6B".
+    if args.out:
+        stem = str(args.out.parent / args.out.stem) if args.out.suffix else str(args.out)
+    else:
+        stem = str(REPO_ROOT / "draw" / f"memory_{args.model}_{args.split}")
+    Path(stem).parent.mkdir(parents=True, exist_ok=True)
+    pdf_path, png_path = stem + ".pdf", stem + ".png"
+    fig.savefig(pdf_path, bbox_inches="tight")
+    fig.savefig(png_path, dpi=150, bbox_inches="tight")
+    print(f"wrote {pdf_path}")
+    print(f"wrote {png_path}")
 
 
 if __name__ == "__main__":
