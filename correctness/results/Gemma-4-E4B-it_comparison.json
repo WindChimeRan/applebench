@@ -45,6 +45,26 @@
         "oov_predictions_after_parse": 0
       }
     },
+    "vllm_metal": {
+      "0shot": {
+        "f1_weighted": 0.8201308628241679,
+        "f1_macro": 0.6702166259435685,
+        "exact_match": 0.8219895287958116,
+        "n_scored": 1146,
+        "request_errors": 1,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      },
+      "5shot": {
+        "f1_weighted": 0.8888508470324551,
+        "f1_macro": 0.6873006580002092,
+        "exact_match": 0.8856893542757417,
+        "n_scored": 1146,
+        "request_errors": 1,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      }
+    },
     "omlx": {
       "0shot": {
         "f1_weighted": 0.5523566205253088,

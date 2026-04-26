@@ -1,0 +1,102 @@
+{
+  "framework": "vllm_metal",
+  "model": "/Users/haorzhang/applebench/.models/Gemma-4-E4B-it",
+  "endpoint": "http://localhost:8004",
+  "timestamp": "2026-04-26T15:26:35",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 98,
+      "failed": 2,
+      "total_tokens_generated": 7616,
+      "total_output_tokens": 7675,
+      "total_input_tokens": 97804,
+      "server_usage_available": true,
+      "ttft_avg_ms": 1815.645689137603,
+      "ttft_p50_ms": 737.2957498300821,
+      "ttft_p99_ms": 11389.69162502326,
+      "throughput_avg_tps": 19.44946864236335,
+      "throughput_p50_tps": 20.69346383945684,
+      "itl_avg_ms": 52.881069734506916,
+      "itl_p50_ms": 44.07764604547992,
+      "latency_avg_s": 6.033440625454223,
+      "latency_p50_s": 3.7174685408826917,
+      "latency_p99_s": 22.17162537504919,
+      "output_throughput_tps": 12.941705125231373,
+      "input_throughput_tps": 164.91863557890932,
+      "total_token_throughput_tps": 177.8603407041407,
+      "wall_time_s": 593.0439556250349,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p063_long_out256' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p040_long_out64' (requested max_tokens=64)"
+      ],
+      "sanity_warnings": [
+        "22/98 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.21x). Framework may be bundling multiple tokens per chunk \u2014 per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect."
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 98,
+      "failed": 2,
+      "total_tokens_generated": 7625,
+      "total_output_tokens": 7683,
+      "total_input_tokens": 97804,
+      "server_usage_available": true,
+      "ttft_avg_ms": 299.61349189576066,
+      "ttft_p50_ms": 300.8034999947995,
+      "ttft_p99_ms": 395.8197918254882,
+      "throughput_avg_tps": 6.748034482491584,
+      "throughput_p50_tps": 6.808945592751223,
+      "itl_avg_ms": 140.8841666230121,
+      "itl_p50_ms": 143.68575820699334,
+      "latency_avg_s": 11.214696940053635,
+      "latency_p50_s": 9.215515207964927,
+      "latency_p99_s": 37.76834424980916,
+      "output_throughput_tps": 51.44565997121393,
+      "input_throughput_tps": 654.899300771132,
+      "total_token_throughput_tps": 706.3449607423458,
+      "wall_time_s": 149.34204370784573,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p063_long_out256' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p040_long_out64' (requested max_tokens=64)"
+      ],
+      "sanity_warnings": [
+        "22/98 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.21x). Framework may be bundling multiple tokens per chunk \u2014 per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 98,
+      "failed": 2,
+      "total_tokens_generated": 7674,
+      "total_output_tokens": 7731,
+      "total_input_tokens": 97804,
+      "server_usage_available": true,
+      "ttft_avg_ms": 387.46228787515844,
+      "ttft_p50_ms": 365.4134168755263,
+      "ttft_p99_ms": 569.2794159986079,
+      "throughput_avg_tps": 5.229957795946966,
+      "throughput_p50_tps": 5.343662151648157,
+      "itl_avg_ms": 181.38501233105353,
+      "itl_p50_ms": 182.92200992194316,
+      "latency_avg_s": 14.287407078240921,
+      "latency_p50_s": 11.793562582926825,
+      "latency_p99_s": 47.37471133400686,
+      "output_throughput_tps": 74.10791944919465,
+      "input_throughput_tps": 937.5308438506058,
+      "total_token_throughput_tps": 1011.6387632998005,
+      "wall_time_s": 104.32083450001664,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p063_long_out256' (requested max_tokens=256)",
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p040_long_out64' (requested max_tokens=64)"
+      ],
+      "sanity_warnings": [
+        "22/98 requests had server completion_tokens diverging >5% from SSE chunk count (avg ratio 1.21x). Framework may be bundling multiple tokens per chunk \u2014 per-request throughput_avg_tps and itl_avg_ms are chunk-based and therefore suspect."
+      ]
+    }
+  ],
+  "total_duration_s": 884.6216714580078
+}
