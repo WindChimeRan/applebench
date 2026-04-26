@@ -1,0 +1,89 @@
+{
+  "model": "Qwen3.5-0.8B",
+  "shots": [
+    0,
+    5
+  ],
+  "frameworks": {
+    "llamacpp": {
+      "0shot": {
+        "f1_weighted": 0.7016392804207076,
+        "f1_macro": 0.4081040364537546,
+        "exact_match": 0.6989528795811518,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      },
+      "5shot": {
+        "f1_weighted": 0.5964652806301519,
+        "f1_macro": 0.3778577904036459,
+        "exact_match": 0.5977312390924956,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      }
+    },
+    "mlx_lm": {
+      "0shot": {
+        "f1_weighted": 0.6940390769936019,
+        "f1_macro": 0.40309012743721234,
+        "exact_match": 0.6928446771378709,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      },
+      "5shot": {
+        "f1_weighted": 0.5906678203627135,
+        "f1_macro": 0.3799252684823677,
+        "exact_match": 0.5986038394415357,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      }
+    },
+    "vllm_metal": {
+      "0shot": {
+        "f1_weighted": 0.6864928306313063,
+        "f1_macro": 0.40010842280352005,
+        "exact_match": 0.6815008726003491,
+        "n_scored": 1146,
+        "request_errors": 1,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      },
+      "5shot": {
+        "f1_weighted": 0.6053912720167621,
+        "f1_macro": 0.4135854982758674,
+        "exact_match": 0.5986038394415357,
+        "n_scored": 1146,
+        "request_errors": 1,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      }
+    },
+    "omlx": {
+      "0shot": {
+        "f1_weighted": 0.6958895706327068,
+        "f1_macro": 0.40537564851397323,
+        "exact_match": 0.6945898778359512,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      },
+      "5shot": {
+        "f1_weighted": 0.5893575928298991,
+        "f1_macro": 0.37582695006919425,
+        "exact_match": 0.5968586387434555,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      }
+    }
+  }
+}

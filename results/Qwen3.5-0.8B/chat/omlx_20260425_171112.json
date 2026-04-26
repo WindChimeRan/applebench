@@ -1,0 +1,90 @@
+{
+  "framework": "omlx",
+  "model": "Qwen3.5-0.8B-bf16-mlx",
+  "endpoint": "http://localhost:8005",
+  "timestamp": "2026-04-25T17:11:13",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 99,
+      "failed": 1,
+      "total_tokens_generated": 8946,
+      "total_output_tokens": 8946,
+      "total_input_tokens": 99224,
+      "server_usage_available": true,
+      "ttft_avg_ms": 195.43367502693502,
+      "ttft_p50_ms": 125.9217499755323,
+      "ttft_p99_ms": 705.4459168575704,
+      "throughput_avg_tps": 103.02336970720003,
+      "throughput_p50_tps": 109.06007959067999,
+      "itl_avg_ms": 8.966828663914733,
+      "itl_p50_ms": 8.963923529703536,
+      "latency_avg_s": 1.009566384217128,
+      "latency_p50_s": 0.7200998337939382,
+      "latency_p99_s": 3.0575428339652717,
+      "output_throughput_tps": 89.42231683936126,
+      "input_throughput_tps": 991.8220395784464,
+      "total_token_throughput_tps": 1081.2443564178077,
+      "wall_time_s": 100.04214066686109,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p039_medium_out256' (requested max_tokens=256)"
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 99,
+      "failed": 1,
+      "total_tokens_generated": 9027,
+      "total_output_tokens": 9027,
+      "total_input_tokens": 99224,
+      "server_usage_available": true,
+      "ttft_avg_ms": 330.25930588594593,
+      "ttft_p50_ms": 218.33908394910395,
+      "ttft_p99_ms": 1485.3195841424167,
+      "throughput_avg_tps": 29.499188492605207,
+      "throughput_p50_tps": 29.78853156960019,
+      "itl_avg_ms": 32.78352473306041,
+      "itl_p50_ms": 32.46018507440264,
+      "latency_avg_s": 3.307293353482347,
+      "latency_p50_s": 2.450370708014816,
+      "latency_p99_s": 9.615457207895815,
+      "output_throughput_tps": 212.04439862960191,
+      "input_throughput_tps": 2330.7736135619384,
+      "total_token_throughput_tps": 2542.8180121915407,
+      "wall_time_s": 42.57127308403142,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p039_medium_out256' (requested max_tokens=256)"
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 99,
+      "failed": 1,
+      "total_tokens_generated": 8937,
+      "total_output_tokens": 8937,
+      "total_input_tokens": 99224,
+      "server_usage_available": true,
+      "ttft_avg_ms": 3093.551184314143,
+      "ttft_p50_ms": 3269.484708085656,
+      "ttft_p99_ms": 4816.970459185541,
+      "throughput_avg_tps": 28.621433510752404,
+      "throughput_p50_tps": 27.738394062681042,
+      "itl_avg_ms": 34.80808857010033,
+      "itl_p50_ms": 33.49837150502329,
+      "latency_avg_s": 6.103414230662483,
+      "latency_p50_s": 5.334727209061384,
+      "latency_p99_s": 13.593649041140452,
+      "output_throughput_tps": 209.4640297526684,
+      "input_throughput_tps": 2325.5968320665515,
+      "total_token_throughput_tps": 2535.06086181922,
+      "wall_time_s": 42.666036791866645,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 1 token(s) for prompt 'p039_medium_out256' (requested max_tokens=256)"
+      ]
+    }
+  ],
+  "total_duration_s": 195.1339493340347
+}

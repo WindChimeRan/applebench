@@ -1,0 +1,99 @@
+{
+  "framework": "mlx_lm",
+  "model": "/Users/haorzhang/applebench/.models/Qwen3.5-0.8B-bf16-mlx",
+  "endpoint": "http://localhost:8002",
+  "timestamp": "2026-04-25T17:22:00",
+  "concurrency_results": [
+    {
+      "concurrency": 1,
+      "num_requests": 100,
+      "successful": 99,
+      "failed": 1,
+      "total_tokens_generated": 6664,
+      "total_output_tokens": 6664,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 986.1103244281063,
+      "ttft_p50_ms": 744.4975420366973,
+      "ttft_p99_ms": 2238.2090829778463,
+      "throughput_avg_tps": 94.00479582605155,
+      "throughput_p50_tps": 99.6517201803943,
+      "itl_avg_ms": 12.412823907954282,
+      "itl_p50_ms": 10.005882396996462,
+      "latency_avg_s": 1.7692724443840409,
+      "latency_p50_s": 1.7296810410916805,
+      "latency_p99_s": 3.579941082978621,
+      "output_throughput_tps": 37.87603408463571,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 175.94239104096778,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 0 token(s) for prompt 'a094_vlong_hermes' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 99/99 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 8,
+      "num_requests": 100,
+      "successful": 99,
+      "failed": 1,
+      "total_tokens_generated": 6664,
+      "total_output_tokens": 6664,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 12797.995699499028,
+      "ttft_p50_ms": 12607.910457998514,
+      "ttft_p99_ms": 18061.11808284186,
+      "throughput_avg_tps": 95.55157869054172,
+      "throughput_p50_tps": 100.99805922312491,
+      "itl_avg_ms": 12.214036687847496,
+      "itl_p50_ms": 9.838726027064945,
+      "latency_avg_s": 13.56911684802705,
+      "latency_p50_s": 13.55397616699338,
+      "latency_p99_s": 19.492039957782254,
+      "output_throughput_tps": 38.19918699338665,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 174.4539746658411,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 0 token(s) for prompt 'a094_vlong_hermes' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 99/99 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    },
+    {
+      "concurrency": 16,
+      "num_requests": 100,
+      "successful": 99,
+      "failed": 1,
+      "total_tokens_generated": 6664,
+      "total_output_tokens": 6664,
+      "total_input_tokens": null,
+      "server_usage_available": false,
+      "ttft_avg_ms": 25350.37567038936,
+      "ttft_p50_ms": 25695.848583010957,
+      "ttft_p99_ms": 34788.751541869715,
+      "throughput_avg_tps": 95.55113003815723,
+      "throughput_p50_tps": 101.08143092125306,
+      "itl_avg_ms": 12.212346019949981,
+      "itl_p50_ms": 9.85255867474266,
+      "latency_avg_s": 26.121459779851705,
+      "latency_p50_s": 26.517145125195384,
+      "latency_p99_s": 35.39034220902249,
+      "output_throughput_tps": 38.143209109634924,
+      "input_throughput_tps": null,
+      "total_token_throughput_tps": null,
+      "wall_time_s": 174.7099983340595,
+      "error_samples": [
+        "silent failure: server returned OK but generated only 0 token(s) for prompt 'a094_vlong_hermes' (requested max_tokens=256)"
+      ],
+      "sanity_warnings": [
+        "server did not report token usage for 99/99 requests (missing `usage.completion_tokens`). Output counts fell back to SSE chunk count, which may undercount if the framework bundles multiple tokens per chunk. Framework should honor `stream_options.include_usage=true`."
+      ]
+    }
+  ],
+  "total_duration_s": 538.238237750018
+}

@@ -41,5 +41,10 @@ else
     uv venv "$VLM_VENV" --python 3.12
 fi
 source "$VLM_VENV/bin/activate"
-uv pip install mlx-vlm
+# torch + torchvision are pulled in for HF transformers' video processor
+# class hierarchy (e.g. Qwen3VLVideoProcessor used by Qwen3.5 multimodal
+# packages even when serving text-only). mlx-vlm itself doesn't need
+# torch at runtime, but AutoProcessor.from_pretrained instantiates the
+# video processor as a sub-processor and crashes on import without it.
+uv pip install mlx-vlm torch torchvision
 echo "=== mlx_vlm installed ==="
