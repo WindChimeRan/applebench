@@ -128,6 +128,12 @@ if [ -d "$VENVS_DIR/hf_transformers" ]; then
 else
     warn "hf_transformers venv not found" "Run: scripts/install_hf_transformers.sh"
 fi
+
+if [ -d "$VENVS_DIR/sglang" ]; then
+    ok "sglang"
+else
+    warn "sglang venv not found" "Run: scripts/install_sglang.sh"
+fi
 echo ""
 
 # --- Models ---

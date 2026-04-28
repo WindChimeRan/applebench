@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This Is
 
-AppleBench benchmarks 9 local LLM inference frameworks on Apple Silicon side-by-side: llama.cpp, mlx_lm, mistral.rs, vllm-metal, vllm-mlx, omlx, ollama, inferrs, hf_transformers. All frameworks serve an OpenAI-compatible API; the benchmark hits `/v1/chat/completions` with streaming and measures TTFT, throughput, ITL, and latency at concurrency levels 1/8/16.
+AppleBench benchmarks 10 local LLM inference frameworks on Apple Silicon side-by-side: llama.cpp, mlx_lm, mistral.rs, vllm-metal, vllm-mlx, omlx, ollama, inferrs, hf_transformers, sglang. All frameworks serve an OpenAI-compatible API; the benchmark hits `/v1/chat/completions` with streaming and measures TTFT, throughput, ITL, and latency at concurrency levels 1/8/16.
 
 ## Key Commands
 

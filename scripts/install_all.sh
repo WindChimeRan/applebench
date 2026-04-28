@@ -19,7 +19,8 @@ for script in \
     install_ollama.sh \
     install_inferrs.sh \
     install_vllm_mlx.sh \
-    install_hf_transformers.sh; do
+    install_hf_transformers.sh \
+    install_sglang.sh; do
     echo "==========================================="
     echo " Running $script"
     echo "==========================================="

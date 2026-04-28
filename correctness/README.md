@@ -85,7 +85,7 @@ python correctness/scripts/score_f1.py \
   --output correctness/results/vllm-nvidia_Qwen3-0.6B_5shot/scores.json
 ```
 
-## Running all 9 Mac frameworks
+## Running all 10 Mac frameworks
 
 `run_all_mac.sh` is the correctness analog of `scripts/run_all.sh`. It loops
 over all frameworks, serves each one, runs 0-shot + 5-shot eval, scores, stops
@@ -93,7 +93,7 @@ the server, and cleans up — same serve/stop/cleanup/cooldown pattern as the
 perf driver.
 
 ```bash
-# All 9 frameworks, 0-shot + 5-shot, concurrency=8
+# All 10 frameworks, 0-shot + 5-shot, concurrency=8
 bash correctness/run_all_mac.sh
 
 # Smoke test first with a small slice
@@ -126,7 +126,7 @@ Flags:
 
 Outputs land in `correctness/results/`:
 - `<framework>_<model-slug>_<N>shot/{responses.jsonl, scores.json}` — one cell per (framework × shot).
-- `<model-slug>_comparison.json` + `<model-slug>_comparison.md` — aggregated side-by-side table across all 9 frameworks, written at the end of the run.
+- `<model-slug>_comparison.json` + `<model-slug>_comparison.md` — aggregated side-by-side table across all 10 frameworks, written at the end of the run.
 
 The driver sources `scripts/config.sh` for ports + per-framework model-name
 overrides; it's a one-way dependency (deleting `correctness/` still leaves

@@ -18,6 +18,7 @@ OLLAMA_PORT=8006
 INFERRS_PORT=8007
 VLLM_MLX_PORT=8008
 HF_TRANSFORMERS_PORT=8009
+SGLANG_PORT=8010
 
 # Model profile — set APPLEBENCH_MODEL env var to switch models
 # Default: qwen3-0.6b. See models/*.sh for available profiles.

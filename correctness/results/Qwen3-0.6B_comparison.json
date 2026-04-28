@@ -168,6 +168,26 @@
         "oov_predictions_after_parse": 6
       }
     },
+    "sglang": {
+      "0shot": {
+        "f1_weighted": 0.39550719708105675,
+        "f1_macro": 0.29544964976008564,
+        "exact_match": 0.4389179755671902,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 0
+      },
+      "5shot": {
+        "f1_weighted": 0.733714526433132,
+        "f1_macro": 0.39544199166339766,
+        "exact_match": 0.7364746945898778,
+        "n_scored": 1146,
+        "request_errors": 0,
+        "parse_failures": 0,
+        "oov_predictions_after_parse": 5
+      }
+    },
     "vllm-nvidia": {
       "0shot": {
         "f1_weighted": 0.40936788382487543,

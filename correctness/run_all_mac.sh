@@ -1,11 +1,11 @@
 #!/bin/bash
-# Correctness eval across all 9 AppleBench frameworks on Mac.
+# Correctness eval across all 10 AppleBench frameworks on Mac.
 # Mirrors scripts/run_all.sh structure (serve → eval → stop → cleanup →
 # cooldown per framework) but evaluates F1 on GMRID_v3 classification
 # instead of perf.
 #
 # Usage:
-#   bash correctness/run_all_mac.sh                              # all 9 frameworks, 0-shot + 5-shot
+#   bash correctness/run_all_mac.sh                              # all 10 frameworks, 0-shot + 5-shot
 #   bash correctness/run_all_mac.sh llamacpp omlx                # restrict to a subset
 #   bash correctness/run_all_mac.sh --skip-existing              # resume — skip (fw × shot) cells already scored
 #   bash correctness/run_all_mac.sh --overwrite-responses llamacpp  # force re-run after a fix
@@ -72,6 +72,7 @@ cleanup() {
     pkill -f "inferrs serve" 2>/dev/null || true
     pkill -f "vllm-mlx serve" 2>/dev/null || true
     pkill -f "transformers serve" 2>/dev/null || true
+    pkill -f "sglang.launch_server" 2>/dev/null || true
     sleep 5
 }
 
@@ -87,6 +88,7 @@ FRAMEWORKS=(
     "inferrs:$INFERRS_PORT:serve_inferrs.sh:stop_inferrs.sh:"
     "vllm_mlx:$VLLM_MLX_PORT:serve_vllm_mlx.sh:stop_vllm_mlx.sh:$MLX_MODEL"
     "hf_transformers:$HF_TRANSFORMERS_PORT:serve_hf_transformers.sh:stop_hf_transformers.sh:$HF_MODEL"
+    "sglang:$SGLANG_PORT:serve_sglang.sh:stop_sglang.sh:$HF_MODEL"
 )
 
 RESULTS_DIR="$SCRIPT_DIR/results"

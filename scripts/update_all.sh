@@ -18,7 +18,8 @@ for script in \
     update_ollama.sh \
     update_inferrs.sh \
     update_vllm_mlx.sh \
-    update_hf_transformers.sh; do
+    update_hf_transformers.sh \
+    update_sglang.sh; do
     echo "==========================================="
     echo " Running $script"
     echo "==========================================="
