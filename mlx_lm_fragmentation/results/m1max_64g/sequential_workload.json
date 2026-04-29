@@ -1,0 +1,29 @@
+{
+  "mode": "sequential",
+  "max_tokens": 256,
+  "wall_time": 40.265281084924936,
+  "wall_t0": 19741231.655980248,
+  "results": [
+    {
+      "name": "long",
+      "t_submit": 19741231.655981753,
+      "t_first_token": 19741258.30961425,
+      "t_done": 19741265.15755221,
+      "error": null
+    },
+    {
+      "name": "medium",
+      "t_submit": 19741265.15759096,
+      "t_first_token": 19741266.851959456,
+      "t_done": 19741269.685311917,
+      "error": null
+    },
+    {
+      "name": "short",
+      "t_submit": 19741269.685333207,
+      "t_first_token": 19741269.912934,
+      "t_done": 19741271.92124496,
+      "error": null
+    }
+  ]
+}

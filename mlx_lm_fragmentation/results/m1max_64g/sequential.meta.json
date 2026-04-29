@@ -1,0 +1,17 @@
+{
+  "hostname": "Aysas-MacBook-Pro.local",
+  "query_time": "2026-04-29T09:54:08.275288",
+  "chip": {
+    "name": "Apple M1 Max",
+    "cpu_cores": {
+      "total": 10,
+      "performance": 8,
+      "efficiency": 2
+    },
+    "gpu_cores": 32,
+    "metal_family": "Apple Family 7"
+  },
+  "memory_total_gb": 64.0,
+  "swap_total_gb": 16.0,
+  "gpu_mem_recommended_max_gb": 48.0
+}
