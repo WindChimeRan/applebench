@@ -1,0 +1,17 @@
+{
+  "hostname": "ran-mbp.local",
+  "query_time": "2026-04-28T23:02:21.108930",
+  "chip": {
+    "name": "Apple M1 Pro",
+    "cpu_cores": {
+      "total": 8,
+      "performance": 6,
+      "efficiency": 2
+    },
+    "gpu_cores": 14,
+    "metal_family": "Apple Family 7"
+  },
+  "memory_total_gb": 32.0,
+  "swap_total_gb": 19.0,
+  "gpu_mem_recommended_max_gb": 24.96
+}
