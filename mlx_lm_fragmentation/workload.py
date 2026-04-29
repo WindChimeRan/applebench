@@ -16,14 +16,19 @@ RESULTS = Path(__file__).parent / "results"
 
 
 async def fire(session, base_url, model, prompt, max_tokens):
+    """Submit request, record TTFT (first 'data:' SSE line — keepalive comments
+    starting with ':' are skipped) and t_done."""
     t_submit = time.perf_counter()
     async with session.post(
         f"{base_url}/v1/completions",
-        json={"model": model, "prompt": prompt, "max_tokens": max_tokens, "stream": False},
+        json={"model": model, "prompt": prompt, "max_tokens": max_tokens, "stream": True},
     ) as resp:
         resp.raise_for_status()
-        await resp.read()
-    return {"t_submit": t_submit, "t_done": time.perf_counter()}
+        t_first_token = None
+        async for line in resp.content:
+            if t_first_token is None and line.startswith(b"data: ") and line.strip() != b"data: [DONE]":
+                t_first_token = time.perf_counter()
+    return {"t_submit": t_submit, "t_first_token": t_first_token, "t_done": time.perf_counter()}
 
 
 async def run(mode, base_url, model, max_tokens):
@@ -32,7 +37,7 @@ async def run(mode, base_url, model, max_tokens):
     async with aiohttp.ClientSession(timeout=timeout) as session:
         async def go(p):
             r = await fire(session, base_url, model, p["text"], max_tokens)
-            print(f"  done {p['name']:6s}  elapsed={r['t_done']-r['t_submit']:.2f}s")
+            print(f"  done {p['name']:6s}  ttft={r['t_first_token']-r['t_submit']:.2f}s  total={r['t_done']-r['t_submit']:.2f}s")
             return {"name": p["name"], **r}
 
         t0 = time.perf_counter()
@@ -43,7 +48,8 @@ async def run(mode, base_url, model, max_tokens):
         wall = time.perf_counter() - t0
 
     (RESULTS / f"{mode}_workload.json").write_text(
-        json.dumps({"mode": mode, "wall_time": wall, "wall_t0": t0, "results": results}, indent=2)
+        json.dumps({"mode": mode, "max_tokens": max_tokens, "wall_time": wall,
+                    "wall_t0": t0, "results": results}, indent=2)
     )
     print(f"Wall time: {wall:.2f}s")
 
@@ -53,6 +59,6 @@ if __name__ == "__main__":
     ap.add_argument("--mode", choices=["sequential", "concurrent"], required=True)
     ap.add_argument("--base-url", default="http://localhost:8002")
     ap.add_argument("--model", required=True)
-    ap.add_argument("--max-tokens", type=int, default=16)
+    ap.add_argument("--max-tokens", type=int, default=256)
     args = ap.parse_args()
     asyncio.run(run(args.mode, args.base_url, args.model, args.max_tokens))

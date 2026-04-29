@@ -12,6 +12,7 @@ padding.
 ## Setup
 - Model: Qwen3-0.6B-bf16-mlx (~28 layers, 8 KV heads, 128 head_dim, fp16)
 - Prompts: 30k / 5k / 10 tokens (well within Qwen3-0.6B's 32k native ctx)
+- Decode budget: max_tokens=256
 - Server: `mlx_lm.server` with `--prompt-cache-bytes 1` (LRU disabled)
 - Memory monitor: `metalstat -i 0.1` writing JSONL
 

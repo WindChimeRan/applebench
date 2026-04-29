@@ -1,19 +1,37 @@
 #!/usr/bin/env python3
-"""Plot memory timelines for sequential vs concurrent runs.
+"""Plot memory + per-request timeline for sequential vs concurrent runs.
 
-Two panels:
-  - Top: gpu_mem_allocated_gb (MTL::Buffer total) over wall-clock seconds
-  - Bottom: mem_used_gb (system) and swap_used_gb
-
-Annotates per-request submit/done events from <mode>_workload.json.
+Layout (4 rows, shared x-axis):
+  - Sequential GPU memory
+  - Sequential Gantt (per-request prefill / decode bars)
+  - Concurrent GPU memory
+  - Concurrent Gantt
 """
 import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 
 RESULTS = Path(__file__).parent / "results"
-OUT = RESULTS / "memory_comparison.png"
+OUT_PNG = RESULTS / "memory_comparison.png"
+OUT_PDF = RESULTS / "memory_comparison.pdf"
+
+SEQ_COLOR = "#3b6ea5"
+CON_COLOR = "#c43a31"
+GANTT_COLORS = {"long": "#2c4a6b", "medium": "#5e89b3", "short": "#a3bcd5"}
+ORDER = ["long", "medium", "short"]
+
+plt.rcParams.update({
+    "font.size": 13,
+    "axes.labelsize": 13,
+    "axes.titlesize": 13,
+    "legend.fontsize": 12,
+    "xtick.labelsize": 12,
+    "ytick.labelsize": 12,
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+})
 
 
 def load(mode):
@@ -22,61 +40,95 @@ def load(mode):
     return {
         "t": [s["elapsed_s"] for s in samples],
         "gpu": [s["gpu_mem_allocated_gb"] for s in samples],
-        "used": [s["mem_used_gb"] for s in samples],
-        "swap": [s["swap_used_gb"] for s in samples],
         "workload": workload,
     }
 
 
-def annotate_events(ax, data, mode, color):
-    workload = data["workload"]
+def draw_gantt(ax, workload):
     wall_t0 = workload["wall_t0"]
+    name_to_y = {n: i for i, n in enumerate(ORDER)}
     for r in workload["results"]:
-        rel_submit = r["t_submit"] - wall_t0
-        rel_done = r["t_done"] - wall_t0
-        ax.axvspan(rel_submit, rel_done, alpha=0.07, color=color)
-        ax.annotate(
-            r["name"],
-            xy=(rel_submit, ax.get_ylim()[1] * 0.98),
-            xytext=(rel_submit + 0.5, ax.get_ylim()[1] * 0.92),
-            fontsize=8, color=color,
-        )
+        y = name_to_y[r["name"]]
+        c = GANTT_COLORS[r["name"]]
+        sub = r["t_submit"] - wall_t0
+        ttft = r["t_first_token"] - wall_t0
+        done = r["t_done"] - wall_t0
+        ax.barh(y, ttft - sub, left=sub, height=0.55, color=c, alpha=0.4, edgecolor="none")
+        ax.barh(y, done - ttft, left=ttft, height=0.55, color=c, edgecolor="none")
+    ax.set_yticks(range(len(ORDER)))
+    ax.set_yticklabels(ORDER)
+    ax.invert_yaxis()
+    ax.xaxis.grid(True, ls="--", alpha=0.3)
+    ax.spines["left"].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+
+
+def draw_memory(ax, data, color, label, peak_ref=None, peak_ref_color=None):
+    peak = max(data["gpu"])
+    wall = data["workload"]["wall_time"]
+    ax.plot(data["t"], data["gpu"], color=color, lw=1.0)
+    ax.axhline(peak, color=color, ls="--", lw=0.8, alpha=0.6)
+    ax.text(0.995, peak, f" {peak:.1f} GB", transform=ax.get_yaxis_transform(),
+            color=color, fontsize=12, va="center", ha="left", clip_on=False)
+    if peak_ref is not None:
+        ax.axhline(peak_ref, color=peak_ref_color, ls=":", lw=0.8, alpha=0.7)
+        ax.text(0.995, peak_ref, f" seq peak", transform=ax.get_yaxis_transform(),
+                color=peak_ref_color, fontsize=11, va="center", ha="left",
+                alpha=0.8, clip_on=False)
+    ax.text(0.005, 0.95, f"{label}  ·  wall {wall:.1f}s",
+            transform=ax.transAxes, fontsize=13, fontweight="bold",
+            color=color, va="top")
+    ax.set_ylabel("GPU mem (GB)")
+    ax.yaxis.grid(True, ls="--", alpha=0.3)
 
 
 def main():
     seq = load("sequential")
     con = load("concurrent")
 
-    fig, axes = plt.subplots(2, 1, figsize=(12, 7), sharex=False)
+    seq_peak = max(seq["gpu"])
+    con_peak = max(con["gpu"])
+    xmax = max(max(seq["t"]), max(con["t"])) * 1.02
+    ymax = con_peak * 1.10
 
-    ax = axes[0]
-    ax.plot(seq["t"], seq["gpu"], label=f"sequential (peak {max(seq['gpu']):.2f} GB)", color="tab:blue", lw=1.5)
-    ax.plot(con["t"], con["gpu"], label=f"concurrent (peak {max(con['gpu']):.2f} GB)", color="tab:red", lw=1.5)
-    ax.set_ylabel("Metal GPU memory allocated (GB)")
-    ax.set_title("KV cache memory: sequential (3 prompts one at a time) vs concurrent (3 batched)\n"
-                 "Qwen3-0.6B, prompts = 30k / 5k / 10 tokens, max_tokens=16")
-    ax.legend(loc="upper right")
-    ax.grid(alpha=0.3)
-    annotate_events(ax, seq, "sequential", "tab:blue")
-    annotate_events(ax, con, "concurrent", "tab:red")
+    fig, axes = plt.subplots(
+        4, 1, figsize=(8, 6), sharex=True,
+        gridspec_kw={"height_ratios": [4, 1, 4, 1]},
+        constrained_layout=True,
+    )
 
-    ax = axes[1]
-    ax.plot(seq["t"], seq["used"], color="tab:blue", lw=1.2, label="sequential mem_used")
-    ax.plot(con["t"], con["used"], color="tab:red", lw=1.2, label="concurrent mem_used")
-    ax.plot(seq["t"], seq["swap"], color="tab:blue", lw=0.8, ls="--", label="sequential swap")
-    ax.plot(con["t"], con["swap"], color="tab:red", lw=0.8, ls="--", label="concurrent swap")
-    ax.set_ylabel("System memory / swap (GB)")
-    ax.set_xlabel("Elapsed seconds (each run starts at 0)")
-    ax.legend(loc="upper right", fontsize=8)
-    ax.grid(alpha=0.3)
+    draw_memory(axes[0], seq, SEQ_COLOR, "Sequential")
+    axes[0].set_ylim(0, ymax)
+    draw_gantt(axes[1], seq["workload"])
 
-    plt.tight_layout()
-    plt.savefig(OUT, dpi=120)
-    print(f"Wrote {OUT}")
+    draw_memory(axes[2], con, CON_COLOR, "Concurrent",
+                peak_ref=seq_peak, peak_ref_color=SEQ_COLOR)
+    axes[2].set_ylim(0, ymax)
+    draw_gantt(axes[3], con["workload"])
+
+    axes[3].set_xlabel("Elapsed seconds")
+    axes[3].set_xlim(0, xmax)
+
+    max_tokens = con["workload"].get("max_tokens", seq["workload"].get("max_tokens", "?"))
+    fig.suptitle(
+        f"Qwen3-0.6B  ·  prompts 30k / 5k / 10 tokens  ·  max_tokens={max_tokens}  ·  ratio {con_peak/seq_peak:.2f}×",
+        fontsize=12,
+    )
+    legend = [
+        Patch(facecolor="#5e89b3", alpha=0.4, label="Prefill"),
+        Patch(facecolor="#5e89b3", label="Decode"),
+    ]
+    fig.legend(handles=legend, loc="lower center", ncol=2, fontsize=12,
+               bbox_to_anchor=(0.5, -0.04), frameon=False)
+
+    plt.savefig(OUT_PNG, dpi=140, bbox_inches="tight")
+    plt.savefig(OUT_PDF, bbox_inches="tight")
+    print(f"Wrote {OUT_PNG}")
+    print(f"Wrote {OUT_PDF}")
     print()
-    print(f"Sequential:  peak GPU mem {max(seq['gpu']):.2f} GB, wall time {seq['workload']['wall_time']:.1f}s")
-    print(f"Concurrent:  peak GPU mem {max(con['gpu']):.2f} GB, wall time {con['workload']['wall_time']:.1f}s")
-    print(f"Memory ratio (concurrent / sequential):  {max(con['gpu']) / max(seq['gpu']):.2f}×")
+    print(f"Sequential:  peak {seq_peak:.2f} GB, wall {seq['workload']['wall_time']:.1f}s")
+    print(f"Concurrent:  peak {con_peak:.2f} GB, wall {con['workload']['wall_time']:.1f}s")
+    print(f"Memory ratio:  {con_peak / seq_peak:.2f}×")
 
 
 if __name__ == "__main__":
