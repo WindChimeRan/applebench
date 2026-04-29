@@ -1,0 +1,17 @@
+{
+  "hostname": "P90QXGL652",
+  "query_time": "2026-04-29T01:32:39.083921",
+  "chip": {
+    "name": "Apple M2 Max",
+    "cpu_cores": {
+      "total": 12,
+      "performance": 8,
+      "efficiency": 4
+    },
+    "gpu_cores": 30,
+    "metal_family": "Apple Family 8"
+  },
+  "memory_total_gb": 64.0,
+  "swap_total_gb": 3.0,
+  "gpu_mem_recommended_max_gb": 51.84
+}

@@ -9,18 +9,26 @@ cd "$(dirname "$0")"
 source ../scripts/config.sh
 
 RESULTS=$(pwd)/results
+if [ -n "${FRAGMENTATION_RESULTS_SUBDIR:-}" ]; then
+    RESULTS="$RESULTS/$FRAGMENTATION_RESULTS_SUBDIR"
+fi
+mkdir -p "$RESULTS"
+export FRAGMENTATION_RESULTS_DIR="$RESULTS"
 LOG=$RESULTS/server.log
 MLX_PYTHON="$VENVS_DIR/mlx_lm/bin/python"
 BENCH_PYTHON="$VENVS_DIR/bench/bin/python"
+export PATH="$VENVS_DIR/bench/bin:$PATH"
 
-echo "[1/4] Building prompts ..."
-"$MLX_PYTHON" make_prompts.py
+echo "[1/4] Building prompts (results: $RESULTS) ..."
+MLX_MODEL="$MLX_MODEL" "$MLX_PYTHON" make_prompts.py
 
-echo "[2/4] Starting mlx_lm.server on :$MLX_LM_PORT (prompt-cache disabled) ..."
+echo "[2/4] Starting mlx_lm.server on :$MLX_LM_PORT (prompt-cache disabled, prefill-step ${MLX_PREFILL_STEP_SIZE:-2048}, prompt-concurrency ${MLX_PROMPT_CONCURRENCY:-8}) ..."
 "$MLX_PYTHON" -m mlx_lm.server \
     --model "$MLX_MODEL" \
     --port "$MLX_LM_PORT" \
     --prompt-cache-bytes 1 \
+    --prefill-step-size "${MLX_PREFILL_STEP_SIZE:-2048}" \
+    --prompt-concurrency "${MLX_PROMPT_CONCURRENCY:-8}" \
     > "$LOG" 2>&1 &
 SERVER_PID=$!
 echo "  server PID: $SERVER_PID"

@@ -1,0 +1,85 @@
+{
+  "mode": "sequential",
+  "max_tokens": 256,
+  "wall_time": 67.67637579212897,
+  "wall_t0": 1603392.356879416,
+  "results": [
+    {
+      "name": "long",
+      "t_submit": 1603392.356880541,
+      "t_first_token": 1603417.015919708,
+      "t_done": 1603422.076261875,
+      "error": null
+    },
+    {
+      "name": "short00",
+      "t_submit": 1603422.076282541,
+      "t_first_token": 1603423.586902833,
+      "t_done": 1603425.829937333,
+      "error": null
+    },
+    {
+      "name": "short01",
+      "t_submit": 1603425.829952916,
+      "t_first_token": 1603427.39438275,
+      "t_done": 1603429.632839125,
+      "error": null
+    },
+    {
+      "name": "short02",
+      "t_submit": 1603429.6328545,
+      "t_first_token": 1603431.182341125,
+      "t_done": 1603433.423429625,
+      "error": null
+    },
+    {
+      "name": "short03",
+      "t_submit": 1603433.423447708,
+      "t_first_token": 1603434.972968708,
+      "t_done": 1603437.214760583,
+      "error": null
+    },
+    {
+      "name": "short04",
+      "t_submit": 1603437.214775416,
+      "t_first_token": 1603438.756519833,
+      "t_done": 1603441.006072166,
+      "error": null
+    },
+    {
+      "name": "short05",
+      "t_submit": 1603441.006087583,
+      "t_first_token": 1603442.567019083,
+      "t_done": 1603444.804724791,
+      "error": null
+    },
+    {
+      "name": "short06",
+      "t_submit": 1603444.80474,
+      "t_first_token": 1603446.367216083,
+      "t_done": 1603448.610613416,
+      "error": null
+    },
+    {
+      "name": "short07",
+      "t_submit": 1603448.610629791,
+      "t_first_token": 1603450.167540583,
+      "t_done": 1603452.410394166,
+      "error": null
+    },
+    {
+      "name": "short08",
+      "t_submit": 1603452.41040875,
+      "t_first_token": 1603453.977591625,
+      "t_done": 1603456.220344583,
+      "error": null
+    },
+    {
+      "name": "short09",
+      "t_submit": 1603456.220360291,
+      "t_first_token": 1603457.791562083,
+      "t_done": 1603460.033240875,
+      "error": null
+    }
+  ]
+}

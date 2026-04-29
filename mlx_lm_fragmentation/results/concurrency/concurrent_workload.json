@@ -1,0 +1,85 @@
+{
+  "mode": "concurrent",
+  "max_tokens": 256,
+  "wall_time": 57.7442267909646,
+  "wall_t0": 1603463.86262,
+  "results": [
+    {
+      "name": "long",
+      "t_submit": 1603463.862692208,
+      "t_first_token": 1603506.494908083,
+      "t_done": 1603521.604786541,
+      "error": null
+    },
+    {
+      "name": "short00",
+      "t_submit": 1603463.863683916,
+      "t_first_token": 1603480.795374291,
+      "t_done": 1603521.60515875,
+      "error": null
+    },
+    {
+      "name": "short01",
+      "t_submit": 1603463.863794666,
+      "t_first_token": 1603472.637599958,
+      "t_done": 1603521.606324166,
+      "error": null
+    },
+    {
+      "name": "short02",
+      "t_submit": 1603463.8639915,
+      "t_first_token": 1603471.093631083,
+      "t_done": 1603521.606374416,
+      "error": null
+    },
+    {
+      "name": "short03",
+      "t_submit": 1603463.864062458,
+      "t_first_token": 1603474.202666875,
+      "t_done": 1603521.606148083,
+      "error": null
+    },
+    {
+      "name": "short04",
+      "t_submit": 1603463.864130666,
+      "t_first_token": 1603477.412172291,
+      "t_done": 1603521.605606083,
+      "error": null
+    },
+    {
+      "name": "short05",
+      "t_submit": 1603463.864192208,
+      "t_first_token": 1603479.045173083,
+      "t_done": 1603521.605468625,
+      "error": null
+    },
+    {
+      "name": "short06",
+      "t_submit": 1603463.864251291,
+      "t_first_token": 1603475.798043,
+      "t_done": 1603521.60566225,
+      "error": null
+    },
+    {
+      "name": "short07",
+      "t_submit": 1603463.864310541,
+      "t_first_token": 1603466.613008375,
+      "t_done": 1603521.068321875,
+      "error": null
+    },
+    {
+      "name": "short08",
+      "t_submit": 1603463.864367,
+      "t_first_token": 1603468.07474675,
+      "t_done": 1603521.606534125,
+      "error": null
+    },
+    {
+      "name": "short09",
+      "t_submit": 1603463.864422583,
+      "t_first_token": 1603469.566829,
+      "t_done": 1603521.606384625,
+      "error": null
+    }
+  ]
+}
