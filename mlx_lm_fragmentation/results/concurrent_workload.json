@@ -1,25 +1,29 @@
 {
   "mode": "concurrent",
-  "wall_time": 170.63420154101914,
-  "wall_t0": 287863.6357595,
+  "max_tokens": 256,
+  "wall_time": 189.56633029098157,
+  "wall_t0": 296244.64402825,
   "results": [
     {
       "name": "long",
-      "t_submit": 287863.6357955,
-      "t_first_token": 288033.123779125,
-      "t_done": 288034.269877375
+      "t_submit": 296244.644066291,
+      "t_first_token": 296414.160280666,
+      "t_done": 296434.210263458,
+      "error": null
     },
     {
       "name": "medium",
-      "t_submit": 287863.636596375,
-      "t_first_token": 288033.122550416,
-      "t_done": 288034.26532875
+      "t_submit": 296244.6454215,
+      "t_first_token": 296414.159777541,
+      "t_done": 296434.204902166,
+      "error": null
     },
     {
       "name": "short",
-      "t_submit": 287863.636701083,
-      "t_first_token": 288033.122467416,
-      "t_done": 288034.25204925
+      "t_submit": 296244.645539333,
+      "t_first_token": 296414.159696333,
+      "t_done": 296434.190394583,
+      "error": null
     }
   ]
 }
